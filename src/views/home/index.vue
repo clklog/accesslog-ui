@@ -85,8 +85,6 @@ export default {
     commonParams() {
       const { project } = this;
       return Object.assign({ project }, this.topFilterParams);
-      // const  projectName = this.project;
-      // return Object.assign({ projectName }, this.topFilterParams);
     },
   },
   watch: {
@@ -123,12 +121,10 @@ export default {
   display: flex;
   justify-content: space-between;
   .left {
-    // box-sizing: border-box;
     width: 50%;
     margin-right: 10px;
   }
   .right {
-    // box-sizing: border-box;
     width: 50%;
     margin-left: 10px;
   }

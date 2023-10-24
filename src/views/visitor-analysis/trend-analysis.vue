@@ -4,7 +4,7 @@
       <FilterBar
         ByArea
         ByData
-        bySub
+        BySub
         @setFilterBarParams="setFilterBarParams"
       />
     </div>

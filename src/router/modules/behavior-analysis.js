@@ -20,9 +20,9 @@ import Layout from '@/layout'
 //   ]
 // }
 const tableRouter = {
-  path: '/fontEnd/behaviorAnalysis',
+  path: '/Tracking/behaviorAnalysis',
   component: Layout,
-  redirect: '/fontEnd/behaviorAnalysis/userBehavior',
+  redirect: '/Tracking/behaviorAnalysis/userBehavior',
   name: 'behaviorAnalysis',
   alwaysShow: true,
   meta: {

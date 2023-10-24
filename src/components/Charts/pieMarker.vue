@@ -90,9 +90,7 @@ export default {
             itemStyle: {
               normal: {
                 color: function (colors) {
-                  // var colorList = ["#2c7be5", "rgba(155,156,156,0.6)"];
                   var colorList = ["#2c7be5", "rgba(253,126,20,0.8)"];
-                  // var colorList = ["#2c7be5", "rgba(230 , 55 , 87,0.8)"];
                   return colorList[colors.dataIndex];
                 },
               },

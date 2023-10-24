@@ -1,19 +1,25 @@
 import Layout from '@/layout'
 const tableRouter = {
-    path: '/rearEnd/logAnalysis',
+    path: '/logAnalysis',
     component:Layout,
-    // redirect: '/fontEnd/behaviorAnalysis/userBehavior',
+    // redirect: '/Tracking/behaviorAnalysis/userBehavior',
     alwaysShow: true,
     meta: {
-      title: '日志数据分析',
+      title: '日志分析',
       icon: 'behaviorAnaly'
     },
     children: [
       {
-        path: 'userBehavior',
-        component: () => import('@/views/log-analysis/index'),
-        name: 'userBehavior',
-        meta: { title: '日志分析' }
+        path: 'performance',
+        component: () => import('@/views/log-analysis/performance-analysis'),
+        name: 'performance',
+        meta: { title:'性能分析' }
+      },
+      {
+        path: 'statuCode',
+        component: () => import('@/views/log-analysis/statuCode-analysis'),
+        name: 'statuCode',
+        meta: { title:'状态码分析' }
       }
     ]
   }

@@ -113,7 +113,7 @@ export default {
       // }
       console.log(path,"路径");
       switch (path) {
-        case "/fontEnd/visitorAnalysis/trend": {
+        case "/Tracking/visitorAnalysis/trend": {
           let regular = ["statTime"]
           params.cols = [...params.cols, ...regular]; //增加固定列
           // console.log(params,"下载参数");
@@ -123,7 +123,7 @@ export default {
           });
           break;
         }
-        case "/fontEnd/visitorAnalysis/regional": {
+        case "/Tracking/visitorAnalysis/regional": {
           let regular = ["index","province"]
           params.cols = [...params.cols, ...regular];
           exportAreaDetailApi(params).then((res) => {
@@ -132,7 +132,7 @@ export default {
           });
           break;
         }
-        case "/fontEnd/visitorAnalysis/sourceWeb": {
+        case "/Tracking/visitorAnalysis/sourceWeb": {
           let regular = ["index","sourcesite"]
           params.cols = [...params.cols, ...regular];
           exportSourceWebsiteDetailApi(params).then((res) => {
@@ -141,7 +141,7 @@ export default {
           });
           break;
         }
-        case "/fontEnd/visitorAnalysis/newoldVisitor": {
+        case "/Tracking/visitorAnalysis/newoldVisitor": {
           let regular = ["index","visitorType"]
           params.cols = [...params.cols, ...regular];
           exportVisitorDetailApi(params).then((res) => {
@@ -150,7 +150,7 @@ export default {
           });
           break;
         }
-        case "/fontEnd/visitorAnalysis/channel": {
+        case "/Tracking/visitorAnalysis/channel": {
           let regular = ["index","channel"]
           params.cols = [...params.cols, ...regular];
           exportChannelDetailApi(params).then((res) => {
@@ -159,7 +159,7 @@ export default {
           });
           break;
         }
-        case "/fontEnd/visitorAnalysis/equipment": {
+        case "/Tracking/visitorAnalysis/equipment": {
           let regular = ["index","device"]
           params.cols = [...params.cols, ...regular];
           exportDeviceDetailApi(params).then((res) => {

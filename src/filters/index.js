@@ -1,5 +1,5 @@
 // import parseTime, formatTime and set to filter
-export { parseTime, formatTime } from '@/utils'
+export { parseTime, formatTime } from "@/utils";
 
 /**
  * Show plural label if time is plural number
@@ -9,23 +9,62 @@ export { parseTime, formatTime } from '@/utils'
  */
 function pluralize(time, label) {
   if (time === 1) {
-    return time + label
+    return time + label;
   }
-  return time + label + 's'
+  return time + label + "s";
 }
 
 /**
  * @param {number} time
  */
 export function timeAgo(time) {
-  const between = Date.now() / 1000 - Number(time)
+  const between = Date.now() / 1000 - Number(time);
   if (between < 3600) {
-    return pluralize(~~(between / 60), ' minute')
+    return pluralize(~~(between / 60), " minute");
   } else if (between < 86400) {
-    return pluralize(~~(between / 3600), ' hour')
+    return pluralize(~~(between / 3600), " hour");
   } else {
-    return pluralize(~~(between / 86400), ' day')
+    return pluralize(~~(between / 86400), " day");
   }
+}
+export function percentage(s) {
+  if (s) {
+    return (s * 100).toFixed(2) + "%";
+  }
+  return "--";
+}
+
+export function conver(limit) {
+  if (limit) {
+    var size = "";
+    if (limit < 0.1 * 1024) {
+      //如果小于0.1KB转化成B
+      size = limit.toFixed(2) + "B";
+    } else if (limit < 0.1 * 1024 * 1024) {
+      //如果小于0.1MB转化成KB
+      size = (limit / 1024).toFixed(2) + "KB";
+    } else if (limit < 0.1 * 1024 * 1024 * 1024) {
+      //如果小于0.1GB转化成MB
+      size = (limit / (1024 * 1024)).toFixed(2) + "MB";
+    } else {
+      //其他转化成GB
+      size = (limit / (1024 * 1024 * 1024)).toFixed(2) + "GB";
+    }
+    var sizestr = size + "";
+    var len = sizestr.indexOf(".");
+    var dec = sizestr.substr(len + 1, 2);
+    if (dec == "00") {
+      //当小数点后为00时 去掉小数部分
+      return sizestr.substring(0, len) + sizestr.substr(len + 3, 2);
+    }
+    return sizestr;
+  } else {
+    return "--";
+  }
+}
+// 去除空字符串的问题
+export function emptyString(s,list) {
+  return list.split(s).filter((item) => item != "");
 }
 
 /**
@@ -36,19 +75,23 @@ export function timeAgo(time) {
  */
 export function numberFormatter(num, digits) {
   const si = [
-    { value: 1E18, symbol: 'E' },
-    { value: 1E15, symbol: 'P' },
-    { value: 1E12, symbol: 'T' },
-    { value: 1E9, symbol: 'G' },
-    { value: 1E6, symbol: 'M' },
-    { value: 1E3, symbol: 'k' }
-  ]
+    { value: 1e18, symbol: "E" },
+    { value: 1e15, symbol: "P" },
+    { value: 1e12, symbol: "T" },
+    { value: 1e9, symbol: "G" },
+    { value: 1e6, symbol: "M" },
+    { value: 1e3, symbol: "k" },
+  ];
   for (let i = 0; i < si.length; i++) {
     if (num >= si[i].value) {
-      return (num / si[i].value).toFixed(digits).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') + si[i].symbol
+      return (
+        (num / si[i].value)
+          .toFixed(digits)
+          .replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1") + si[i].symbol
+      );
     }
   }
-  return num.toString()
+  return num.toString();
 }
 
 /**
@@ -56,7 +99,9 @@ export function numberFormatter(num, digits) {
  * @param {number} num
  */
 export function toThousandFilter(num) {
-  return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+  return (+num || 0)
+    .toString()
+    .replace(/^-?\d+/g, (m) => m.replace(/(?=(?!\b)(\d{3})+$)/g, ","));
 }
 
 /**
@@ -64,5 +109,5 @@ export function toThousandFilter(num) {
  * @param {String} string
  */
 export function uppercaseFirst(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1)
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }

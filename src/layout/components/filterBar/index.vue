@@ -90,7 +90,7 @@
 
       <div class="channelSecond">
         <div style="display: flex">
-          <div class="check_item public_border_color" v-if="!byChnnel">
+          <div class="check_item public_border_color" v-if="!ByChnnel">
             <span>渠道:</span>
             <el-radio-group v-model="channelValue" style="margin-right: 10px">
               <el-radio
@@ -101,7 +101,7 @@
               >
             </el-radio-group>
           </div>
-          <div class="check_item public_border_color">
+          <div class="check_item public_border_color" v-if="!ByVisitor">
             <span>访客:</span>
             <el-radio-group v-model="visitorType" class="checkBoxStyle">
               <el-radio label="">全部</el-radio>
@@ -143,11 +143,15 @@ import {
 } from "@/api/trackingapi/download";
 export default {
   props: {
-    bySub: {
+    BySub: {
       type: Boolean,
       default: false,
     },
-    byChnnel: {
+    ByChnnel: {
+      type: Boolean,
+      default: false,
+    },
+    ByVisitor: {
       type: Boolean,
       default: false,
     },
@@ -237,11 +241,9 @@ export default {
       checkDateTime: "",
       past7daysStart: "", //最近一周
       timeDifference: "",
-
       // 接口参数数据
       timeType: this.ByData ? "hour" : "day",
-      // timeType: this.ByData ? "day" : "day",
-      timeFlag: "day",
+      timeFlag: "month", //暂定选择30天
       startTime: "",
       endTime: "",
       areaValue: "全部",
@@ -253,6 +255,24 @@ export default {
   },
   mounted() {
     this.handleAdd();
+    // 暂定30天 有数值
+    let date = new Date();
+    let toData =
+      new Date(new Date().toLocaleDateString()).getTime() + 8 * 3600 * 1000;
+    let dateTime =
+      date.getFullYear() +
+      "-" +
+      (date.getMonth() + 1 < 10
+        ? "0" + (date.getMonth() + 1)
+        : date.getMonth() + 1) +
+      "-" +
+      date.getDate();
+    this.timeDifference = toData - 29 * 3600 * 24 * 1000;
+    this.timestampToTime(this.timeDifference);
+    this.currentTime = [this.checkDateTime, dateTime];
+    this.startTime = this.currentTime[0];
+    this.endTime = this.currentTime[1];
+    // ------------------end
   },
   computed: {
     channel() {
@@ -261,11 +281,7 @@ export default {
       } else {
         return [];
       }
-      // return [this.channelValue];
     },
-    // area() {
-    //   return [this.areaValue];
-    // },
     province() {
       if (this.areaValue == "全部") {
         return [];
@@ -276,29 +292,31 @@ export default {
     provinceData() {
       return province;
     },
-    // 默认参数
     defaultParams() {
-      const { startTime, endTime, channel, visitorType } = this;
+      const { startTime, endTime } = this;
       return {
         startTime,
         endTime,
-        channel,
-        visitorType,
       };
     },
     commonParams() {
       let obj = {};
       obj = Object.assign(obj, this.defaultParams);
-      // const { area, timeType } = this;
-      const { province, timeType } = this;
+      const { province, timeType, visitorType, channel } = this;
       if (this.ByArea) {
-        // obj = Object.assign(obj, { area });
-
         obj = Object.assign(obj, { province });
       }
-      if (this.ByData) {
-        obj = Object.assign(obj, { timeType });
+      // 首页柱状图内容
+      // if (this.ByData) {
+      //   obj = Object.assign(obj, { timeType });
+      // }
+      if (!this.ByChnnel) {
+        obj = Object.assign(obj, { channel });
       }
+      if (!this.ByVisitor) {
+        obj = Object.assign(obj, { visitorType });
+      }
+
       return obj;
     },
   },
@@ -311,7 +329,6 @@ export default {
   },
   methods: {
     btnShowEvent(val) {
-      // console.log(val,"点击事件");
       this.popflag = true;
     },
     canclePopEvent() {
@@ -322,7 +339,7 @@ export default {
       let path = this.$route.path;
       this.commonData.project = this.$store.getters.project;
       switch (path) {
-        case "/fontEnd/visitorAnalysis/search": {
+        case "/Tracking/visitorAnalysis/search": {
           let cols = [
             "index",
             "searchword",
@@ -345,7 +362,7 @@ export default {
           });
           break;
         }
-        case "/fontEnd/visitorAnalysis/userLoyalty": {
+        case "/Tracking/visitorAnalysis/userLoyalty": {
           exportVisitorApi(this.commonData).then((res) => {
             let name = this.sliceTypeFile(res);
             blobDownloads(res.data, name);
@@ -353,7 +370,7 @@ export default {
           break;
         }
         // case "/behaviorAnalysis/user-behavior-analysis": {
-        case "/fontEnd/behaviorAnalysis/userBehavior": {
+        case "/Tracking/behaviorAnalysis/userBehavior": {
           let cols = [
             "distinctId",
             "visitorType",
@@ -384,19 +401,7 @@ export default {
     },
     // 切换省份
     handleCheckProvince(e) {
-      console.log(e, "全部");
-      // if ((e.provinceName = "全部")) {
-      //   this.areaValue = [];
-      // }
       this.areaValue = e.provinceName;
-      // switch (e.provinceName) {
-      //   case "全部":
-      //     this.areaValue = "全部";
-      //     break;
-      //   default:
-      //     this.areaValue = e.provinceName;
-      //     break;
-      // }
     },
     checkDateEvnet(val) {
       this.timeFlag = "";

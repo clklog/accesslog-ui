@@ -39,45 +39,28 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    // path: '/',
-    // component: Layout,
-    // redirect: '/index',
-    path: '/fontEnd',
+    path: '/Tracking',
     component: Layout,
-    redirect: '/fontEnd/index',
+    redirect: '/Tracking/index',
     children: [
       {
         path: 'index',
-        component: () => import('@/views/home/index'),
+        component: () => import('@/views/log-analysis/index'),
         name: 'Documentation',
         meta: { title: '首页', icon: 'homepage', affix: true }
         // meta: { title: '首页', icon: 'documentation', affix: true }
       }
     ]
   },
-  {
-    path: '/profile',
-    component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
-      }
-    ]
-  }
 ]
 
 export const asyncRoutes = [
-  visitorAnalysis,
-  behaviorAnalysis,
+  // visitorAnalysis,
+  // behaviorAnalysis,
   logDataAnalysis,
   // userBehavior, //用户分析页面
   // { path: '*', redirect: '/index', hidden: true }
-  { path: '*', redirect: '/fontEnd/index', hidden: true }
+  { path: '*', redirect: '/Tracking/index', hidden: true }
 ]
 
 const createRouter = () => new Router({
