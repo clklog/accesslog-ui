@@ -148,11 +148,7 @@ export default {
             axisLine: {
               lineStyle: {
                 color: "#1f78af",
-<<<<<<< HEAD
-                width: 2, // 这里是为了突出显示加上的内容
-=======
                 width: 2,
->>>>>>> 4ba43f89ebfa91adfd58bfea67090011d7ba44d7
               },
             },
             axisTick: {
