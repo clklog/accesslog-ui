@@ -82,6 +82,7 @@ export default {
       ],
       value: "",
       chart: null,
+      test:'',
     };
   },
   mounted() {
@@ -147,7 +148,7 @@ export default {
             axisLine: {
               lineStyle: {
                 color: "#1f78af",
-                width: 2, // 这里是为了突出显示加上的
+                width: 2, // 这里是为了突出显示加上的内容
               },
             },
             axisTick: {
