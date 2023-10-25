@@ -126,33 +126,37 @@ export default {
             "钢城区",
             "济阳区",
           ],
-          // 改变x轴颜色
+          
           axisLine: {
             lineStyle: {
               color: "#1f78af",
-              width: 2, // 这里是为了突出显示加上的
+              width: 2, 
             },
           },
         },
-        // 设置两个y轴，左边显示一种类型，右边一种类型
+        
         yAxis: [
           {
             splitLine: { show: false },
             type: "value",
             position: "left",
-            // name: '数量',
+         
             show: true,
             min: 15,
             max: 100,
-            // 改变y轴颜色
+           
             axisLine: {
               lineStyle: {
                 color: "#1f78af",
+<<<<<<< HEAD
                 width: 2, // 这里是为了突出显示加上的内容
+=======
+                width: 2,
+>>>>>>> 4ba43f89ebfa91adfd58bfea67090011d7ba44d7
               },
             },
             axisTick: {
-              show: false, // 去除刻度
+              show: false, 
             },
           },
           {
@@ -160,18 +164,15 @@ export default {
             type: "value",
             position: "right",
             name: "",
-            // interval: 10,
-            // min:0,
-            // max:2,
-            // 改变y轴颜色
+           
             axisLine: {
               lineStyle: {
                 color: "#1f78af",
-                width: 2, //y轴宽度，这里是为了突出显示加上的
+                width: 2, 
               },
             },
             axisTick: {
-              show: false, // 去除刻度
+              show: false,
             },
           },
         ],
@@ -186,10 +187,10 @@ export default {
               normal: {
                 label: {
                   show: true,
-                  position: "inside", //数据在中间显示
-                  formatter: "{c}", //百分比显示，模板变量有 {a}、{b}、{c}、{d}，分别表示系列名，数
+                  position: "inside", 
+                  formatter: "{c}", 
                 },
-                color: "#1f78af", //设置柱子的颜色
+                color: "#1f78af",
               },
             },
           },
@@ -199,12 +200,12 @@ export default {
               1.056, 0.883, 0.352, 1.344, 1.069, 0.961, 0.735, 0.896, 0.694,
               0.735,
             ],
-            yAxisIndex: 1, // 这里要设置哪个y轴，默认是最左边的是0，然后1，2顺序来
-            symbol: "circle", // 折线点设置为实心点
-            symbolSize: 10, // 折线点的大小
+            yAxisIndex: 1, 
+            symbol: "circle",
+            symbolSize: 10, 
             itemStyle: {
               normal: {
-                color: "#e09216", //设置折线颜色
+                color: "#e09216",
               },
             },
           },
