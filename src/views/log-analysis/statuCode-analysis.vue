@@ -25,10 +25,6 @@
                 :key="index"
                 >{{ item.status }}</el-checkbox
               >
-              <!-- <el-checkbo label="uv">访客数(UV)</el-checkbox>
-              <el-checkbox label="ipCount" style="margin-right: 0"
-                >IP数</el-checkbox
-              > -->
             </el-checkbox-group>
           </div>
         </div>
@@ -177,17 +173,16 @@ export default {
     };
   },
   computed: {
-    project() {
-      return this.$store.getters.project;
+    projectName() {
+      return this.$store.getters.projectName;
     },
     commonParams() {
-      const { project, sortOrder, pageNum, pageSize, status } = this;
-      return Object.assign({ project, sortOrder }, this.filterBarParams);
+      const { projectName, sortOrder, pageNum, pageSize, status } = this;
+      return Object.assign({ projectName, sortOrder }, this.filterBarParams);
     },
   },
   watch: {
     commonParams(val) {
-      // this.getStatusData();
     },
   },
   mounted() {
@@ -231,14 +226,6 @@ export default {
         this.getStatusData();
       }
     },
-    // getStatusData() {
-    //   getStatusApi(this.commonParams).then((res) => {
-    //     if (res.code == 200) {
-    //       this.statuCodeList = res.data;
-    //       this.total = res.data.total;
-    //     }
-    //   });
-    // },
     getStatusData(val) {
       console.log(val,"val-------");
       let params = copyObj(this.commonParams)

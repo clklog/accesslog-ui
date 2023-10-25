@@ -11,7 +11,6 @@
     <div class="public-block">
       <div class="search_wrappy public-table-block public-hoverItem" style="position: relative;">
         <span class="public-firstHead">性能分析</span>
-        <!-- @change="chartChange" -->
         <div style="position: absolute; right: 22px; top: 22px;display: flex; border: 1px solid #acb2ba; border-radius: 4px;align-items: center;">
           <div style="font-size: 12px;color: #4d4d4d;padding-left: 6px;">应用:</div>
           <el-select
@@ -31,8 +30,6 @@
             />
           </el-select>
         </div>
-
-        <!-- 动态刷选 -->
         <div class="flow-indicator public_indicator" style="margin-top: 10px">
           <div class="flow-item" style="font-size: 13px;color: #4d4d4d;">
             请选择要排除的文件类型：
@@ -117,13 +114,6 @@
             >
             </el-table-column>
 
-            <!-- <el-table-column
-              prop="ipCount"
-              align="center"
-              label="访问IP数	"
-              sortable="custom"
-            >
-            </el-table-column> -->
             <el-table-column
               align="center"
               label="耗时较长次数(>=1秒)"
@@ -139,16 +129,6 @@
               sortable="custom"
             >
             </el-table-column>
-            <!-- <el-table-column
-              align="center"
-              prop="ipCountRate"
-              label="访问IP数占比"
-              sortable="custom"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.visitCountRate }}
-              </template>
-            </el-table-column> -->
             <el-table-column
               align="center"
               prop="avgVisitTime"
@@ -173,20 +153,6 @@
                 {{ scope.row.pvRate | percentage }}
               </template>
             </el-table-column>
-            <!-- <el-table-column
-              align="center"
-              prop="requestLength"
-              label="流入流量"
-              sortable="custom"
-            >
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="bodyBytesSent"
-              label="流出流量"
-              sortable="custom"
-            >
-            </el-table-column> -->
           </el-table>
         </div>
         <div class="block" v-if="performanceList.length > 0">
@@ -246,13 +212,13 @@ export default {
     };
   },
   computed: {
-    project() {
-      return this.$store.getters.project;
+    projectName() {
+      return this.$store.getters.projectName;
     },
     commonParams() {
-      const { project, sortOrder, pageNum, pageSize, status, limit } = this;
+      const { projectName, sortOrder, pageNum, pageSize, status, limit } = this;
       return Object.assign(
-        { project, sortOrder, pageNum, pageSize, status, limit },
+        { projectName, sortOrder, pageNum, pageSize, status, limit },
         this.filterBarParams
       );
     },
@@ -293,7 +259,6 @@ export default {
       });
       this.imgFormatList = this.imgFormatList.flat(Infinity);
       this.getPerformanceDetail();
-      // console.log(this.limit, "limit1111");
     },
     // 其他事件多选框
     otherFilterEvent(val) {
@@ -401,7 +366,6 @@ export default {
     height: 30px;
     line-height: 30px;
     border-bottom-width:0;
-    /*outline: medium;*/
   }
    .other_select .el-input__inner {
     border-radius: 0px;
@@ -415,7 +379,6 @@ export default {
     transform: scale(0.9);
     height: 30px;
     line-height: 30px;
-    /*outline: medium;*/
   }
   .el-checkbox__input.is-disabled + span.el-checkbox__label {
     color: #194580;
@@ -425,7 +388,6 @@ export default {
   box-sizing: border-box;
   margin: 20px 0 20px 0;
   min-height: 500px;
-  // max-height: 500px;
   display: flex;
   justify-content: space-between;
 }

@@ -31,9 +31,6 @@ export default {
       type: String,
       default: "200px",
     },
-    // logTitle: {
-    //   type: String,
-    // },
   },
   created() {
     this.initData();
@@ -54,7 +51,14 @@ export default {
   methods: {
     drawCharts() {
       var myChart = echarts.init(document.getElementById(this.id));
-      const COLORS = ["#2c7be5", "#80bdef", "#c4ebad", "#85dec8", "#fff2ce","#ffde84"];
+      const COLORS = [
+        "#2c7be5",
+        "#80bdef",
+        "#c4ebad",
+        "#85dec8",
+        "#fff2ce",
+        "#ffde84",
+      ];
       myChart.setOption({
         title: {
           text: this.logTitle,
@@ -120,7 +124,7 @@ export default {
             label: {
               normal: {
                 show: true,
-                padding:[20,0],
+                padding: [20, 0],
                 position: "outside", // 标签位于饼图外部
                 // formatter:  "({d}%)",
                 formatter: (params) => {
@@ -136,6 +140,13 @@ export default {
               emphasis: {
                 show: true,
               },
+              // emphasis: {
+              //   label: {
+              //     show: true,
+              //     fontSize: "30",
+              //     fontWeight: "bold",
+              //   },
+              // },
             },
             // labelLine: {
             //   minTurnAngle: 0,

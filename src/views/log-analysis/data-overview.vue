@@ -9,13 +9,22 @@
       />
     </div>
     <div class="public-block">
-      <div class="Overview public-hoverItem">
-        <div class="trendAnalysis public-firstHead">流量概览</div>
+      <div class="Overview public-hoverItem" style="padding: 20px;">
+        <div class="trendAnalysis public-firstHead">概览</div>
         <originView ref="originView" byLogAnalysis></originView>
       </div>
-
       <div class="block-line">
         <logIndex ref="logIndex"></logIndex>
+      </div>
+      <div class="block-line">
+        <data-trend></data-trend>
+        <ipDistribution></ipDistribution>
+      </div>
+      <div class="div_block" style="margin-top: 20px;">
+        <IPTop></IPTop>
+        <timeTop></timeTop>
+        <statu></statu>
+        <apiUi></apiUi>
       </div>
     </div>
   </div>
@@ -30,12 +39,27 @@ import {
   getHostOverviewApi,
   getOverviewApi,
 } from "@/api/trackingapi/accessLog";
-import { logIndex } from "./components/index";
+import {
+  logIndex,
+  dataTrend,
+  ipDistribution,
+  IPTop,
+  timeTop,
+  statu,
+  apiUi,
+} from "./components/index";
+
 export default {
   components: {
     FilterBar,
     originView,
     logIndex,
+    dataTrend,
+    ipDistribution,
+    IPTop,
+    timeTop,
+    statu,
+    apiUi,
   },
   data() {
     return {
@@ -44,12 +68,12 @@ export default {
     };
   },
   computed: {
-    project() {
-      return this.$store.getters.project;
+    projectName() {
+      return this.$store.getters.projectName;
     },
     commonParams() {
-      const { project, sortOrder } = this;
-      return Object.assign({ project, sortOrder }, this.filterBarParams);
+      const { projectName, sortOrder } = this;
+      return Object.assign({ projectName, sortOrder }, this.filterBarParams);
     },
   },
   watch: {
@@ -89,7 +113,11 @@ export default {
 .block-line {
   box-sizing: border-box;
   margin: 20px 0 20px 0;
-  min-height: 500px;
+  min-height: 300px;
+  display: flex;
+  justify-content: space-between;
+}
+.div_block {
   display: flex;
   justify-content: space-between;
 }

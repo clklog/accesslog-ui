@@ -2,10 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 Vue.use(Router)
 import Layout from '@/layout'
-import visitorAnalysis from './modules/visitor-analysis'
-import behaviorAnalysis from './modules/behavior-analysis'
-import userBehavior from './modules/user-behavior'
-import logDataAnalysis from './modules/logoData-analysis'
+import logDataAnalysis from './modules/logo-analysis'
 export const constantRoutes = [
   {
     path: '/redirect',
@@ -14,7 +11,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index')
+        component: () => import('@/views/log-analysis/data-overview')
       }
     ]
   },
@@ -38,29 +35,12 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
-  {
-    path: '/Tracking',
-    component: Layout,
-    redirect: '/Tracking/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/log-analysis/index'),
-        name: 'Documentation',
-        meta: { title: '首页', icon: 'homepage', affix: true }
-        // meta: { title: '首页', icon: 'documentation', affix: true }
-      }
-    ]
-  },
 ]
 
 export const asyncRoutes = [
-  // visitorAnalysis,
-  // behaviorAnalysis,
+  
   logDataAnalysis,
-  // userBehavior, //用户分析页面
-  // { path: '*', redirect: '/index', hidden: true }
-  { path: '*', redirect: '/Tracking/index', hidden: true }
+  { path: '*', redirect: '/logAnalysis/dataOverview', hidden: true }
 ]
 
 const createRouter = () => new Router({
@@ -70,11 +50,9 @@ const createRouter = () => new Router({
 })
 
 const router = createRouter()
-
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  router.matcher = newRouter.matcher 
 }
 
 export default router

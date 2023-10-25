@@ -2,13 +2,18 @@ import Layout from '@/layout'
 const tableRouter = {
     path: '/logAnalysis',
     component:Layout,
-    // redirect: '/Tracking/behaviorAnalysis/userBehavior',
     alwaysShow: true,
     meta: {
       title: '日志分析',
       icon: 'behaviorAnaly'
     },
     children: [
+      {  
+        path: 'dataOverview',
+        component: () => import('@/views/log-analysis/data-overview'),
+        name: 'dataOverview',
+        meta: { title:'数据概览' }
+      },
       {
         path: 'performance',
         component: () => import('@/views/log-analysis/performance-analysis'),

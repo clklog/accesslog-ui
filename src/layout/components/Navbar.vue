@@ -148,7 +148,7 @@ export default {
   },
   computed: {
     // ...mapGetters(["sidebar", "avatar", "device"]),
-    ...mapGetters(["sidebar", "avatar", "device", "project"]),
+    ...mapGetters(["sidebar", "avatar", "device", "projectName"]),
   },
   methods: {
     initDate() {

@@ -219,6 +219,10 @@ aside {
     align-items: center;
     position: relative;
     margin-bottom: 17px;
+    // 头部一级标题限制
+    width: 100%;
+    justify-content: space-between;
+    height: 30px !important;
     // 首页一级标题字体设置
     .block-title {
       // width:50%;

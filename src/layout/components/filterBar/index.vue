@@ -337,7 +337,7 @@ export default {
     download() {
       this.$bus.$emit("publicEventDown", this.commonData);
       let path = this.$route.path;
-      this.commonData.project = this.$store.getters.project;
+      this.commonData.projectName = this.$store.getters.projectName;
       switch (path) {
         case "/Tracking/visitorAnalysis/search": {
           let cols = [
