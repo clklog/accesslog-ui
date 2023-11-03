@@ -13,6 +13,8 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   // tracking
   projectName: state => state.tracking.projectName,
+  httpHost: state => state.tracking.httpHost,
+  checkDate: state => state.tracking.checkDate,
   filterBar: state => state.filterBar.checkList
 }
 export default getters

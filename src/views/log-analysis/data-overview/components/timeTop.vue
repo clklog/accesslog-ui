@@ -1,0 +1,64 @@
+<template>
+  <div class="block-main public-hoverItem logCon">
+    <div class="block-head">
+      <div class="block-title">耗时Top10</div>
+      <div class="block-head-icon">
+        <img src="@/assets/images/icon.png" alt="" width="10px" />
+      </div>
+    </div>
+    <div style="width: 100%">
+      <el-table
+        :data="timeTopLIst"
+        class="public-radius"
+        :header-cell-style="{ textAlign: 'center', background: '#f7fafe ' }"
+        :cell-style="tableHeaderColor"
+        style="width: 100%"
+        border
+      >
+        <el-table-column type="index" label="排名" min-width="20%"  :show-overflow-tooltip="true" />
+        <el-table-column
+          
+          prop="uri"
+          min-width="50%"  :show-overflow-tooltip="true"
+          label="页面URL"
+        />
+        <el-table-column prop="avgVisitTime" label="响应时长(s)" min-width="30%"  :show-overflow-tooltip="true" />
+      </el-table>
+    </div>
+  </div>
+</template>
+
+<script>
+import { getRequestTimeTop10Api } from "@/api/trackingapi/accessLog";
+export default {
+  data() {
+    return {
+      timeTopLIst: [],
+    };
+  },
+  mounted() {},
+  methods: {
+    tableHeaderColor({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 1) {
+        return "text-align:left";
+      } else {
+        return "text-align:center";
+      }
+    },
+    getRequestTimeTop10(commonParams) {
+      getRequestTimeTop10Api(commonParams).then((res) => {
+        if (res.code == 200) {
+          this.timeTopLIst = res.data;
+        }
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.logCon {
+  width: calc(30%);
+  min-height: 300px;
+}
+</style>

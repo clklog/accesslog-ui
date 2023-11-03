@@ -1,8 +1,6 @@
 <template>
   <div class="echartsCommon">
     <div :id="id" :style="{ height: height, width: width }"></div>
-    <!-- class="echarts"
-      ref="echarts" -->
   </div>
 </template>
 <script>
@@ -56,8 +54,8 @@ export default {
         "#80bdef",
         "#c4ebad",
         "#85dec8",
-        "#fff2ce",
-        "#ffde84",
+        "#FFDE84",
+        "#FEB272",
       ];
       myChart.setOption({
         title: {
@@ -68,6 +66,7 @@ export default {
           trigger: "item",
           // formatter: "{a} <br/> {c} ({d}%)",
           formatter: (params) => {
+            console.log(params);
             let htmlStr;
             if (params.data.flag) {
               // 平均时长的展示

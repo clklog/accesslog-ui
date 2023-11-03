@@ -2,10 +2,7 @@
   <div class="block-main public-hoverItem logCon">
     <div class="block-title public-firstHead">访问数据占比</div>
     <div class="logCon">
-      <div class="warryItem" v-if="msg.chartData1.length > 2">
-        <!-- <div class="block-head">
-        <div class="block-title">日志总数占比</div>
-      </div> -->
+      <div class="warryItem" v-if="msg.chartData1.length > 1">
         <echartsLog
           :title="logTitle"
           id="logChart1"
@@ -15,11 +12,13 @@
           :nameData="msg.rows1"
           autoresize
         ></echartsLog>
+        <div class="block-head">
+          <div class="public-secondHead" style="text-align: center; width: 100%">
+            访问量(PV)
+          </div>
+        </div>
       </div>
-      <div class="warryItem" v-if="msg.chartData2.length > 2">
-        <!-- <div class="block-head">
-        <div class="block-title">流入流量</div>
-      </div> -->
+      <!-- <div class="warryItem" v-if="msg.chartData2.length > 1">
         <echartsLog
           :title="logTitle"
           width="100%"
@@ -29,25 +28,8 @@
           :nameData="msg.rows2"
           autoresize
         ></echartsLog>
-      </div>
-      <div class="warryItem" v-if="msg.chartData3.length > 2">
-        <!-- <div class="block-head">
-        <div class="block-title">流出流量</div>
       </div> -->
-        <echartsLog
-          :title="logTitle"
-          width="100%"
-          height="300px"
-          id="logChart3"
-          :chartData="msg.chartData3"
-          :nameData="msg.rows3"
-          autoresize
-        ></echartsLog>
-      </div>
-      <div class="warryItem" v-if="msg.chartData4.length > 2">
-        <!-- <div class="block-head">
-        <div class="block-title">访问IP数占比</div>
-      </div> -->
+      <div class="warryItem" v-if="msg.chartData4.length > 1">
         <echartsLog
           :title="logTitle"
           width="100%"
@@ -57,6 +39,27 @@
           :nameData="msg.rows4"
           autoresize
         ></echartsLog>
+        <div class="block-head">
+          <div class="public-secondHead" style="text-align: center; width: 100%">
+            用户数(UV)
+          </div>
+        </div>
+      </div>
+      <div class="warryItem" v-if="msg.chartData3.length > 1">
+        <echartsLog
+          :title="logTitle"
+          width="100%"
+          height="300px"
+          id="logChart3"
+          :chartData="msg.chartData3"
+          :nameData="msg.rows3"
+          autoresize
+        ></echartsLog>
+        <div class="block-head">
+          <div class="public-secondHead" style="text-align: center; width: 100%">
+            流出流量
+          </div>
+        </div>
       </div>
     </div>
     <!-- <div class="warryItem" v-if="msg.chartData5.length > 2">
@@ -77,9 +80,6 @@
 </template>
 
 <script>
-// id --> 为了多图渲染
-// chartData --> value数组
-// nameData --> name数组
 import echartsLog from "./echartsLog";
 export default {
   components: {
@@ -108,7 +108,7 @@ export default {
         pvRate: [],
         requestLengthRate: [],
         bodyBytesSentRate: [],
-        ipCountRate: [],
+        uvRate: [],
         avgVisitTime: [],
       },
     };
@@ -125,40 +125,46 @@ export default {
           if (item.xaxis) {
             this.xaxis.push(item.xaxis);
           }
-          if (item.pvRate && item.host) {
+          // if (item.pvRate && item.host) {
+          if (item.pvRate) {
             item.value = item.pvRate;
             item.total = item.pv;
-            item.logTitle = "日志总数";
+            // item.host = this.logList[0].httpHost
+            item.host = item.httpHost
+            item.logTitle = "访问量(PV)";
             this.pieEcharts.pvRate.push(JSON.parse(JSON.stringify(item)));
           }
-          if (item.requestLengthRate) {
-            item.value = item.requestLengthRate;
-            item.logTitle = "流入流量";
-            item.total = this.$options.filters.conver(item.requestLength);
-            this.pieEcharts.requestLengthRate.push(
-              JSON.parse(JSON.stringify(item))
-            );
-          }
-          if (item.bodyBytesSentRate) {
-            item.value = item.bodyBytesSentRate;
-            item.total = this.$options.filters.conver(item.bodyBytesSent);
+          // if (item.requestLengthRate) {
+          //   item.value = item.requestLengthRate;
+          //   item.logTitle = "流入流量";
+          //   item.total = this.$options.filters.conver(item.requestLength);
+          //   this.pieEcharts.requestLengthRate.push(
+          //     JSON.parse(JSON.stringify(item))
+          //   );
+          // }
+          if (item.bodySentBytesRate) {
+            item.value = item.bodySentBytesRate;
+            // item.host = this.logList[1].httpHost
+            item.host = item.httpHost
+            item.total = this.$options.filters.conver(item.bodySentBytes);
             item.logTitle = "流出流量";
             this.pieEcharts.bodyBytesSentRate.push(
               JSON.parse(JSON.stringify(item))
             );
           }
-          if (item.ipCountRate) {
-            item.value = item.ipCountRate;
-            item.total = item.ipCount;
-            item.logTitle = "访问IP数";
-            this.pieEcharts.ipCountRate.push(JSON.parse(JSON.stringify(item)));
+          if (item.uvRate) {
+            item.value = item.uvRate;
+            item.host = item.httpHost
+            item.total = item.uv;
+            item.logTitle = "用户数(UV)";
+            this.pieEcharts.uvRate.push(JSON.parse(JSON.stringify(item)));
           }
-          if (item.ipCountRate) {
-            item.value = item.avgVisitTime;
-            item.flag = true;
-            item.logTitle = "访问平均时长";
-            this.pieEcharts.avgVisitTime.push(JSON.parse(JSON.stringify(item)));
-          }
+          // if (item.uvRate) {
+          //   item.value = item.avgVisitTime;
+          //   item.flag = true;
+          //   item.logTitle = "访问平均时长";
+          //   this.pieEcharts.avgVisitTime.push(JSON.parse(JSON.stringify(item)));
+          // }
         });
         this.msg.chartData1 = this.pieEcharts.pvRate;
         this.msg.rows1 = this.xaxis;
@@ -166,14 +172,10 @@ export default {
         this.msg.rows2 = this.xaxis;
         this.msg.chartData3 = this.pieEcharts.bodyBytesSentRate;
         this.msg.rows3 = this.xaxis;
-        this.msg.chartData4 = this.pieEcharts.ipCountRate;
+        this.msg.chartData4 = this.pieEcharts.uvRate;
         this.msg.rows4 = this.xaxis;
         this.msg.chartData5 = this.pieEcharts.avgVisitTime;
         this.msg.rows5 = this.xaxis;
-        console.log(this.msg.chartData4, " this.msg.chartData4");
-        console.log(this.msg.rows4, " this.msg.rows4");
-        console.log(this.msg.chartData5, " this.msg.chartData5");
-        console.log(this.msg.rows5, " this.msg.rows5");
       } else {
         this.msg = Object.assign(
           {},
@@ -201,7 +203,7 @@ export default {
           pvRate: [],
           requestLengthRate: [],
           bodyBytesSentRate: [],
-          ipCountRate: [],
+          uvRate: [],
           avgVisitTime: [],
         }
       );
@@ -216,8 +218,9 @@ export default {
   display: flex;
   flex-wrap: wrap;
   .warryItem {
-    width: 25%;
-    height: 300px;
+    // width: 25%;
+    width: 30%;
+    min-height: 300px;
   }
 }
 </style>

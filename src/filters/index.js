@@ -1,5 +1,5 @@
 // import parseTime, formatTime and set to filter
-export { parseTime, formatTime } from "@/utils";
+// export { parseTime, formatTime } from "@/utils";
 
 /**
  * Show plural label if time is plural number
@@ -34,6 +34,32 @@ export function percentage(s) {
   return "--";
 }
 
+export function formatTime(seconds) {
+  if (seconds) {
+    var hours = Math.floor(seconds / 3600);
+    var minutes = Math.floor((seconds - hours * 3600) / 60);
+    var seconds = seconds - hours * 3600 - minutes * 60;
+
+    if (hours < 10) {
+      hours = "0" + hours;
+    }
+    if (minutes < 10) {
+      minutes = "0" + minutes;
+    }
+    if (seconds < 10) {
+      seconds = "0" + seconds;
+    }
+    return hours + ":" + minutes + ":" + seconds;
+  }
+  return "--"
+}
+export function convertMB(limit) {
+  if (limit) {
+    return (limit / (1024 * 1024)).toFixed(2);
+  } else {
+    return 0;
+  }
+}
 export function conver(limit) {
   if (limit) {
     var size = "";

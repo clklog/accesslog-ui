@@ -7,14 +7,12 @@
     <!-- 埋点系统 -->
     <div class="burying_point">
       <div style="display: flex; align-items: center">
-        <!-- <img src="@/assets/images/burying-logo.png" alt="" />
-        <span>埋点系统</span> -->
-        <!-- <span>ClkLog日志分析</span> -->
         <div class="logoFlag">
-          <img class="imgLogo" src="@/assets/images/logo.png" alt="" />
+          <!-- <img class="imgLogo" src="@/assets/images/logo.png" alt="" /> -->
+          ACCESSLOG
         </div>
         <el-select
-          v-model="value"
+          v-model="serveValue"
           placeholder="请选择"
           class="custom_select"
           @change="handleChangeProject"
@@ -98,8 +96,7 @@ import ErrorLog from "@/components/ErrorLog";
 import Screenfull from "@/components/Screenfull";
 import SizeSelect from "@/components/SizeSelect";
 import Search from "@/components/HeaderSearch";
-// import dialogs from "./dialog/index";
-
+import { getServerApi } from "@/api/trackingapi/accessLog";
 export default {
   components: {
     // Breadcrumb,
@@ -114,23 +111,11 @@ export default {
     return {
       options: [
         {
-          value: "hqq",
-          label: "货清清",
+          value: "cnb-mgt",
+          label: "server-name:cnb-mgt",
         },
-        // {
-        //   value: "在线拍",
-        //   label: "在线拍",
-        // },
-        // {
-        //   value: "上海机动车",
-        //   label: "上海机动车",
-        // },
-        // {
-        //   value: "国拍租房",
-        //   label: "国拍租房",
-        // },
       ],
-      value: "",
+      serveValue: "cnb-mgt",
       dateTime: "",
       dateWeek: "",
     };
@@ -145,12 +130,23 @@ export default {
         _this.initDate();
       }
     });
+    this.getServer();
   },
   computed: {
     // ...mapGetters(["sidebar", "avatar", "device"]),
     ...mapGetters(["sidebar", "avatar", "device", "projectName"]),
   },
   methods: {
+    getServer() {
+      getServerApi(this.commonParams).then((res) => {
+        if (res.code == 200) {
+          const originalArray = res.data;
+          this.options = originalArray.map((item) => {
+            return { ["label"]: 'server-name:'+item, ["value"]: item };
+          });
+        }
+      });
+    },
     initDate() {
       const date = new Date();
       const year = date.getFullYear();
@@ -175,10 +171,7 @@ export default {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
-    clickImg() {
-      // console.log(this.$refs.child.callMethod,234)
-      // this.$refs.child.callMethod();
-    },
+    clickImg() {},
     handleChangeProject(val) {
       this.$store.dispatch("tracking/setProject", val);
     },
@@ -205,7 +198,7 @@ export default {
     height: 50px;
     margin-left: 20px;
     .custom_select {
-      max-width: 120px;
+      max-width: 200px;
       ::v-deep {
         .el-select .el-input.is-focus .el-input__inner {
           background-color: #fff !important;
@@ -319,7 +312,7 @@ export default {
 
       .avatar-wrapper {
         margin-top: 5px;
-        left:2px;
+        left: 2px;
         top: -9px;
         position: relative;
 

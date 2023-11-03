@@ -186,7 +186,7 @@ export default {
     },
   },
   mounted() {
-    this.getHost();
+    // this.getHost();
   },
   methods: {
     // 应用链接

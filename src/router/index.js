@@ -11,7 +11,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/log-analysis/data-overview')
+        component: () => import('@/views/log-analysis/data-overview/index.vue')
       }
     ]
   },

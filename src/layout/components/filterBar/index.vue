@@ -1,7 +1,7 @@
 <template>
   <div class="documentation-container">
     <div class="checkContent">
-      <div style="display: flex; padding-top: 15px">
+      <div style="display: flex; padding-top: 18px">
         <div class="check_item public_border_color">
           <span>时间:</span>
           <el-radio-group
@@ -31,6 +31,40 @@
           @change="checkDateEvnet"
         >
         </el-date-picker>
+
+        <!-- host -->
+        <div
+          v-if="ByHost"
+          style="
+            display: flex;
+            border: 1px solid #acb2ba;
+            border-radius: 4px;
+            align-items: center;
+            height: 30px;
+            margin-left: 20px;
+          "
+        >
+          <div style="font-size: 12px; color: #4d4d4d; padding-left: 6px">
+            host:
+          </div>
+          <el-select
+            class="appli_select"
+            v-model="hostValue"
+            placeholder="请选择应用"
+            size="small"
+            style="min-width: 100px"
+            @change="handleChangeProject"
+          >
+            <el-option
+              v-for="item in hostData"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            >
+            </el-option>
+          </el-select>
+        </div>
 
         <div v-if="ByData" style="margin-left: 20px; height: 30px">
           <el-radio-group
@@ -111,14 +145,7 @@
           </div>
         </div>
 
-        <div style="display: flex; position: fixed; right: 30px">
-          <!-- <div class="btnEvent SetSpace">
-            <i
-              class="el-icon-message"
-              style="padding-right: 3px; font-size: 14px"
-            ></i
-            >订阅
-          </div> -->
+        <!-- <div style="display: flex; position: fixed; right: 30px">
           <div class="btnEvent" @click="download">
             <i
               class="el-icon-download"
@@ -126,7 +153,7 @@
             ></i
             >下载
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -136,13 +163,14 @@
 import { blobDownloads } from "@/utils/localDownloadUtil.js";
 import { string } from "clipboard";
 import { province } from "@/utils/province";
-import {
-  exportSearchWordDetailApi,
-  exportVisitorApi,
-  exportVisitorListApi,
-} from "@/api/trackingapi/download";
+import { getHostApi } from "@/api/trackingapi/accessLog.js";
+
 export default {
   props: {
+    ByHost: {
+      type: Boolean,
+      default: false,
+    },
     BySub: {
       type: Boolean,
       default: false,
@@ -251,6 +279,8 @@ export default {
       visitorType: "",
       popflag: false,
       commonData: "",
+      hostData: [],
+      hostValue: "all",
     };
   },
   mounted() {
@@ -273,14 +303,21 @@ export default {
     this.startTime = this.currentTime[0];
     this.endTime = this.currentTime[1];
     // ------------------end
+    this.getHostList();
   },
   computed: {
+    projectName() {
+      return this.$store.getters.projectName;
+    },
     channel() {
       if (this.channelValue) {
         return [this.channelValue];
       } else {
         return [];
       }
+    },
+    httpHost() {
+      return this.hostValue;
     },
     province() {
       if (this.areaValue == "全部") {
@@ -302,9 +339,12 @@ export default {
     commonParams() {
       let obj = {};
       obj = Object.assign(obj, this.defaultParams);
-      const { province, timeType, visitorType, channel } = this;
+      const { province, timeType, visitorType, channel, httpHost } = this;
       if (this.ByArea) {
         obj = Object.assign(obj, { province });
+      }
+      if (this.ByHost) {
+        obj = Object.assign(obj, { httpHost });
       }
       // 首页柱状图内容
       // if (this.ByData) {
@@ -326,69 +366,57 @@ export default {
       this.setTopFilterParams(val);
       this.commonData = val;
     },
+    projectName: {
+      handler(newValue, oldValue) {
+        this.getHostList(newValue);
+      },
+      deep: true,
+    },
   },
   methods: {
+    handleChangeProject(val) {
+      let params = JSON.parse(JSON.stringify(this.commonParams));
+      params.projectName = this.projectName;
+      params.httpHost = val;
+    },
+    getHostList(val) {
+      let params;
+      if (val) {
+        params = {
+          serverName: this.projectName,
+        };
+      } else {
+        params = {
+          serverName: this.projectName,
+        };
+      }
+      getHostApi(params).then((res) => {
+        if (res.code == 200) {
+          const originalArray = res.data;
+          this.hostData = originalArray.map((item) => {
+            return { ["label"]: item, ["value"]: item };
+          });
+          if (originalArray.length > 1) {
+            let params = [
+              {
+                label: "全部",
+                value: "all",
+              },
+            ];
+            this.hostData = [...params, ...this.hostData];
+          }
+
+          this.$store.dispatch("tracking/setHost", this.hostData.length);
+        }
+      });
+    },
     btnShowEvent(val) {
       this.popflag = true;
     },
     canclePopEvent() {
       this.popflag = false;
     },
-    download() {
-      this.$bus.$emit("publicEventDown", this.commonData);
-      let path = this.$route.path;
-      this.commonData.projectName = this.$store.getters.projectName;
-      switch (path) {
-        case "/Tracking/visitorAnalysis/search": {
-          let cols = [
-            "index",
-            "searchword",
-            "pv",
-            "pvRate",
-            "visitCount",
-            "visitCountRate",
-            "uv",
-            "newUv",
-            "ipCount",
-            "ipCountRate",
-            "avgVisitTime",
-            "avgPv",
-            "bounceRate",
-          ];
-          this.commonData.cols = cols;
-          exportSearchWordDetailApi(this.commonData).then((res) => {
-            let name = this.sliceTypeFile(res);
-            blobDownloads(res.data, name);
-          });
-          break;
-        }
-        case "/Tracking/visitorAnalysis/userLoyalty": {
-          exportVisitorApi(this.commonData).then((res) => {
-            let name = this.sliceTypeFile(res);
-            blobDownloads(res.data, name);
-          });
-          break;
-        }
-        // case "/behaviorAnalysis/user-behavior-analysis": {
-        case "/Tracking/behaviorAnalysis/userBehavior": {
-          let cols = [
-            "distinctId",
-            "visitorType",
-            "visitCount",
-            "pv",
-            "visitTime",
-            "avgPv",
-            "latestTime",
-          ];
-          this.commonData.cols = cols;
-          exportVisitorListApi(this.commonData).then((res) => {
-            let name = this.sliceTypeFile(res);
-            blobDownloads(res.data, name);
-          });
-          break;
-        }
-      }
-    },
+
     sliceTypeFile(res) {
       let fileName = res.headers["content-disposition"] || "";
       let index1 = fileName.indexOf("filename=");
@@ -519,6 +547,7 @@ export default {
       }
       this.startTime = this.currentTime[0];
       this.endTime = this.currentTime[1];
+      this.$store.dispatch("tracking/setDate", val);
     },
     // 时间戳转换器
     timestampToTime(timestamp) {
@@ -550,16 +579,24 @@ export default {
   },
 };
 </script>
-<style lang="scss">
-// .sing_special_popover {
-//   .el-popover {
-//     background-color: red !important;
-//   }
-// }
-</style>
 <style lang="scss" scoped>
 ::v-deep {
   @import "~@/styles/components/custom-radio.scss";
+  @import "~@/styles/components/custom-select.scss";
+  .appli_select .el-input__inner {
+    border-radius: 0px;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    border-bottom: 1px solid #acb2ba;
+    background-color: transparent;
+    font-size: 12px;
+    transform: scale(0.9);
+    height: 30px;
+    line-height: 30px;
+    border-bottom-width: 0;
+  }
 
   // 日历样式start
   .el-range-editor--medium .el-range-input {
@@ -592,13 +629,15 @@ export default {
 }
 .documentation-container {
   box-sizing: border-box;
-  min-height: 103px;
+  min-height: 66px;
   padding-bottom: 20px;
   width: 100%;
   .checkContent {
     position: fixed;
     width: 100%;
-    min-height: 103px;
+    line-height: 66px;
+    align-items: center;
+    min-height: 66px;
     z-index: 500;
     background-color: #fff;
     border-bottom: 1px #eee solid;
@@ -683,7 +722,7 @@ export default {
     .channelSecond {
       width: 100%;
       display: flex;
-      padding: 12px 0 15px 0;
+      padding: 0px 0 18px 0;
       align-items: center;
       position: relative;
     }
