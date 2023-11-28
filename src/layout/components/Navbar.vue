@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar">
+  <div  class="navbar">
     <!-- 埋点系统 -->
 
     <div class="burying_point">

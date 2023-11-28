@@ -68,14 +68,14 @@ router.beforeEach(async (to, from, next) => {
   // }
 
   // 测试数据
-  // const hasToken = 'admin-token'
-  // const role = 'admin'
-  // if (hasToken) {
-  //   next()
-  //   const accessRoutes = await store.dispatch('permission/generateRoutes', role)
-  //   // dynamically add accessible routes
-  //   router.addRoutes(accessRoutes)
-  // }
+  const hasToken = 'admin-token'
+  const role = 'admin'
+  if (hasToken) {
+    next()
+    const accessRoutes = await store.dispatch('permission/generateRoutes', role)
+    // dynamically add accessible routes
+    router.addRoutes(accessRoutes)
+  }
 })
 router.afterEach(() => {
   // finish progress bar

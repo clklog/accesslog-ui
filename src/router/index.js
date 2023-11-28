@@ -16,16 +16,16 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/login',
-  //   component: () => import('@/views/login/index'),
-  //   hidden: true
-  // },
-  // {
-  //   path: '/auth-redirect',
-  //   component: () => import('@/views/login/auth-redirect'),
-  //   hidden: true
-  // },
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/auth-redirect',
+    component: () => import('@/views/login/auth-redirect'),
+    hidden: true
+  },
   {
     path: '/404',
     component: () => import('@/views/error-page/404'),
@@ -35,22 +35,6 @@ export const constantRoutes = [
     path: '/401',
     component: () => import('@/views/error-page/401'),
     hidden: true
-  },
-  {
-    // path: '/',
-    // component: Layout,
-    // redirect: '/index',
-    path: '/',
-    component: Layout,
-    redirect: '/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/log-analysis/data-overview/index.vue'),
-        // name: 'Documentation',
-        // meta: { title: '首页', icon: 'homepage', affix: true }
-      }
-    ]
   },
 ]
 
@@ -62,7 +46,8 @@ export const asyncRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
+  base:'/accesslog/',
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
