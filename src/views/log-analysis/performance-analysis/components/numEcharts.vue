@@ -1,7 +1,10 @@
 <template>
   <div class="public-table-block public-hoverItem logCon">
     <span class="public-firstHead">性能-超100毫秒时序图</span>
-    <div id="dataChart" class="flowEchart"></div>
+    <div v-if="timingList">
+      <div id="dataChart" class="flowEchart"></div>
+    </div>
+    <div v-else style="display: flex;justify-content: center;align-items: center;height: 230px;">暂无数据</div>
   </div>
 </template>
 
@@ -27,15 +30,35 @@ export default {
         },
       },
       myChart: null,
+      timingList: false,
     };
   },
   mounted() {},
   methods: {
     getRequestimeGt100ms(commonParams) {
-      getRequestimeGt100msApi(commonParams).then((res) => {
+      // console.log(commonParams, "commonParams");
+      let params = {
+        applicationCode: commonParams.applicationCode,
+        httpHost: commonParams.httpHost,
+        startTime: commonParams.timeSlot,
+        endTime: commonParams.timeSlot,
+        timeType: commonParams.timeValue ? "min" : "hour",
+        hour: commonParams.timeValue,
+      };
+      // console.log(params, "params-------");
+      getRequestimeGt100msApi(params).then((res) => {
         if (res.code == 200) {
           let apiList = res.data;
-          this.getChartsData(apiList); //ecahts init
+          console.log(apiList.rows.length, "res.data-----");
+          if (apiList.rows.length > 1) {
+            this.timingList = true;
+            console.log(apiList);
+            this.$nextTick(() => {
+              this.getChartsData(apiList);
+            });
+          } else {
+            this.timingList = false;
+          }
         }
       });
     },

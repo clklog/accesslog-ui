@@ -14,7 +14,7 @@
         </el-radio-group>
       </div>
       <div class="block-head-icon">
-        <img src="@/assets/images/icon.png" alt="" width="10px" />
+        <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
     <div v-if="checkValue == 'TOP10'" id="uiCharts"></div>

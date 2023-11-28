@@ -1,72 +1,96 @@
 <template>
-    <div>
-        <div class="public-block">
-        <div class="search_wrappy public-table-block public-hoverItem">
-          <span class="public-firstHead">状态码分析</span>
-          <div class="flow-indicator public_indicator" style="margin-top: 10px">
-            <div class="flow-item" style="margin: 12px 10px">
-              <div class="flow-title">状态码筛选</div>
-              <el-checkbox-group
-                v-model="statusFilter"
-                class="checkBoxStyle"
-                @change="handleStatus"
-              >
-                <el-checkbox
-                  v-for="(item, index) in statuCodeList"
-                  :label="item.status"
-                  :key="index"
-                  >{{ item.status }}</el-checkbox
-                >
-              </el-checkbox-group>
-            </div>
-          </div>
-  
-          <el-table :data="statuCodeList" border stripe style="margin: 20px 0">
-            <el-table-column label="状态码" width="150" align="center">
-              <el-table-column
-                label="应用"
-                align="center"
-                type="host"
-                width="150"
-              >
-              </el-table-column>
-            </el-table-column>
-            <el-table-column
-              prop="status"
-              label="200"
-              align="center"
-            ></el-table-column>
-          </el-table>
-  
-          <div class="public-Table-minHeight" style="min-height: 400px">
-            <el-table
-              class="public-radius"
-              :header-cell-style="{ background: '#f7fafe ' }"
-              :cell-style="tableHeaderColor"
-              :data="statuCodeList"
-              border
-              @sort-change="sortChange($event)"
-              style="width: 100%; margin-top: 12px"
+  <div>
+    <div class="public-block">
+      <div class="search_wrappy public-table-block public-hoverItem">
+        <span class="public-firstHead">状态码分析</span>
+        <div class="flow-indicator public_indicator" style="margin-top: 10px">
+          <div class="flow-item" style="margin: 12px 10px">
+            <div class="flow-title">状态码筛选</div>
+            <el-checkbox-group
+              v-model="statusFilter"
+              class="checkBoxStyle"
+              @change="handleStatus"
             >
+              <el-checkbox
+                v-for="(item, index) in statuCodeList"
+                :label="item.statu"
+                :value="item.statu"
+                :key="index"
+              ></el-checkbox>
+            </el-checkbox-group>
+          </div>
+        </div>
+        <div class="myTableStyle">
+          <el-table
+            :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
+            class="public-radius"
+            :cell-style="tableHeaderColor"
+            :data="tableList"
+            border
+            style="margin: 20px 0"
+            @row-click="conSelected"
+          >
+            <!-- host 头部事件 -->
+            <el-table-column label="状态码" width="300">
               <el-table-column
-                prop="uri"
-                label="页面URL"
-                width="350"
+                prop="httpHost"
+                label="host"
+                width="300"
                 :show-overflow-tooltip="true"
               >
               </el-table-column>
-              <el-table-column prop="status" label="状态码"> </el-table-column>
-  
+            </el-table-column>
+
+            <el-table-column
+              v-for="(item, index) in tableLabel"
+              :key="index"
+              :label="item.label"
+              :prop="item.prop"
+              style="cursor: pointer"
+              @click="conSelected(scope, item.prop)"
+            ></el-table-column>
+          </el-table>
+        </div>
+
+        <div
+          class="public-Table-minHeight"
+          style="min-height: 400px"
+          v-if="statuDetailList.length > 0"
+        >
+          <el-table
+            :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
+            :cell-style="tableHeaderColor1"
+            :data="statuDetailList"
+            :cell-class-name="cellClassName"
+            @sort-change="sortChange($event)"
+            style="width: 100%; margin-top: 12px"
+          >
+            <!-- <el-table-column label="状态码200	"> -->
+            <el-table-column
+              :label="propStatu.httpHost + '状态码' + propStatu.property"
+            >
+              <el-table-column type="index" label="序号">
+                <template slot-scope="scope">
+                  <span v-text="getIndex(scope.$index)"> </span>
+                </template>
+              </el-table-column>
               <el-table-column
-                prop="ipCount"
+                prop="uri"
+                label="Url"
+                width="650"
+                :show-overflow-tooltip="true"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="pv"
                 align="center"
-                label="访问IP数	"
+                label="访问次数	"
                 sortable="custom"
               >
               </el-table-column>
               <el-table-column
                 align="center"
-                label="耗时较长次数(>=1秒)"
+                label="耗时较长次数(>=2秒)"
                 sortable="custom"
                 prop="slowPv"
               >
@@ -75,14 +99,14 @@
               <el-table-column
                 align="center"
                 prop="maxVisitTime"
-                label="最大耗时(秒)"
+                label="最大耗时(毫秒)"
                 sortable="custom"
               >
               </el-table-column>
               <el-table-column
                 align="center"
-                prop="ipCountRate"
-                label="访问IP数占比"
+                prop="pvRate"
+                label="占比"
                 sortable="custom"
               >
                 <template slot-scope="scope">
@@ -92,51 +116,40 @@
               <el-table-column
                 align="center"
                 prop="avgVisitTime"
-                label="平均耗时(秒)"
+                label="平均耗时(毫秒)"
                 sortable="custom"
               >
               </el-table-column>
-              <el-table-column
-                align="center"
-                prop="pv"
-                label="日志总数"
-                sortable="custom"
-              >
-              </el-table-column>
-              <el-table-column
-                align="center"
-                prop="pvRate"
-                label="日志占比"
-                sortable="custom"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.pvRate | percentage }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                align="center"
-                prop="requestLength"
-                label="流入流量"
-                sortable="custom"
-              >
-              </el-table-column>
-              <el-table-column
-                align="center"
-                prop="bodyBytesSent"
-                label="流出流量"
-                sortable="custom"
-              >
-              </el-table-column>
-            </el-table>
-          </div>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="block" v-if="statuDetailList.length > 0">
+          <el-pagination
+            :pager-count="5"
+            prev-text
+            next-text="下一页"
+            :current-page="currentPage"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
 import { copyObj } from "@/utils/copy";
-// import { getStatusApi, getHostApi } from "@/api/trackingapi/accessLog";
+
+import {
+  getStatusListApi,
+  getStatusFlowTrendApi,
+  getStatusDetailApi,
+} from "@/api/trackingapi/status";
 export default {
   data() {
     return {
@@ -145,48 +158,193 @@ export default {
       pageNum: 1,
       pageSize: 10,
       status: "200",
-      statuCodeList: [],
+
       total: 0,
       currentPage: 1,
       current: {
         sortName: null,
         sortOrder: null,
       },
-      statusFilter: [],
+      statusFilter: ["400", "401", "404", "405", "499", "500", "502", "504"],
       statusShowList: [],
       hostList: [],
-      allDataList :[]
+      allDataList: [],
+      tableLabel: [
+        {
+          label: "host",
+          prop: "name",
+        },
+        {
+          label: "200",
+          prop: "200",
+        },
+        {
+          label: "300",
+          prop: "300",
+        },
+        {
+          label: "400",
+          prop: "400",
+        },
+      ],
+      tableList: [],
+      storeTableLabel: [],
+      statuCodeList: [],
+      commonParams: {
+        sortName: "",
+        sortOrder: "asc",
+        pageNum: 1,
+        pageSize: 10,
+        status: "",
+      },
+      statuDetailList: [],
+      total: 0,
+      currentPage: 1,
+      propStatu: {
+        property: "",
+        httpHost: "",
+      },
+      newArray:{},
     };
   },
   computed: {
-    projectName() {
-      return this.$store.getters.projectName;
+    applicationCode () {
+      return this.$store.getters.applicationCode ;
     },
-   
   },
   watch: {
-    commonParams(val) {
-    },
+    commonParams(val) {},
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
-    // 应用链接
-    // getHost() {
-    //   getHostApi().then((res) => {
-    //     if (res.code == 200) {
-    //       this.hostList = res.data;
-    //       console.log(this.hostList, "hostList-----------");
-    //       for (let i = 0; i < this.hostList.length; i++) {
-    //         this.getStatusData(this.hostList[i])
-    //       }
-    //     }
-    //   });
-    // },
-    handleStatus() {},
+    cellClassName({ row, column, rowIndex, columnIndex }) {
+      // if (row.date != "2022-05-01" && column.label == "日期") {
+      //   return "cellName";
+      // }
+      // console.log(rowIndex,"213123");
+      return "cellName";
+    },
+
+    getIndex($index) {
+      return (this.currentPage - 1) * this.commonParams.pageSize + $index + 1;
+    },
+    handleSizeChange(val) {
+      this.commonParams.pageSize = val;
+      // this.conSelected("", this.propStatu);
+      this.conSelected(this.propStatu, this.propStatu);
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.commonParams.pageNum = val;
+      this.conSelected(this.propStatu, this.propStatu);
+    },
+    conSelected(row, prop) {
+      if (prop) {
+        this.propStatu.property = prop.property;
+      }
+      if (row) {
+        this.propStatu.httpHost = row.httpHost;
+      }
+
+      // this.commonParams.status = this.prop.property;
+      // this.commonParams.httpHost = this.prop.httpHost;
+      this.commonParams.status = this.propStatu.property;
+      this.commonParams.httpHost = this.propStatu.httpHost;
+
+      getStatusDetailApi(this.commonParams).then((res) => {
+        if (res.code == 200) {
+          this.statuDetailList = res.data.rows;
+          this.total = res.data.total;
+        }
+      });
+    },
+    getStatusFlowTrend(commonParams) {
+      getStatusFlowTrendApi(commonParams).then((res) => {
+        if (res.code == 200) {
+          let statuList = res.data;
+          let newList1 = [];
+          for (let i = 0; i < statuList.length; i++) {
+            for (let j = 0; j < statuList[i].rows.length; j++) {
+              let params = {
+                httpHost: statuList[i].httpHost,
+                [statuList[i].rows[j].status]: statuList[i].rows[j].pv,
+              };
+              newList1.push(params);
+            }
+          }
+          const mergedArr = newList1.reduce((acc, curr) => {
+            const index = acc.findIndex((el) => el.httpHost === curr.httpHost);
+            if (index > -1) {
+              const key = Object.keys(curr)[0];
+              acc[index][key] = curr[key];
+            } else {
+              acc.push(curr);
+            }
+            return acc;
+          }, []);
+          this.tableList = mergedArr;
+        }
+      });
+    },
+
+    getStatusData(commonParams) {
+      // this.commonParams = commonParams;
+      // if (this.newArray.httpHost) {
+      //   if (this.newArray.httpHost !== commonParams.httpHost) {
+      //     this.statuDetailList = []
+      //   }
+      // }
+      this.statuDetailList = []
+      this.newArray = JSON.parse(JSON.stringify(commonParams))
+      
+      // this.commonParams = Object.assign(commonParams, this.commonParams);
+      this.commonParams = Object.assign(this.newArray, this.commonParams);
+      getStatusListApi(commonParams).then((res) => {
+        if (res.code == 200) {
+          this.statuCodeList = res.data;
+          this.statuCodeList = res.data;
+          this.statuCodeList = this.statuCodeList.map((item) => {
+            return { ["statu"]: item };
+          });
+          // tabel header
+          let newArry = [];
+          newArry = this.statuCodeList.map((item) => {
+            return {
+              ["label"]: item.statu,
+              ["prop"]: item.statu,
+            };
+          });
+          // let abs = {
+          //   label: "host",
+          //   prop: "httpHost",
+          // };
+          // newArry.unshift(abs);
+          let statuStore = JSON.parse(JSON.stringify(newArry));
+          this.tableLabel = statuStore;
+          this.tableLabel = statuStore.filter((item) =>
+            this.statusFilter.includes(item.label)
+          );
+          this.storeTableLabel = statuStore;
+        }
+      });
+      this.getStatusFlowTrend(commonParams);
+    },
+    handleStatus(current) {
+      const filteredArr = this.storeTableLabel.filter((item) =>
+        current.includes(item.label)
+      );
+      this.tableLabel = filteredArr;
+      // console.log(filteredArr,"过滤filteredArr-----");
+    },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 0) {
+      if (columnIndex == 0) {
+        return "text-align:left";
+      } else {
+        return "text-align:center";
+      }
+    },
+    tableHeaderColor1({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex == 1) {
         return "text-align:left";
       } else {
         return "text-align:center";
@@ -197,92 +355,129 @@ export default {
         // 降序
         this.commonParams.sortName = e.prop;
         this.commonParams.sortOrder = "asc";
-        this.getStatusData();
+        this.conSelected(this.propStatu, this.propStatu);
       } else if (e.order && e.order == "descending") {
         // 升序
         this.commonParams.sortName = e.prop;
         this.commonParams.sortOrder = "desc";
-        this.getStatusData();
+        this.conSelected(this.propStatu, this.propStatu);
       } else {
         this.commonParams.sortName = null;
         this.commonParams.sortOrder = null;
-        this.getStatusData();
+        this.conSelected(this.propStatu, this.propStatu);
       }
     },
-    getStatusData(val) {
-      console.log(val,"val-------");
-      let params = copyObj(this.commonParams)
-      params.host = val;
-      getStatusApi(params).then((res) => {
-        if (res.code == 200) {
-          this.statuCodeList = res.data;
-          this.total = res.data.total;
-          this.allDataList.push(res.data)
-          console.log(this.allDataList,"allDataList----");
-        }
-      });
-    },
-
-   
   },
 };
 </script>
-
 <style lang="scss" scoped>
 ::v-deep {
   @import "~@/styles/components/el-checkbox.scss";
   @import "~@/styles/components/el-pagination.scss";
+  
 }
-::v-deep .el-table thead.is-group th {
+::v-deep .myTableStyle .el-table thead.is-group th {
   background: none;
   padding: 0px;
 }
-
-::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type {
+::v-deep .myTableStyle.cellName {
+    background: blueviolet !important;
+    color: aqua;
+  }
+::v-deep
+  .myTableStyle
+  .el-table
+  thead.is-group
+  tr:first-of-type
+  th:first-of-type {
   border-bottom: none; /*中间的横线去掉*/
 }
 
-::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type div.cell {
+::v-deep
+  .myTableStyle
+  .el-table
+  thead.is-group
+  tr:first-of-type
+  th:first-of-type
+  div.cell {
   text-align: right; /*上边文字靠右*/
 }
 
-::v-deep .el-table thead.is-group tr:last-of-type th:first-of-type div.cell {
+::v-deep
+  .myTableStyle
+  .el-table
+  thead.is-group
+  tr:last-of-type
+  th:first-of-type
+  div.cell {
   text-align: left; /*下边文字靠左*/
 }
-::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type:before {
+::v-deep
+  .myTableStyle
+  .el-table
+  thead.is-group
+  tr:first-of-type
+  th:first-of-type:before {
   content: "";
   position: absolute;
   width: 1px;
-  height: 100px; /*斜线的长度*/
+  height: 300px; /*斜线的长度*/
   top: 0;
   left: 0;
   background-color: grey;
   opacity: 0.2;
   display: block;
-  transform: rotate(-43deg); /*调整斜线的角度*/
+  // transform: rotate(-43deg); /*调整斜线的角度*/
+  // transform: rotate(-70deg); /*调整斜线的角度*/
+  transform: rotate(-90deg); /*调整斜线的角度*/
   transform: rotate(-70deg); /*调整斜线的角度*/
   -webkit-transform-origin: top;
   transform-origin: top;
 }
 
-::v-deep .el-table thead.is-group tr:last-of-type th:first-of-type:before {
+::v-deep
+  .myTableStyle
+  .el-table
+  thead.is-group
+  tr:last-of-type
+  th:first-of-type:before {
   content: "";
   position: absolute;
   width: 1px;
-  height: 100px; /*斜线的长度*/
+  height: 300px; /*斜线的长度*/
   bottom: 0;
   right: 0;
   background-color: grey;
   opacity: 0.2;
   display: block;
+  // transform: rotate(-45deg); /*调整斜线的角度*/
+  // transform: rotate(-70deg); /*调整斜线的角度*/
   transform: rotate(-45deg); /*调整斜线的角度*/
   transform: rotate(-70deg); /*调整斜线的角度*/
   -webkit-transform-origin: bottom;
   transform-origin: bottom;
 }
-::v-deep .el-table thead.is-group th {
+::v-deep .myTableStyle .el-table--enable-row-transition .el-table__body td {
+  cursor: pointer;
+}
+::v-deep
+  .myTableStyle
+  .el-table--enable-row-transition
+  .el-table__body
+  td:hover {
+  background-color: rgb(157, 208, 240) !important;
+}
+::v-deep
+  .myTableStyle
+  .el-table--enable-row-transition
+  .el-table__body
+  td:active {
+  background-color: rgb(157, 208, 240) !important;
+}
+::v-deep .myTableStyle .el-table thead.is-group th {
   height: 27.4px;
 }
+
 .block-line {
   box-sizing: border-box;
   margin: 20px 0 20px 0;

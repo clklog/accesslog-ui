@@ -3,7 +3,7 @@
     <div class="block-head">
       <div class="block-title">请求方法</div>
       <div class="block-head-icon">
-        <img src="@/assets/images/icon.png" alt="" width="10px" />
+        <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
     <div id="funApiEchart"></div>
@@ -30,6 +30,7 @@ export default {
             item.value = item.pvRate;
             item.name = item.requestMethod;
           });
+          // console.log(this.funList,"funList----");
           this.funApiEcharts();
         }
       });

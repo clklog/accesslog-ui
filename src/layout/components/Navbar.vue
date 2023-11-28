@@ -1,49 +1,37 @@
 <template>
   <div class="navbar">
-    <!-- <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
-
-    <!-- <breadcrumb id="breadcrumb-container" class="breadcrumb-container" /> -->
-
     <!-- 埋点系统 -->
+
     <div class="burying_point">
       <div style="display: flex; align-items: center">
-        <div class="logoFlag">
-          <!-- <img class="imgLogo" src="@/assets/images/logo.png" alt="" /> -->
-          ACCESSLOG
+        <div class="logoFlag" v-if="showFlag">
+          国拍日志分析系统
+          <!-- <hamburger
+            id="hamburger-container"
+            :is-active="sidebar.opened"
+            class="hamburger-container"
+            @toggleClick="toggleSideBar"
+          /> -->
         </div>
-        <el-select
-          v-model="serveValue"
-          placeholder="请选择"
-          class="custom_select"
-          @change="handleChangeProject"
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <div v-if="applicationFlag">
+          <el-select
+            v-model="serveValue"
+            placeholder="请选择"
+            class="custom_select"
+            @change="handleChangeProject"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </div>
       </div>
 
-      <div class="right-menu">
-        <!-- <template v-if="device !== 'mobile'">
-        <search id="header-search" class="right-menu-item" />
-
-        <error-log class="errLog-container right-menu-item hover-effect" />
-
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-
-        <el-tooltip content="Global Size" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
-      </template> -->
+      <div class="right-menu" v-if="showFlag">
         <div class="dataTime">{{ dateTime }}&nbsp;&nbsp;{{ dateWeek }}</div>
-        <!-- <img
-          :src="avatar + '?imageView2/1/w/80/h/80'"
-          class="user-avatar"
-          @click="clickImg"
-        /> -->
         <img
           src="@/assets/images/avator.png"
           class="user-avatar"
@@ -57,26 +45,6 @@
             <i class="el-icon-caret-bottom" />
           </div>
           <el-dropdown-menu slot="dropdown">
-            <!-- <router-link to="/visitorAnalysis/trendAnalysis">
-              <el-dropdown-item>访客分析</el-dropdown-item>
-            </router-link>
-            <router-link to="/behaviorAnalysis/user-behavior-analysis">
-              <el-dropdown-item>行为分析</el-dropdown-item>
-            </router-link>
-            <el-dropdown-item>v1.2.2</el-dropdown-item> -->
-            <!-- <agit config user.email
-              target="_blank"
-              href="https://github.com/PanJiaChen/vue-element-admin/"
-            >
-              <el-dropdown-item>Github</el-dropdown-item>
-            </a> -->
-            <!-- <a
-              target="_blank"
-              href="https://panjiachen.github.io/vue-element-admin-site/#/"
-            >
-              <el-dropdown-item>Docs</el-dropdown-item>
-            </a> -->
-            <!-- <el-dropdown-item divided @click.native="logout"> -->
             <el-dropdown-item @click.native="logout">
               <span style="display: block">退出</span>
             </el-dropdown-item>
@@ -84,45 +52,36 @@
         </el-dropdown>
       </div>
     </div>
-    <!-- <dialogs ref="child" /> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-// import Breadcrumb from '@/components/Breadcrumb'
-// import Hamburger from '@/components/Hamburger'
 import ErrorLog from "@/components/ErrorLog";
 import Screenfull from "@/components/Screenfull";
 import SizeSelect from "@/components/SizeSelect";
 import Search from "@/components/HeaderSearch";
 import { getServerApi } from "@/api/trackingapi/accessLog";
+import Hamburger from "@/components/Hamburger";
 export default {
   components: {
-    // Breadcrumb,
-    // Hamburger,
     ErrorLog,
     Screenfull,
     SizeSelect,
     Search,
-    // dialogs,
+    Hamburger,
   },
   data() {
     return {
-      options: [
-        {
-          value: "cnb-mgt",
-          label: "server-name:cnb-mgt",
-        },
-      ],
-      serveValue: "cnb-mgt",
+      applicationFlag: true,
+      options: [],
+      serveValue: null,
       dateTime: "",
       dateWeek: "",
+      showFlag:true,
     };
   },
   created() {
-    this.value = this.options[0].value;
-    this.handleChangeProject(this.options[0].value);
     this.initDate();
     const _this = this;
     document.addEventListener("visibilitychange", function () {
@@ -132,18 +91,57 @@ export default {
     });
     this.getServer();
   },
+
+  mounted() {
+    this.initHost(this.$route.path);
+    console.log(window.location.origin,"获取域名");
+    if (window.location.origin == 'http://192.168.100.171:9527') {
+      this.showFlag = true;
+      this.$store.dispatch("app/toggleSideBar", true);
+    }else{
+      this.showFlag = false;
+      this.$store.dispatch("app/toggleSideBar", false);
+    }
+  },
   computed: {
     // ...mapGetters(["sidebar", "avatar", "device"]),
-    ...mapGetters(["sidebar", "avatar", "device", "projectName"]),
+    ...mapGetters(["sidebar", "avatar", "device", "applicationCode "]),
+    routeForm() {
+      return this.$route.path;
+    },
+  },
+  watch: {
+    routeForm(val) {
+      this.initHost(val);
+    },
   },
   methods: {
+    initHost(val) {
+      if (
+        val == "/business/railwayTrack" ||
+        val == "/business/monitorPanel" ||
+        val == "/business/globalTopology"
+      ) {
+        this.applicationFlag = false;
+      } else {
+        this.applicationFlag = true;
+      }
+    },
+    handleChangeProject(val) {
+      this.$store.dispatch("tracking/setProject", val);
+    },
     getServer() {
       getServerApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           const originalArray = res.data;
           this.options = originalArray.map((item) => {
-            return { ["label"]: 'server-name:'+item, ["value"]: item };
+            return { ["label"]: "application-name:" + item, ["value"]: item };
           });
+          if (this.options.length > 0) {
+            this.serveValue = this.options[1].value;
+          }
+
+          this.handleChangeProject(this.serveValue);
         }
       });
     },
@@ -165,16 +163,14 @@ export default {
       this.dateTime = year + "年" + month + "月" + day + "日";
     },
     toggleSideBar() {
-      // this.$store.dispatch("app/toggleSideBar");
+
+      this.$store.dispatch("app/toggleSideBar", false);
     },
     async logout() {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
     clickImg() {},
-    handleChangeProject(val) {
-      this.$store.dispatch("tracking/setProject", val);
-    },
   },
 };
 </script>
@@ -198,7 +194,7 @@ export default {
     height: 50px;
     margin-left: 20px;
     .custom_select {
-      max-width: 200px;
+      width: 230px;
       ::v-deep {
         .el-select .el-input.is-focus .el-input__inner {
           background-color: #fff !important;
@@ -236,6 +232,7 @@ export default {
       line-height: 17px;
       color: #4d4d4d;
       padding-top: 2px;
+      display: flex;
       .imgLogo {
         height: 44px;
         // object-fit: cover;

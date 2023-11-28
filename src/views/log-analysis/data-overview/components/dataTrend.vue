@@ -76,8 +76,9 @@ export default {
       this.oldCommonParams = commonParams;
       let copyParams = JSON.parse(JSON.stringify(commonParams))
       copyParams.timeType = this.timeType
-      copyParams.httpHost = this.httpHost.httpHost || ""
+      // copyParams.httpHost = this.httpHost || '' 
       getFlowTrendApi(copyParams).then((res) => {
+
         if (res.code == 200) {
           this.xLineList = [];
           this.bodySentBytesList = [];
@@ -105,12 +106,14 @@ export default {
             item.statTime = item.statTime.replace(/\d{4}-/g, "");
             this.xLineList.push(item.statTime);
           });
-          this.uvMax = this.uvList.sort(function (a, b) {
-            return b - a;
-          })[0];
-          this.pvMax = this.pvList.sort(function (a, b) {
-            return b - a;
-          })[0];
+          // this.uvMax = this.uvList.sort(function (a, b) {
+          //   return b - a;
+          // })[0];
+          // this.pvMax = this.pvList.sort(function (a, b) {
+          //   return b - a;
+          // })[0];
+          this.uvMax = this.uvList
+          this.pvMax = this.pvList
           this.initFlowEchart(); //line chart
           this.initVisitEchart(); //双线图
         }
@@ -152,7 +155,7 @@ export default {
           {
             type: "inside",
             startValue: 0,
-            endValue: 6,
+            endValue: 24,
             minValueSpan: 10,
             zoomOnMouseWheel: false,
             moveOnMouseWheel: true,
@@ -203,7 +206,7 @@ export default {
             itemStyle: {
               color: "#2c7be5",
             },
-            barWidth: 20,
+            barWidth: 10,
             tooltip: {
               valueFormatter: function (value) {
                 return value;
@@ -213,7 +216,7 @@ export default {
           },
 
           {
-            name: "浏览量(PV)",
+            name: "访问量(PV)",
             symbol: 'circle',
             type: "line",
             itemStyle: {

@@ -14,7 +14,7 @@
         </el-radio-group>
       </div>
       <div class="block-head-icon">
-        <img src="@/assets/images/icon.png" alt="" width="10px" />
+        <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
     <div id="app" style="width: 100%">
@@ -48,7 +48,7 @@
           />
           <el-table-column
             prop="uv"
-            label="访问次数"
+            label="IP数"
             min-width="20%"
             :show-overflow-tooltip="true"
           />

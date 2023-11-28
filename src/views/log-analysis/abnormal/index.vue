@@ -2,8 +2,8 @@
   <div>
     <div class="documentation-container">
       <FilterBar
-        ByChnnel
-        ByVisitor
+        byTimeType
+        byCalendar
         ByHost
         @setFilterBarParams="setFilterBarParams"
       />
@@ -54,12 +54,12 @@ export default {
     httpHost() {
       return this.$store.getters.httpHost;
     },
-    projectName() {
-      return this.$store.getters.projectName;
+    applicationCode () {
+      return this.$store.getters.applicationCode ;
     },
     commonParams() {
-      const { projectName, sortOrder } = this;
-      return Object.assign({ projectName }, this.filterBarParams);
+      const { applicationCode , sortOrder } = this;
+      return Object.assign({ applicationCode  }, this.filterBarParams);
     },
   },
   watch: {

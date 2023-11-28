@@ -1,13 +1,17 @@
 const state = {
-  // projectName: '货清清'
-  projectName: 'hqq',
+  // applicationCode : '货清清'
+  applicationCode : 'hqq',
   httpHost:'',
-  checkDate:'month',
+  checkDate:'Day',
+  // checkDate:{
+  //   current:'今日',
+  //   last:'昨日',
+  // },
 }
 
 const mutations = {
-  SET_PROJECT: (state, projectName) => {
-    state.projectName = projectName
+  SET_PROJECT: (state, applicationCode ) => {
+    state.applicationCode  = applicationCode 
   },
   SET_HOST: (state, httpHost) => {
     state.httpHost = httpHost
@@ -18,8 +22,8 @@ const mutations = {
 }
 
 const actions = {
-  setProject({ commit }, projectName) {
-    commit('SET_PROJECT', projectName)
+  setProject({ commit }, applicationCode ) {
+    commit('SET_PROJECT', applicationCode )
   },
   setHost({ commit }, httpHost) {
     commit('SET_HOST', httpHost)

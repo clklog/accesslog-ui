@@ -3,6 +3,7 @@ import Router from 'vue-router'
 Vue.use(Router)
 import Layout from '@/layout'
 import logDataAnalysis from './modules/logo-analysis'
+import businessMonitor from './modules/business-monitor'
 export const constantRoutes = [
   {
     path: '/redirect',
@@ -15,16 +16,27 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-  {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
-    hidden: true
-  },
+  // {
+  //   path: '/login',
+  //   component: () => import('@/views/login/index'),
+  //   hidden: true
+  // },
+  // {
+  //   path: '/auth-redirect',
+  //   component: () => import('@/views/login/auth-redirect'),
+  //   hidden: true
+  // },
+  // {
+  //   path: '/',
+  //   component: () => import('@/views/log-analysis/data-overview/index.vue'),
+  //   hidden: true
+  // },
+  // {  
+  //   path: '/logAnalysis/dataOverview',
+  //   component: () => import('@/views/log-analysis/data-overview/index.vue'),
+  //   name: 'dataOverview',
+  //   meta: { title:'数据概览' }
+  // },
   {
     path: '/404',
     component: () => import('@/views/error-page/404'),
@@ -40,6 +52,7 @@ export const constantRoutes = [
 export const asyncRoutes = [
   
   logDataAnalysis,
+  businessMonitor,
   { path: '*', redirect: '/logAnalysis/dataOverview', hidden: true }
 ]
 

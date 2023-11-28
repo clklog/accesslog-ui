@@ -66,7 +66,7 @@ export default {
           trigger: "item",
           // formatter: "{a} <br/> {c} ({d}%)",
           formatter: (params) => {
-            console.log(params);
+            // console.log(params);
             let htmlStr;
             if (params.data.flag) {
               // 平均时长的展示

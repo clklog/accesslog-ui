@@ -3,7 +3,7 @@
     <div class="block-head">
       <div class="block-title">访问Top10</div>
       <div class="block-head-icon">
-        <img src="@/assets/images/icon.png" alt="" width="10px" />
+        <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
     <div style="width: 100%">
@@ -22,7 +22,7 @@
           label="页面URL"
         />
         <el-table-column prop="uriCount" label="计数"  min-width="20%"  :show-overflow-tooltip="true"/>
-        <el-table-column prop="avgVisitTime" label="平均耗时(s)" min-width="20%"  :show-overflow-tooltip="true" />
+        <el-table-column prop="avgVisitTime" label="平均耗时(ms)" min-width="20%"  :show-overflow-tooltip="true" />
       </el-table>
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
         },
         {
           date: "2016-05-04",
-          name: "clkLog",
+          name: "ACCESSLOG",
           num: " 1517 ",
           time: "15:12:01",
         },
@@ -66,7 +66,7 @@ export default {
         },
         {
           date: "2016-05-04",
-          name: "clkLog",
+          name: "ACCESSLOG",
           num: " 1517 ",
           time: "15:12:01",
         },

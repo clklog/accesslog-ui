@@ -4,7 +4,8 @@ import request from '@/utils/request'
 // 获取应用列表
 export function getServerApi(params) {
   return request({
-    url: '/accesslogapi/accesslog/getServer',
+    // url: '/accesslogapi/accesslog/getServer',
+    url: '/accesslogapi/accesslog/getApplicationCode',
     method: 'post',
     data: params
   })
@@ -12,7 +13,7 @@ export function getServerApi(params) {
 //  获取host列表
 export function getHostApi(params) {
   return request({
-    url: '/accesslogapi/accesslog/getHost',
+    url: '/accesslogapi/accesslog/getHttpHost',
     method: 'post',
     data: params
   })

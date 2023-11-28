@@ -2,8 +2,9 @@
   <div class="block-main public-hoverItem logCon">
     <div class="block-head">
       <div class="block-title">IP访问量Top10</div>
-      <div class="block-head-icon">
-        <img src="@/assets/images/icon.png" alt="" width="10px" />
+      <div class="block-head-icon" >
+        <!-- @click="$router.push('/logAnalysis/abnormal')" -->
+        <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
     <div class="block-echarts">
@@ -15,6 +16,7 @@
 <script>
 import echarts from "echarts";
 import { getIpTop10Api } from "@/api/trackingapi/accessLog";
+import router from "@/router";
 export default {
   data() {
     return {
@@ -26,6 +28,9 @@ export default {
   },
   mounted() {},
   methods: {
+    toPageEvent(){
+      this.$router.push('/logAnalysis/abnormal')
+    },
     getIpTop10(commonParams) {
       getIpTop10Api(commonParams).then((res) => {
         if (res.code == 200) {

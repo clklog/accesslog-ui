@@ -53,6 +53,30 @@
             </el-popover>
           </div> -->
         </div>
+        <div class="header-name w156">
+          IP数
+          <!-- <div class="parentPosition">
+            <el-popover
+              placement="bottom-start"
+              width="200"
+              trigger="hover"
+              class="popImg"
+            >
+              <div style="padding: 5px; font-size: 12px">
+                选定时间段内访问应用的独立访客数。
+                <div class="setFontTop">
+                  访客数以Cookie或设备ID为依据，选定时间段内同一访客多次访问应用只计算为一个访客。
+                </div>
+              </div>
+              <img
+                slot="reference"
+                class="icon-question"
+                src="@/assets/images/question.png"
+                alt=""
+              />
+            </el-popover>
+          </div> -->
+        </div>
 
         <div class="header-name w156">
           平均响应时间

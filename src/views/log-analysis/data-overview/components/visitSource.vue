@@ -3,7 +3,7 @@
     <div class="block-head">
       <div class="block-title">访问来源Top10</div>
       <div class="block-head-icon">
-        <img src="@/assets/images/icon.png" alt="" width="10px" />
+        <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
     <div style="width: 100%">

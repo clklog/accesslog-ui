@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="documentation-container">
-      <FilterBar ByChnnel ByVisitor  ByHost @setFilterBarParams="setFilterBarParams" />
+      <FilterBar  byTimeType
+        byCalendar
+        ByHost @setFilterBarParams="setFilterBarParams" />
     </div>
     <div class="public-block">
       <statu-echarts ref="statuEcharts"></statu-echarts>
@@ -44,13 +46,13 @@ export default {
     };
   },
   computed: {
-    projectName() {
-      return this.$store.getters.projectName;
+    applicationCode () {
+      return this.$store.getters.applicationCode ;
     },
     commonParams() {
-      // const { projectName, sortOrder, pageNum, pageSize, status } = this;
-      const { projectName, pageNum, pageSize, status } = this;
-      return Object.assign({ projectName,  }, this.filterBarParams);
+      // const { applicationCode , sortOrder, pageNum, pageSize, status } = this;
+      const { applicationCode , pageNum, pageSize, status } = this;
+      return Object.assign({ applicationCode ,  }, this.filterBarParams);
     },
   },
   watch: {
@@ -63,21 +65,27 @@ export default {
     initApi() {
       this.$nextTick(() => {
         this.$refs.statuEcharts.echartEvent(this.commonParams);
+        this.$refs.statueTable.getStatusData(this.commonParams);
       });
     },
-    getStatusData(val) {
-      // console.log(val, "val-------");
-      let params = copyObj(this.commonParams);
-      params.host = val;
-      getStatusApi(params).then((res) => {
-        if (res.code == 200) {
-          this.statuCodeList = res.data;
-          this.total = res.data.total;
-          this.allDataList.push(res.data);
-          console.log(this.allDataList, "allDataList----");
-        }
-      });
-    },
+    // getStatusData(val) {
+    //   // console.log(val, "val-------");
+    //   let params = copyObj(this.commonParams);
+    //   params.host = val;
+    //   getStatusApi(params).then((res) => {
+    //     if (res.code == 200) {
+         
+    //       this.statuCodeList = res.data;
+    //       this.statuCodeList = this.statuCodeList.map((item) => {
+    //         return { ["label"]: 'statu', ["value"]: item };
+    //       });
+
+    //       this.total = res.data.total;
+    //       this.allDataList.push(res.data);
+    //       console.log(this.allDataList, "allDataList----");
+    //     }
+    //   });
+    // },
 
     setFilterBarParams(val) {
       this.filterBarParams = copyObj(val);
@@ -91,56 +99,56 @@ export default {
   @import "~@/styles/components/el-checkbox.scss";
   @import "~@/styles/components/el-pagination.scss";
 }
-::v-deep .el-table thead.is-group th {
-  background: none;
-  padding: 0px;
-}
+// ::v-deep .el-table thead.is-group th {
+//   background: none;
+//   padding: 0px;
+// }
 
-::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type {
-  border-bottom: none; /*中间的横线去掉*/
-}
+// ::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type {
+//   border-bottom: none; /*中间的横线去掉*/
+// }
 
-::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type div.cell {
-  text-align: right; /*上边文字靠右*/
-}
+// ::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type div.cell {
+//   text-align: right; /*上边文字靠右*/
+// }
 
-::v-deep .el-table thead.is-group tr:last-of-type th:first-of-type div.cell {
-  text-align: left; /*下边文字靠左*/
-}
-::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type:before {
-  content: "";
-  position: absolute;
-  width: 1px;
-  height: 100px; /*斜线的长度*/
-  top: 0;
-  left: 0;
-  background-color: grey;
-  opacity: 0.2;
-  display: block;
-  transform: rotate(-43deg); /*调整斜线的角度*/
-  transform: rotate(-70deg); /*调整斜线的角度*/
-  -webkit-transform-origin: top;
-  transform-origin: top;
-}
+// ::v-deep .el-table thead.is-group tr:last-of-type th:first-of-type div.cell {
+//   text-align: left; /*下边文字靠左*/
+// }
+// ::v-deep .el-table thead.is-group tr:first-of-type th:first-of-type:before {
+//   content: "";
+//   position: absolute;
+//   width: 1px;
+//   height: 100px; /*斜线的长度*/
+//   top: 0;
+//   left: 0;
+//   background-color: grey;
+//   opacity: 0.2;
+//   display: block;
+//   transform: rotate(-43deg); /*调整斜线的角度*/
+//   transform: rotate(-70deg); /*调整斜线的角度*/
+//   -webkit-transform-origin: top;
+//   transform-origin: top;
+// }
 
-::v-deep .el-table thead.is-group tr:last-of-type th:first-of-type:before {
-  content: "";
-  position: absolute;
-  width: 1px;
-  height: 100px; /*斜线的长度*/
-  bottom: 0;
-  right: 0;
-  background-color: grey;
-  opacity: 0.2;
-  display: block;
-  transform: rotate(-45deg); /*调整斜线的角度*/
-  transform: rotate(-70deg); /*调整斜线的角度*/
-  -webkit-transform-origin: bottom;
-  transform-origin: bottom;
-}
-::v-deep .el-table thead.is-group th {
-  height: 27.4px;
-}
+// ::v-deep .el-table thead.is-group tr:last-of-type th:first-of-type:before {
+//   content: "";
+//   position: absolute;
+//   width: 1px;
+//   height: 100px; /*斜线的长度*/
+//   bottom: 0;
+//   right: 0;
+//   background-color: grey;
+//   opacity: 0.2;
+//   display: block;
+//   transform: rotate(-45deg); /*调整斜线的角度*/
+//   transform: rotate(-70deg); /*调整斜线的角度*/
+//   -webkit-transform-origin: bottom;
+//   transform-origin: bottom;
+// }
+// ::v-deep .el-table thead.is-group th {
+//   height: 27.4px;
+// }
 .block-line {
   box-sizing: border-box;
   margin: 20px 0 20px 0;

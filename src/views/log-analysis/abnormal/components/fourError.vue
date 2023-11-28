@@ -1,6 +1,6 @@
 <template>
   <div class="block-main public-hoverItem logCon">
-    <div class="block-head">
+    <div class="block-head" @click="$router.push('/logAnalysis/statuCode')">
       <div class="block-title">400错误TOP20</div>
       <div class="block-head-icon">
         <img src="@/assets/images/icon.png" alt="" width="10px" />

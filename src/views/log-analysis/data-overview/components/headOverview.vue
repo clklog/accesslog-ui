@@ -21,7 +21,11 @@
         </div>
 
         <div class="bid-list-item w158">
-          <p>{{ overList.avgVisitTime ? overList.avgVisitTime + "秒" : '--'  }}</p>
+          <p>{{ overList.ipCount || "--" }}</p>
+        </div>
+
+        <div class="bid-list-item w158">
+          <p>{{ overList.avgVisitTime ? overList.avgVisitTime + "ms" : '--'  }}</p>
         </div>
         <!-- <div class="bid-list-item w158">
           <p>{{ overList.slowPv | conver }}</p>

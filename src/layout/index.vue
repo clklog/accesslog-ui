@@ -2,12 +2,7 @@
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" />
-    <div class="main-container">
-    <!-- <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
-        <tags-view v-if="needTagsView" />
-      </div> -->
+    <div class="main-container" style="">
       <navbar />
       <app-main />
       <right-panel v-if="showSettings">
@@ -15,13 +10,9 @@
       </right-panel>
     </div>
     <!-- 浮动logo -->
-    <div class="logoConItem">
-      <!-- <img class="logoImg" src="@/assets/images/logoFIxed.png" alt=""> -->
-
-      <!-- <img class="logoImg" src="@/assets/images/logo.png" alt=""> -->
+    <div class="logoConItem" v-if="showFlag">
       <div class="logoName">POWERED BY</div>
-      <img class="logoImg" src="@/assets/images/logoFIxed.png" alt="" />
-      
+      <div>ZCUNSOFT</div>
     </div>
   </div>
 </template>
@@ -34,6 +25,11 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Layout',
+  data(){
+    return {
+      showFlag:false,
+    }
+  },
   components: {
     AppMain,
     Navbar,
@@ -41,6 +37,13 @@ export default {
     Settings,
     Sidebar,
     TagsView
+  },
+  mounted() {
+    if (window.location.origin == 'http://192.168.100.171:9527') {
+      this.showFlag = true;
+    }else{
+      this.showFlag = false;
+    }
   },
   mixins: [ResizeMixin],
   computed: {

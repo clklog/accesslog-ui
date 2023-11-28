@@ -83,7 +83,7 @@
             <el-table-column
               align="center"
               prop="maxVisitTime"
-              label="最大耗时(秒)"
+              label="最大耗时(毫秒)"
               sortable="custom"
             >
             </el-table-column>
@@ -100,7 +100,7 @@
             <el-table-column
               align="center"
               prop="avgVisitTime"
-              label="平均耗时(秒)"
+              label="平均耗时(毫秒)"
               sortable="custom"
             >
             </el-table-column>
@@ -173,12 +173,12 @@ export default {
     };
   },
   computed: {
-    projectName() {
-      return this.$store.getters.projectName;
+    applicationCode () {
+      return this.$store.getters.applicationCode ;
     },
     commonParams() {
-      const { projectName, sortOrder, pageNum, pageSize, status } = this;
-      return Object.assign({ projectName, sortOrder }, this.filterBarParams);
+      const { applicationCode , sortOrder, pageNum, pageSize, status } = this;
+      return Object.assign({ applicationCode , sortOrder }, this.filterBarParams);
     },
   },
   watch: {

@@ -1,21 +1,24 @@
 <template>
   <div>
+    <!-- 时序图 -->
     <div class="documentation-container">
-      <FilterBar ByChnnel ByVisitor ByHost @setFilterBarParams="setFilterBarParams" />
+      <!-- byTimeType
+          byCalendar -->
+      <FilterBar ByTimeSlot ByHost @setFilterBarParams="setFilterBarParams" />
     </div>
 
     <div class="public-block">
       <num-echarts ref="numEcharts"></num-echarts>
-      <performance ref="performance"></performance>
-      
+      <!-- <performance ref="performance"></performance> -->
     </div>
+    <router-view />
   </div>
 </template>
 
 <script>
 import originView from "@/components/origin-view";
 import { FilterBar } from "@/layout/components";
-import { numEcharts,performance } from "./components/index";
+import { numEcharts, performance } from "./components/index";
 import { copyObj } from "@/utils/copy";
 
 export default {
@@ -45,7 +48,7 @@ export default {
       inputOther: "",
       imgFormatList: [],
       otherList: [],
-      limit: [],
+      limits: [],
       paramsCommon: [],
       applicationData: "",
       hostList: [],
@@ -53,35 +56,28 @@ export default {
     };
   },
   computed: {
-    projectName() {
-      return this.$store.getters.projectName;
+    applicationCode() {
+      return this.$store.getters.applicationCode;
     },
     commonParams() {
-      const { projectName, sortOrder, pageNum, pageSize, status, limit } = this;
-      // return Object.assign(
-      //   { projectName, sortOrder, pageNum, pageSize, status, limit },
-      //   this.filterBarParams
-      // );
-      return Object.assign(
-        { projectName,  },
-        this.filterBarParams
-      );
+      const { applicationCode, sortOrder, pageNum, pageSize, status, limits } =
+        this;
+      return Object.assign({ applicationCode }, this.filterBarParams);
     },
   },
   watch: {
     commonParams(val) {
-      // this.getPerformanceDetail();
+        // console.log(val,"100ms时序图")
       this.initApi(val);
     },
   },
   mounted() {
-    // this.getHost()
   },
   methods: {
-    initApi() {
+    initApi(val) {
       this.$nextTick(() => {
-        this.$refs.numEcharts.getRequestimeGt100ms(this.commonParams);
-        this.$refs.performance.getPerformanceDetail(this.commonParams);
+        this.$refs.numEcharts.getRequestimeGt100ms(val);
+        // this.$refs.performance.getPerformanceDetail(this.commonParams);
       });
     },
     hostChangeEvent(val) {
@@ -123,7 +119,6 @@ export default {
         this.otherList = [];
       }
       this.getPerformanceDetail();
-      console.log(this.limit, "limit");
     },
     toSearch() {
       this.otherFilter = ["其他"];
@@ -138,7 +133,7 @@ export default {
       this.getPerformanceDetail();
     },
     confirmEvent() {
-      console.log("确定事件");
+    //   console.log("确定事件");
     },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 1 || columnIndex === 2) {
@@ -176,7 +171,7 @@ export default {
     },
     getPerformanceDetail() {
       this.paramsCommon = copyObj(this.commonParams);
-      this.paramsCommon.limit = [...this.imgFormatList, ...this.otherList];
+      this.paramsCommon.limits = [...this.imgFormatList, ...this.otherList];
       this.paramsCommon.host = this.hostChange;
       getPerformanceDetailApi(this.paramsCommon).then((res) => {
         if (res.code == 200) {
@@ -189,7 +184,6 @@ export default {
       getHostApi().then((res) => {
         if (res.code == 200) {
           this.hostList = res.data;
-          console.log(this.hostList, "hostList-----------");
         }
       });
     },

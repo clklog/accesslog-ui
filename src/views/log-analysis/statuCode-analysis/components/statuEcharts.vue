@@ -41,8 +41,8 @@ export default {
     };
   },
   computed: {
-    projectName() {
-      return this.$store.getters.projectName;
+    applicationCode () {
+      return this.$store.getters.applicationCode ;
     },
   },
   watch: {
@@ -270,10 +270,11 @@ export default {
 }
 .pieStatu {
   width: 100%;
-  height: 355px;
+//   height: 355px;
+  height: 450px;
 }
 .barStatu {
   width: 100%;
-  height: 355px;
+  height: 450px;    
 }
 </style>

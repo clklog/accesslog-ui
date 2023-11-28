@@ -5,7 +5,7 @@ const state = {
     visitorValue: "新访客",
     dateList: "day",
     areaList: ["上海", "北京"],
-    projectName: "",
+    applicationCode : "",
   },
 };
 
