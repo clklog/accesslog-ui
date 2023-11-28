@@ -26,17 +26,6 @@ export const constantRoutes = [
   //   component: () => import('@/views/login/auth-redirect'),
   //   hidden: true
   // },
-  // {
-  //   path: '/',
-  //   component: () => import('@/views/log-analysis/data-overview/index.vue'),
-  //   hidden: true
-  // },
-  // {  
-  //   path: '/logAnalysis/dataOverview',
-  //   component: () => import('@/views/log-analysis/data-overview/index.vue'),
-  //   name: 'dataOverview',
-  //   meta: { title:'数据概览' }
-  // },
   {
     path: '/404',
     component: () => import('@/views/error-page/404'),
@@ -46,6 +35,22 @@ export const constantRoutes = [
     path: '/401',
     component: () => import('@/views/error-page/401'),
     hidden: true
+  },
+  {
+    // path: '/',
+    // component: Layout,
+    // redirect: '/index',
+    path: '/',
+    component: Layout,
+    redirect: '/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/log-analysis/data-overview/index.vue'),
+        // name: 'Documentation',
+        // meta: { title: '首页', icon: 'homepage', affix: true }
+      }
+    ]
   },
 ]
 
