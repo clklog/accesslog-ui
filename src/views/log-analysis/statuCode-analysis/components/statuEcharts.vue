@@ -41,8 +41,8 @@ export default {
     };
   },
   computed: {
-    applicationCode () {
-      return this.$store.getters.applicationCode ;
+    applicationCode() {
+      return this.$store.getters.applicationCode;
     },
   },
   watch: {
@@ -55,8 +55,13 @@ export default {
         if (res.code == 200) {
           this.xbarData = [];
           this.ybarData = [];
-          // pie echarts
           this.funList = res.data;
+
+          this.funList.sort((a, b) => {
+            const statusA = parseInt(a.status, 10) || 0;
+            const statusB = parseInt(b.status, 10) || 0;
+            return statusA - statusB;
+          });
           this.funList.map((item) => {
             item.value = item.pvRate;
             item.name = item.status;
@@ -89,7 +94,6 @@ export default {
         tooltip: {
           trigger: "item",
           type: "cross",
-          // formatter: "{a} <br/> {c} ({d}%)",
           formatter: (params) => {
             let htmlStr;
             htmlStr = `
@@ -117,8 +121,8 @@ export default {
         grid: {
           left: "20%",
           right: "20%",
-          bottom: "18%",
-          top: "30%",
+          bottom: "10%",
+          top: "20%",
         },
         series: [
           {
@@ -136,16 +140,15 @@ export default {
             label: {
               normal: {
                 show: true,
-                padding: [30, -5],
+                padding: [60, -5],
                 position: "outside",
-                // formatter: "({d}%)",
                 formatter: (params) => {
-                  // return  params.name  + "\n"+  params.data.pv +"\n"+  '(' +params.percent  + '%' + ')'
                   return (
                     params.name +
-                    ":" +
+                    "：" +
                     params.data.pv +
-                    "\n" +
+                    // "\n" +
+                     
                     "(" +
                     params.percent +
                     "%" +
@@ -161,12 +164,18 @@ export default {
             },
             labelLine: {
               show: true,
+             
+            },
+            labelLayout: {
+              // 选择合适的标签布局策略
+              hideOverlap: true, // 隐藏重叠的标签
+              // 或者使用 'normal' 或 'emphasis'
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: "30",
-                fontWeight: "bold",
+                fontSize: "15",
+                // fontWeight: "bold",
               },
             },
             data: this.funList,
@@ -209,7 +218,7 @@ export default {
           {
             type: "inside",
             startValue: 0,
-            endValue: 8,
+            endValue: 24,
             zoomOnMouseWheel: false,
             moveOnMouseWheel: true,
             moveOnMouseMove: true,
@@ -225,7 +234,7 @@ export default {
           {
             type: "bar",
             data: this.ybarData,
-            barWidth: 30,
+            barWidth: 20,
             name: "请求状态占比",
             label: {
               show: true,
@@ -270,11 +279,10 @@ export default {
 }
 .pieStatu {
   width: 100%;
-//   height: 355px;
   height: 450px;
 }
 .barStatu {
   width: 100%;
-  height: 450px;    
+  height: 450px;
 }
 </style>

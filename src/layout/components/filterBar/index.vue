@@ -730,7 +730,6 @@ export default {
       // this.$store.dispatch("tracking/setDate", val);
     },
     checkByDay(val) {
-      console.log(val, "val111");
       this.segmentTime = "";
       this.checkMonth = "";
       let yesterDay = this.$options.filters.getYesterday(val);

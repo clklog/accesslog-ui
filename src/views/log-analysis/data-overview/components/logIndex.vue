@@ -125,26 +125,15 @@ export default {
           if (item.xaxis) {
             this.xaxis.push(item.xaxis);
           }
-          // if (item.pvRate && item.host) {
           if (item.pvRate) {
             item.value = item.pvRate;
             item.total = item.pv;
-            // item.host = this.logList[0].httpHost
             item.host = item.httpHost
             item.logTitle = "访问量(PV)";
             this.pieEcharts.pvRate.push(JSON.parse(JSON.stringify(item)));
           }
-          // if (item.requestLengthRate) {
-          //   item.value = item.requestLengthRate;
-          //   item.logTitle = "流入流量";
-          //   item.total = this.$options.filters.conver(item.requestLength);
-          //   this.pieEcharts.requestLengthRate.push(
-          //     JSON.parse(JSON.stringify(item))
-          //   );
-          // }
           if (item.bodySentBytesRate) {
             item.value = item.bodySentBytesRate;
-            // item.host = this.logList[1].httpHost
             item.host = item.httpHost
             item.total = this.$options.filters.conver(item.bodySentBytes);
             item.logTitle = "流出流量";
@@ -159,12 +148,6 @@ export default {
             item.logTitle = "用户数(UV)";
             this.pieEcharts.uvRate.push(JSON.parse(JSON.stringify(item)));
           }
-          // if (item.uvRate) {
-          //   item.value = item.avgVisitTime;
-          //   item.flag = true;
-          //   item.logTitle = "访问平均时长";
-          //   this.pieEcharts.avgVisitTime.push(JSON.parse(JSON.stringify(item)));
-          // }
         });
         this.msg.chartData1 = this.pieEcharts.pvRate;
         this.msg.rows1 = this.xaxis;
@@ -218,7 +201,6 @@ export default {
   display: flex;
   flex-wrap: wrap;
   .warryItem {
-    // width: 25%;
     width: 30%;
     min-height: 300px;
   }

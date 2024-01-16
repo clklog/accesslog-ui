@@ -165,7 +165,7 @@ export default {
         sortName: null,
         sortOrder: null,
       },
-      statusFilter: ["400", "401", "404", "405", "499", "500", "502", "504"],
+      statusFilter: [],
       statusShowList: [],
       hostList: [],
       allDataList: [],
@@ -204,24 +204,24 @@ export default {
         property: "",
         httpHost: "",
       },
-      newArray:{},
+      newArray: {},
+      newApplication: "",
     };
   },
   computed: {
-    applicationCode () {
-      return this.$store.getters.applicationCode ;
+    applicationCode() {
+      return this.$store.getters.applicationCode;
     },
   },
   watch: {
-    commonParams(val) {},
+    applicationCode(val) {
+      console.log(val, "新值");
+      this.newApplication = val;
+    },
   },
   mounted() {},
   methods: {
     cellClassName({ row, column, rowIndex, columnIndex }) {
-      // if (row.date != "2022-05-01" && column.label == "日期") {
-      //   return "cellName";
-      // }
-      // console.log(rowIndex,"213123");
       return "cellName";
     },
 
@@ -230,7 +230,6 @@ export default {
     },
     handleSizeChange(val) {
       this.commonParams.pageSize = val;
-      // this.conSelected("", this.propStatu);
       this.conSelected(this.propStatu, this.propStatu);
     },
     handleCurrentChange(val) {
@@ -238,6 +237,7 @@ export default {
       this.commonParams.pageNum = val;
       this.conSelected(this.propStatu, this.propStatu);
     },
+    // 状态码详细数据table
     conSelected(row, prop) {
       if (prop) {
         this.propStatu.property = prop.property;
@@ -245,12 +245,9 @@ export default {
       if (row) {
         this.propStatu.httpHost = row.httpHost;
       }
-
-      // this.commonParams.status = this.prop.property;
-      // this.commonParams.httpHost = this.prop.httpHost;
       this.commonParams.status = this.propStatu.property;
       this.commonParams.httpHost = this.propStatu.httpHost;
-
+      this.commonParams.applicationCode = this.newApplication;
       getStatusDetailApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           this.statuDetailList = res.data.rows;
@@ -288,21 +285,27 @@ export default {
     },
 
     getStatusData(commonParams) {
-      // this.commonParams = commonParams;
-      // if (this.newArray.httpHost) {
-      //   if (this.newArray.httpHost !== commonParams.httpHost) {
-      //     this.statuDetailList = []
-      //   }
-      // }
-      this.statuDetailList = []
-      this.newArray = JSON.parse(JSON.stringify(commonParams))
-      
-      // this.commonParams = Object.assign(commonParams, this.commonParams);
+      this.statuDetailList = [];
+      this.newArray = JSON.parse(JSON.stringify(commonParams));
       this.commonParams = Object.assign(this.newArray, this.commonParams);
       getStatusListApi(commonParams).then((res) => {
         if (res.code == 200) {
           this.statuCodeList = res.data;
-          this.statuCodeList = res.data;
+          let filteredArray = []
+          filteredArray = this.statuCodeList.filter((number) => {
+            const firstDigit = number.toString()[0];
+            return firstDigit === "4" || firstDigit === "5";
+          });
+          if (filteredArray.length > 1) {
+            this.statusFilter = filteredArray
+          }else{
+            this.statusFilter = res.data;
+          }
+          if (res.data.length < 6) {
+            this.statusFilter = res.data;
+          }
+
+
           this.statuCodeList = this.statuCodeList.map((item) => {
             return { ["statu"]: item };
           });
@@ -314,11 +317,6 @@ export default {
               ["prop"]: item.statu,
             };
           });
-          // let abs = {
-          //   label: "host",
-          //   prop: "httpHost",
-          // };
-          // newArry.unshift(abs);
           let statuStore = JSON.parse(JSON.stringify(newArry));
           this.tableLabel = statuStore;
           this.tableLabel = statuStore.filter((item) =>
@@ -334,7 +332,6 @@ export default {
         current.includes(item.label)
       );
       this.tableLabel = filteredArr;
-      // console.log(filteredArr,"过滤filteredArr-----");
     },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (columnIndex == 0) {
@@ -374,16 +371,15 @@ export default {
 ::v-deep {
   @import "~@/styles/components/el-checkbox.scss";
   @import "~@/styles/components/el-pagination.scss";
-  
 }
 ::v-deep .myTableStyle .el-table thead.is-group th {
   background: none;
   padding: 0px;
 }
 ::v-deep .myTableStyle.cellName {
-    background: blueviolet !important;
-    color: aqua;
-  }
+  background: blueviolet !important;
+  color: aqua;
+}
 ::v-deep
   .myTableStyle
   .el-table

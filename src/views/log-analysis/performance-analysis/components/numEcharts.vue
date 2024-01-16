@@ -36,7 +36,6 @@ export default {
   mounted() {},
   methods: {
     getRequestimeGt100ms(commonParams) {
-      // console.log(commonParams, "commonParams");
       let params = {
         applicationCode: commonParams.applicationCode,
         httpHost: commonParams.httpHost,
@@ -45,14 +44,11 @@ export default {
         timeType: commonParams.timeValue ? "min" : "hour",
         hour: commonParams.timeValue,
       };
-      // console.log(params, "params-------");
       getRequestimeGt100msApi(params).then((res) => {
         if (res.code == 200) {
           let apiList = res.data;
-          console.log(apiList.rows.length, "res.data-----");
           if (apiList.rows.length > 1) {
             this.timingList = true;
-            console.log(apiList);
             this.$nextTick(() => {
               this.getChartsData(apiList);
             });
@@ -62,58 +58,13 @@ export default {
         }
       });
     },
-    // getChartsData(apiList) {
-    //   //模拟后台数据的返回
-    //     let res = {
-    //       data: [
-    //         {
-    //           name: "Email",
-    //           data: [120, 132, 101, 134, 90, 230, 210],
-    //         },
-    //         {
-    //           name: "Union Ads",
-    //           data: [220, 182, 191, 234, 290, 330, 310],
-    //         },
-    //         {
-    //           name: "Video Ads",
-    //           data: [150, 232, 201, 154, 190, 330, 410],
-    //         },
-    //         {
-    //           name: "Direct",
-    //           data: [320, 332, 301, 334, 390, 330, 320],
-    //         },
-    //         {
-    //           name: "www.baidu.com",
-    //           data: [320, 332, 301, 334, 390, 330, 1320],
-    //         },
-    //       ],
-    //       round: ["/api/inusevehicle/gaopai/gpCertificateAdd", "/api/inusevehicle/gaopai/gpCertificateAdd66", "Wed", "Thu", "Fri", "Sat", "/api/inusevehicle/gaopai/gpCertificateAdd435"],
-    //     };
-    // //   let res = apiList;
-
-    //   this.dataChart.seriesData = res.data;
-    //   this.dataChart.roundsData = res.round;
-
-    // //   this.dataChart.seriesData = apiList.rows.slice(0,3);
-    // //   this.dataChart.roundsData = res.times;
-    // //   console.log(apiList,"apiList");
-    //   //定义图表的一些配置项
-    //   for (let i = 0; i < this.dataChart.seriesData.length; i++) {
-    //     this.dataChart.seriesData[i].type = "line";
-    //     this.dataChart.seriesData[i].smooth = true;
-    //     // this.dataChart.legend.push(this.dataChart.seriesData[i].pv);
-    //     this.dataChart.legend.push(this.dataChart.seriesData[i].name);
-    //   }
-
-    //   this.drawEcharts(
-    //     this.dataChart.legend,
-    //     this.dataChart.roundsData,
-    //     this.dataChart.seriesData
-    //   );
-    // },
     getChartsData(apiList) {
       apiList.rows.map((item, index) => {
         item.name = item.uri;
+        if (item.name.length > 55) {
+          item.name =  item.name.substring(0, 50)+'...'
+        }
+       
       });
       this.dataChart.seriesData = apiList.rows;
       this.dataChart.roundsData = apiList.times;
@@ -158,16 +109,13 @@ export default {
         ],
         tooltip: {
           trigger: "axis",
-          // position: [100, 30]
-          position: ["40%", "5%"],
-
-          // position: 'bottom'
+          position: 'center',
         },
         dataZoom: [
           {
             type: "inside",
             startValue: 0,
-            endValue: 10,
+            endValue: 30,
             minValueSpan: 10,
             zoomOnMouseWheel: false,
             moveOnMouseWheel: true,
@@ -175,11 +123,6 @@ export default {
           },
         ],
         legend: {
-          //   data: legendData,
-          //   orient: "vertical", //垂直显示
-          // //   y: "center", //延Y轴居中
-          //   y: "center", //延Y轴居中
-          //   x: "right", //居右显示
           show: true,
           type: "plain",
           left: "right",
@@ -229,7 +172,6 @@ export default {
 <style lang="scss" scoped>
 .logCon {
   width: 100%;
-  //   min-height: 438px;
   min-height: 438px;
   background-color: #fff;
 }

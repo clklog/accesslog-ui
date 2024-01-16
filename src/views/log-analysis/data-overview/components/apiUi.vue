@@ -124,7 +124,7 @@ export default {
               show: false,
               alignWithLabel: true,
             },
-            barWidth: 20,
+            // barWidth: 20,
             // axisLine: {
             //   onZero: false,
             // },
@@ -148,7 +148,7 @@ export default {
           {
             name: "访问量(PV)",
             type: "bar",
-            barWidth: 20,
+            barWidth: 10,
             data: this.xDataList,
             label: {
               show: true,

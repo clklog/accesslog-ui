@@ -1,15 +1,11 @@
 <template>
   <div>
-    <!-- 时序图 -->
     <div class="documentation-container">
-      <!-- byTimeType
-          byCalendar -->
       <FilterBar ByTimeSlot ByHost @setFilterBarParams="setFilterBarParams" />
     </div>
 
     <div class="public-block">
       <num-echarts ref="numEcharts"></num-echarts>
-      <!-- <performance ref="performance"></performance> -->
     </div>
     <router-view />
   </div>
@@ -67,7 +63,6 @@ export default {
   },
   watch: {
     commonParams(val) {
-        // console.log(val,"100ms时序图")
       this.initApi(val);
     },
   },
@@ -77,7 +72,6 @@ export default {
     initApi(val) {
       this.$nextTick(() => {
         this.$refs.numEcharts.getRequestimeGt100ms(val);
-        // this.$refs.performance.getPerformanceDetail(this.commonParams);
       });
     },
     hostChangeEvent(val) {

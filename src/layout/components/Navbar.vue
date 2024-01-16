@@ -1,17 +1,9 @@
 <template>
-  <div  class="navbar">
-    <!-- 埋点系统 -->
-
+  <div class="navbar" >
     <div class="burying_point">
       <div style="display: flex; align-items: center">
         <div class="logoFlag" v-if="showFlag">
           国拍日志分析系统
-          <!-- <hamburger
-            id="hamburger-container"
-            :is-active="sidebar.opened"
-            class="hamburger-container"
-            @toggleClick="toggleSideBar"
-          /> -->
         </div>
         <div v-if="applicationFlag">
           <el-select
@@ -78,7 +70,8 @@ export default {
       serveValue: null,
       dateTime: "",
       dateWeek: "",
-      showFlag:true,
+      showFlag: true,
+      navbarFlag:false,
     };
   },
   created() {
@@ -94,19 +87,23 @@ export default {
 
   mounted() {
     this.initHost(this.$route.path);
-    console.log(window.location.origin,"获取域名");
-    if (window.location.origin == 'http://192.168.100.171:9527') {
+    if (window.location.origin == "http://192.168.100.171:9527" ||
+    window.location.origin == "http://localhost:9527"
+    ) {
+      console.log("是否展开还是关闭");
       this.showFlag = true;
       this.$store.dispatch("app/toggleSideBar", true);
-    }else{
+    } else {
       this.showFlag = false;
       this.$store.dispatch("app/toggleSideBar", false);
     }
   },
   computed: {
-    // ...mapGetters(["sidebar", "avatar", "device"]),
     ...mapGetters(["sidebar", "avatar", "device", "applicationCode "]),
     routeForm() {
+      return this.$route.path;
+    },
+    pagePath() {
       return this.$route.path;
     },
   },
@@ -163,7 +160,6 @@ export default {
       this.dateTime = year + "年" + month + "月" + day + "日";
     },
     toggleSideBar() {
-
       this.$store.dispatch("app/toggleSideBar", false);
     },
     async logout() {
@@ -183,7 +179,6 @@ export default {
   left: 0;
   height: 50px;
   overflow: hidden;
-  // position: relative;
   width: 100%;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
@@ -213,18 +208,6 @@ export default {
         }
       }
     }
-    // img {
-    //   width: 37px;
-    //   height: 27px;
-    // }
-    // span {
-    //   margin-left: 5px;
-    //   margin-right: 70px;
-    //   font-size: 15px;
-    //   font-weight: bold;
-    //   line-height: 17px;
-    //   color: #4d4d4d;
-    // }
     .logoFlag {
       margin-right: 70px;
       font-size: 15px;
@@ -235,23 +218,9 @@ export default {
       display: flex;
       .imgLogo {
         height: 44px;
-        // object-fit: cover;
       }
     }
   }
-  // .hamburger-container {
-  //   line-height: 46px;
-  //   height: 100%;
-  //   float: left;
-  //   cursor: pointer;
-  //   transition: background 0.3s;
-  //   -webkit-tap-highlight-color: transparent;
-
-  //   &:hover {
-  //     background: rgba(0, 0, 0, 0.025);
-  //   }
-  // }
-
   .breadcrumb-container {
     float: left;
   }
@@ -262,7 +231,6 @@ export default {
   }
 
   .right-menu {
-    // float: right;
     display: flex;
     align-items: center;
     height: 100%;
@@ -287,8 +255,6 @@ export default {
 
     .right-menu-item {
       display: inline-block;
-      // padding: 0 8px;
-      // padding-right: 8px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;

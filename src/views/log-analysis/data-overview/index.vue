@@ -1,14 +1,17 @@
 <template>
   <div>
     <div class="documentation-container">
-      <FilterBar  byTimeType
+      <FilterBar
+        byTimeType
         byCalendar
-        ByHost @setFilterBarParams="setFilterBarParams" />
+        ByHost
+        @setFilterBarParams="setFilterBarParams"
+      />
     </div>
     <div class="public-block">
       <head-overview ref="headOverview"></head-overview>
       <!-- host饼状图 -->
-    
+
       <div class="block-line">
         <data-trend ref="dataTrend"></data-trend>
         <ip-distribution ref="ipDistribution"></ip-distribution>
@@ -18,9 +21,6 @@
         <visit-top ref="visitTop"></visit-top>
         <IPVisitTop ref="ipTop"></IPVisitTop>
       </div>
-
-
-     
 
       <div class="div_block" style="margin-top: 20px">
         <api-ui ref="apiUi"></api-ui>
@@ -32,7 +32,8 @@
         class="block-line"
         v-if="
           overList.accesslogFlowDetailList &&
-          overList.accesslogFlowDetailList.length > 1 && hostLength > 2
+          overList.accesslogFlowDetailList.length > 1 &&
+          hostLength > 2
         "
       >
         <log-index ref="logIndex"></log-index>
@@ -80,14 +81,13 @@ export default {
     funApi,
     visitTop,
     visitSource,
-   
   },
   data() {
     return {
       filterBarParams: {},
       sortOrder: "desc",
       overList: [],
-      hostLength :0,
+      hostLength: 0,
     };
   },
 
@@ -95,29 +95,27 @@ export default {
     httpHost() {
       return this.$store.getters.httpHost;
     },
-    applicationCode () {
-      return this.$store.getters.applicationCode ;
+    applicationCode() {
+      return this.$store.getters.applicationCode;
     },
     commonParams() {
-      const { applicationCode , sortOrder } = this;
-      // return Object.assign({ applicationCode , sortOrder }, this.filterBarParams);
-      return Object.assign({ applicationCode  }, this.filterBarParams);
+      const { applicationCode, sortOrder } = this;
+      return Object.assign({ applicationCode }, this.filterBarParams);
     },
   },
   watch: {
     commonParams(val) {
-      // this.getOverview();
       this.getServerOverview();
     },
     httpHost: {
       handler(newValue, oldValue) {
         this.hostLength = newValue;
+        this.logEchartsEvent();
       },
       deep: true,
     },
   },
   methods: {
-    logEvent() {},
     getOverview() {
       getOverviewApi(this.commonParams).then((res) => {
         if (res.code == 200) {
@@ -132,17 +130,12 @@ export default {
       getServerOverviewApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           this.overList = res.data;
+          this.logEchartsEvent()
           this.$nextTick(() => {
-            if (this.$refs.logIndex) {
-              this.$refs.logIndex.logEvent(
-                res.data.accesslogFlowDetailList || []
-              );
-            }
             this.$refs.headOverview.overviewEvent(
               res.data.totalAccesslogFlowDetail,
               this.commonParams
             );
-            // this.$refs.dataTrend.getFlowTrendEvent(this.commonParams)
           });
         }
       });
@@ -156,6 +149,13 @@ export default {
         this.$refs.apiUi.getUa(this.commonParams);
         this.$refs.funApi.getRequestMethod(this.commonParams);
         this.$refs.ipDistribution.getIpByProvince(this.commonParams);
+      });
+    },
+    logEchartsEvent() {
+      this.$nextTick(() => {
+        if (this.$refs.logIndex) {
+          this.$refs.logIndex.logEvent(this.overList.accesslogFlowDetailList);
+        }
       });
     },
     setFilterBarParams(val) {

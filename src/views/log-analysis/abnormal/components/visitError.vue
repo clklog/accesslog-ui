@@ -188,14 +188,15 @@ export default {
       commonParams = Object.assign({ pageNum, pageSize }, commonParams);
       getExceptionPvApi(commonParams).then((res) => {
         if (res.code == 200) {
-          this.tableData = res.data.rows;
+          
+          this.tableData = JSON.parse(JSON.stringify(res.data.rows));
           this.total = res.data.total;
          //   echarts
           if (pageNum == 1) {
             this.onePageList = res.data.rows;
             this.xDataList = [];
             this.yDataList = [];
-            this.ipList = res.data.rows.reverse();
+            this.ipList = JSON.parse(JSON.stringify(res.data.rows)).reverse();
             this.ipList.map((item, index) => {
               if (item.ip) {
                 this.yDataList.push(item.ip);
@@ -208,6 +209,7 @@ export default {
                 this.yDataList.push(0);
               }
             });
+            // this.ipList = 
             this.initEcharts();
           }
         }

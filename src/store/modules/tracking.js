@@ -1,6 +1,6 @@
 const state = {
   // applicationCode : '货清清'
-  applicationCode : 'hqq',
+  applicationCode : 'cnb.mgt',
   httpHost:'',
   checkDate:'Day',
   // checkDate:{

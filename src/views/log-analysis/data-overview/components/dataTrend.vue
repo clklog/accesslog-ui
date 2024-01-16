@@ -29,7 +29,7 @@ import { getFlowTrendApi } from "@/api/trackingapi/accessLog";
 export default {
   data() {
     return {
-      timeType:"day",
+      timeType: "day",
       dayFlag: false,
       chart: null,
       flowEchart: null,
@@ -51,7 +51,7 @@ export default {
         },
       },
       myChart: [],
-      oldCommonParams :{},
+      oldCommonParams: {},
     };
   },
   computed: {
@@ -59,26 +59,39 @@ export default {
       return this.$store.getters.httpHost;
     },
   },
-  watch: {
-    // httpHost: {
-    //   handler(newValue, oldValue) {
-    //     this.getFlowTrendEvent(newValue);
-    //   },
-    //   deep: true,
-    // },
-  },
-  mounted() {},
+  watch: {},
   methods: {
-    changeDateEvent(){
-      this.getFlowTrendEvent(this.oldCommonParams)
+    changeDateEvent() {
+      this.getFlowTrendEvent(this.oldCommonParams, "check");
     },
-    getFlowTrendEvent(commonParams) {
+    getFlowTrendEvent(commonParams, event) {
       this.oldCommonParams = commonParams;
-      let copyParams = JSON.parse(JSON.stringify(commonParams))
-      copyParams.timeType = this.timeType
-      // copyParams.httpHost = this.httpHost || '' 
+      let copyParams = JSON.parse(JSON.stringify(commonParams));
+      if (!event) {
+        if (copyParams.startTime == copyParams.endTime) {
+          copyParams.timeType = "hour";
+          this.timeType = "hour";
+        } else {
+          //月 2476800000
+          let timeDiff =
+            Date.parse(copyParams.endTime) - Date.parse(copyParams.startTime);
+          if (timeDiff > 489600000 && timeDiff != 604800000) {
+            copyParams.timeType = "week";
+            this.timeType = "week";
+          } else {
+            copyParams.timeType = "day";
+            this.timeType = "day";
+          }
+          // 大于三个月按月标准
+          if (timeDiff > 7776000000) {
+            copyParams.timeType = "month";
+            this.timeType = "month";
+          }
+        }
+      } else {
+        copyParams.timeType = this.timeType;
+      }
       getFlowTrendApi(copyParams).then((res) => {
-
         if (res.code == 200) {
           this.xLineList = [];
           this.bodySentBytesList = [];
@@ -106,14 +119,8 @@ export default {
             item.statTime = item.statTime.replace(/\d{4}-/g, "");
             this.xLineList.push(item.statTime);
           });
-          // this.uvMax = this.uvList.sort(function (a, b) {
-          //   return b - a;
-          // })[0];
-          // this.pvMax = this.pvList.sort(function (a, b) {
-          //   return b - a;
-          // })[0];
-          this.uvMax = this.uvList
-          this.pvMax = this.pvList
+          this.uvMax = this.uvList;
+          this.pvMax = this.pvList;
           this.initFlowEchart(); //line chart
           this.initVisitEchart(); //双线图
         }
@@ -133,8 +140,8 @@ export default {
           },
         },
         grid: {
-          left: "13%",
-          right: "14%",
+          left: "6%",
+          right: "6%",
           top: "25%",
           bottom: "10%",
         },
@@ -180,32 +187,31 @@ export default {
               show: false,
             },
             type: "value",
-            // name: "用户数(UV)",
             min: 0,
-            max: this.uvMax,
+            // max: this.uvMax,
           },
           {
             type: "value",
             // name: "浏览量(PV)",
             min: 0,
-            max: this.pvMax,
+            // max: this.pvMax,
             axisTick: {
               show: false,
             },
-            // interval: 5,
-            // axisLabel: {
-            //   formatter: "{value} °C",
-            // },
           },
         ],
         series: [
           {
             name: "用户数(UV)",
             type: "bar",
-            symbol: 'circle',
+            symbol: "circle",
             itemStyle: {
               color: "#2c7be5",
             },
+            // label: {
+            //   show: true,
+            //   position: "top",
+            // },
             barWidth: 10,
             tooltip: {
               valueFormatter: function (value) {
@@ -217,7 +223,7 @@ export default {
 
           {
             name: "访问量(PV)",
-            symbol: 'circle',
+            symbol: "circle",
             type: "line",
             itemStyle: {
               color: "#80bdef",
@@ -284,7 +290,7 @@ export default {
           {
             type: "inside",
             startValue: 0,
-            endValue: 6,
+            endValue: 24,
             minValueSpan: 10,
             zoomOnMouseWheel: false,
             moveOnMouseWheel: true,
@@ -293,7 +299,7 @@ export default {
         ],
         grid: {
           top: 100,
-          left: "2%",
+          left: "10%",
           right: "2%",
           bottom: "2%",
           containLabel: true,

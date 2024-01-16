@@ -1,7 +1,7 @@
 <template>
   <div class="block-main public-hoverItem logCon">
     <div class="block-head">
-      <div class="block-title">IP访问量Top10</div>
+      <div class="block-title"></div>
       <div class="block-head-icon" >
         <!-- @click="$router.push('/logAnalysis/abnormal')" -->
         <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
@@ -130,7 +130,7 @@ export default {
               color: "#2c7be5",
             },
            
-            barWidth: 20,
+            barWidth: 10,
             label: {
               show: true,
               position: "right",

@@ -5,19 +5,21 @@
       class="drawer-bg"
       @click="handleClickOutside"
     />
-    <template v-if="showFlag">
-      <sidebar class="sidebar-container" style="top: 50px" />
-      <div class="main-container" style="top: 50px">
+    <div v-if="showFlag">
+      <sidebar
+        class="sidebar-container"
+        
+      />
+      <div class="main-container">
         <navbar />
         <app-main />
         <right-panel v-if="showSettings">
           <settings />
         </right-panel>
       </div>
-    </template>
-
+    </div>
     <!-- demo -->
-    <template v-if="!showFlag">
+    <div v-else>
       <sidebar
         class="sidebar-container"
         :style="navbarFlag ? 'top:50px;' : ''"
@@ -29,7 +31,7 @@
           <settings />
         </right-panel>
       </div>
-    </template>
+    </div>
 
     <!-- 浮动logo -->
     <div class="logoConItem" v-if="showFlag">
@@ -61,18 +63,31 @@ export default {
     Sidebar,
     TagsView,
   },
-  created() {
+  watch: {
+    pagePath(val) {
+      if (this.$options.filters.localIp()) {
+        this.showFlag = true;
+      } else {
+        this.showFlag = false;
+      }
+      if (
+        val != "/business/railwayTrack" &&
+        val != "/business/monitorPanel" &&
+        val != "/business/globalTopology"
+      ) {
+        this.navbarFlag = true;
+      } else {
+        this.navbarFlag = false;
+      }
+    },
+  },
+  mounted() {
     if (this.$options.filters.localIp()) {
       this.showFlag = true;
-      this.$store.dispatch("app/toggleSideBar", true);
     } else {
       this.showFlag = false;
-      this.$store.dispatch("app/toggleSideBar", false);
     }
-    this.initNavBar();
   },
-
-  mounted() {},
   mixins: [ResizeMixin],
   computed: {
     ...mapState({
@@ -94,27 +109,7 @@ export default {
       };
     },
   },
-  watch: {
-    pagePath: {
-      handler(newValue, oldValue) {
-        this.initNavBar(newValue);
-      },
-      deep: true,
-    },
-  },
   methods: {
-    initNavBar(val) {
-      val = this.$route.path;
-      if (
-        val != "/business/railwayTrack" &&
-        val != "/business/monitorPanel" &&
-        val != "/business/globalTopology"
-      ) {
-        this.navbarFlag = true;
-      } else {
-        this.navbarFlag = false;
-      }
-    },
     handleClickOutside() {
       this.$store.dispatch("app/closeSideBar", { withoutAnimation: false });
     },

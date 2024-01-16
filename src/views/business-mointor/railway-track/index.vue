@@ -92,7 +92,6 @@ export default {
         if (!val.whoId) {
           return this.$message.error("请输入证件号");
         }
-        // this.$refs.userEchart.sessionListEvent(val);
         this.sessionListEvents(val);
       });
     },

@@ -20,13 +20,6 @@ const tableRouter = {
         name: 'abnormal',
         meta: { title:'异常分析' }
       },
-      // {
-      //   path: 'performance',
-      //   component: () => import('@/views/log-analysis/performance-analysis/index.vue'),
-      //   name: 'performance',
-      //   meta: { title:'性能分析' }
-      // },
-      // 拆分三级页面
       {
         path: 'performance',
         component: () => import('@/views/log-analysis/index.vue'),
@@ -55,12 +48,6 @@ const tableRouter = {
         name: 'statuCode',
         meta: { title:'状态码分析' }
       },
-      // {
-      //   path: 'trend',
-      //   component: () => import('@/views/log-analysis/trend-analysis/index.vue'),
-      //   name: 'trend',
-      //   meta: { title:'趋势分析' }
-      // },
     ]
   }
   export default tableRouter

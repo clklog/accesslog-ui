@@ -1,7 +1,7 @@
 <template>
   <div
     class="search_wrappy public-table-block public-hoverItem"
-    style="position: relative"
+    style="position: relative;"
   >
     <span class="public-firstHead">性能分析</span>
 
@@ -174,6 +174,9 @@ export default {
   },
   mounted() {},
   methods: {
+    getIndex($index) {
+      return (this.currentPage - 1) * this.pageSize + $index + 1;
+    },
     initApi() {
       this.$nextTick(() => {
         this.$refs.numEcharts.getRequestimeGt100ms(this.commonParams);
@@ -183,9 +186,7 @@ export default {
       this.hostChange = val;
       this.getPerformanceDetail(this.commonParams);
     },
-    getIndex($index) {
-      return (this.currentPage - 1) * this.pageSize + $index + 1;
-    },
+   
     // 其它格式
     inputFilterEvent(val) {
       if (this.inputOther) {
@@ -261,6 +262,7 @@ export default {
     searchTable(val) {},
 
     handleSizeChange(val) {
+      this.pageSize = val;
       this.commonParams.pageSize = val;
       this.getPerformanceDetail(this.commonParams);
     },

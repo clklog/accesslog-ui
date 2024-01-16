@@ -15,9 +15,9 @@ import App from "./App";
 import store from "./store";
 import router from "./router";
 import "./icons"; // icon
+import * as filters from "./filters"; // global filters
 import "./permission"; // permission control
 import "./utils/error-log"; // error log
-import * as filters from "./filters"; // global filters
 import echarts from "echarts";
 Vue.prototype.$echarts = echarts;
 /**

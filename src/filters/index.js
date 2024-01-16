@@ -53,7 +53,17 @@ export function formatTime(seconds) {
   }
   return "--";
 }
-
+export function localIp() {
+  console.log(window.location.origin, "新的测试");
+  if (
+    window.location.origin == "http://192.168.100.171:9527" ||
+    window.location.origin == "http://localhost:9527"
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 // 获取本月日期
 export function formatMonth() {
   const firstDayOfThisMonth = new Date();
@@ -128,24 +138,33 @@ export function formatToday() {
   let yesterdayDate = year + "-" + month + "-" + yesterday;
   return [todayDate, todayDate, yesterdayDate, yesterdayDate];
 }
+// 获取前一天日期
 export function getYesterday(date) {
-  const yesterday = new Date(date);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const a = yesterday.toLocaleDateString("zh-CN").replace(/\//g, "-");
-  return a;
+  // const yesterday = new Date(date);
+  // yesterday.setDate(yesterday.getDate() - 1);
+  // const a = yesterday.toLocaleDateString("zh-CN").replace(/\//g, "-");
+  // return a;
+  let inputDate = new Date(date);
+  let previousDate = new Date(inputDate);
+  previousDate.setDate(inputDate.getDate() - 1);
+  let prevYear = previousDate.getFullYear();
+  let prevMonth = previousDate.getMonth() + 1; 
+  let prevDay = previousDate.getDate();
+  prevMonth = prevMonth < 10 ? '0' + prevMonth : prevMonth;
+  prevDay = prevDay < 10 ? '0' + prevDay : prevDay;
+  return prevYear + '-' + prevMonth + '-' + prevDay;
 }
+// 获取上一月日期
 export function getLastMonthDate(dateString) {
   const date = new Date(dateString);
   let lastYear = date.getFullYear();
-  let lastMonth = date.getMonth() ;
+  let lastMonth = date.getMonth();
   if (lastMonth < 0) {
     lastYear--;
     lastMonth = 1;
   }
-  
   const lastDate = new Date(lastYear, lastMonth);
-  // 返回上个月日期的字符串形式
-  return lastDate.toISOString().slice(0, 7) + '-01';
+  return lastDate.toISOString().slice(0, 7) + "-01";
 }
 export function getLastDayOfMonth(dateString) {
   let date = new Date(dateString);
@@ -157,10 +176,10 @@ export function getLastDayOfMonth(dateString) {
   if (month == 12) {
     year++;
   }
-  if ( 0< month && month < 10) {
-    month = '0' + month
+  if (0 < month && month < 10) {
+    month = "0" + month;
   }
-  return year + '-' + month + '-' + date.getDate();
+  return year + "-" + month + "-" + date.getDate();
 }
 
 export function convertMB(limit) {
@@ -243,8 +262,7 @@ export function filterBusinessListV2(
               val.items.map((e) => {
                 if (location == "") {
                   return (filterList = val);
-                }
-                else {
+                } else {
                   if (e.location == location) {
                     return (filterList = e);
                   }

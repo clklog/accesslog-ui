@@ -23,3 +23,17 @@ export function getSessionListByWhoIdApi(params) {
     data: params
   })
 }
+export function getCountPropEventListApi(params) {
+  return request({
+    url: '/accesslogapi/busilog/getCountPropEventList',
+    method: 'post',
+    data: params
+  })
+}
+export function getEventRawListApi(params) {
+  return request({
+    url: '/accesslogapi/busilog/getEventRawList',
+    method: 'post',
+    data: params
+  })
+}
