@@ -7,7 +7,7 @@ function resolve(dir) {
   return path.join(__dirname, dir);
 }
 
-const name = defaultSettings.title || "ClkLog"; // page title
+const name = defaultSettings.title || "国拍日志分析系统"; // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -24,8 +24,10 @@ module.exports = {
    * then publicPath should be set to "/bar/".
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
+   * /accesslog/
    */
-  publicPath: "/",
+  publicPath: "/accesslog/",
+  // publicPath: "./",
   outputDir: "dist",
   assetsDir: "static",
   // lintOnSave: process.env.NODE_ENV === 'development',

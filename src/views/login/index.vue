@@ -10,7 +10,8 @@
     >
       <div class="title-container">
         <h3 class="title">
-          <img class="logo_head" src="@/assets/images/logoFIxed.png" alt="" />
+          <!-- <img class="logo_head" src="@/assets/images/logoFIxed.png" alt="" /> -->
+          国拍日志分析系统
         </h3>
       </div>
 
@@ -68,7 +69,7 @@
         >Login</el-button
       >
 
-      <div style="position: relative">
+      <!-- <div style="position: relative">
         <div class="tips">
           <span>Username : admin</span>
           <span>Password : any</span>
@@ -85,17 +86,17 @@
         >
           Or connect with
         </el-button>
-      </div>
+      </div> -->
     </el-form>
 
-    <el-dialog title="Or connect with" :visible.sync="showDialog">
+    <!-- <el-dialog title="Or connect with" :visible.sync="showDialog">
       Can not be simulated on local, so please combine you own business
       simulation! ! !
       <br />
       <br />
       <br />
       <social-sign />
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -156,6 +157,18 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    this.$store
+      .dispatch("user/login", this.loginForm)
+      .then(() => {
+        this.$router.push({
+          path: this.redirect || "/",
+          query: this.otherQuery,
+        });
+        this.loading = false;
+      })
+      .catch(() => {
+        this.loading = false;
+      });
   },
   mounted() {
     if (this.loginForm.username === "") {
@@ -327,7 +340,8 @@ $light_gray: #eee;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
+      // color: $light_gray;
+      color: #4d4d4d;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;

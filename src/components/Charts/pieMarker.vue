@@ -58,7 +58,6 @@ export default {
       this.chart = echarts.init(document.getElementById(this.id));
       this.chart.setOption({
         title: {
-          // text: "新老访客",
           left: "center",
           top: "center",
         },

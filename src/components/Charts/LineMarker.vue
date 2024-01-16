@@ -139,6 +139,7 @@ export default {
       } else {
         this.bounceRate = [];
       }
+      console.log(this.uv,"uv-----");
       this.initChart();
     },
     initChart() {

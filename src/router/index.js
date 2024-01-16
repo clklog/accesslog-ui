@@ -1,8 +1,11 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-Vue.use(Router)
-import Layout from '@/layout'
-import logDataAnalysis from './modules/logo-analysis'
+import Vue from "vue";
+import Router from "vue-router";
+Vue.use(Router);
+import Layout from "@/layout";
+import logDataAnalysis from "./modules/logo-analysis";
+import businessMonitor from "./modules/business-monitor";
+
+
 export const constantRoutes = [
   {
     path: '/redirect',
@@ -11,7 +14,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/log-analysis/data-overview')
+        component: () => import('@/views/log-analysis/data-overview/index.vue')
       }
     ]
   },
@@ -34,25 +37,36 @@ export const constantRoutes = [
     path: '/401',
     component: () => import('@/views/error-page/401'),
     hidden: true
+  },{
+    path: '/',
+    component: Layout,
+    redirect: '/logAnalysis/dataOverview',
   },
+  // 嵌套系统统一配置为常量路由
+  logDataAnalysis,
+  businessMonitor,
+  { path: '*', redirect: '/logAnalysis/dataOverview', hidden: true }
+
 ]
 
 export const asyncRoutes = [
-  
-  logDataAnalysis,
-  { path: '*', redirect: '/logAnalysis/dataOverview', hidden: true }
+  // logDataAnalysis,
+  // businessMonitor,
+  // { path: '*', redirect: '/logAnalysis/dataOverview', hidden: true }
 ]
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    mode: "history", // require service support
+    base: "/accesslog/",
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes,
+  });
 
-const router = createRouter()
+const router = createRouter();
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher 
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher;
 }
 
-export default router
+export default router;

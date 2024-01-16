@@ -1,7 +1,7 @@
 {
-  "name": "clklog",
+  "name": "accesslog",
   "version": "1.0.0",
-  "description": "clklog frontend",
+  "description": "accesslog frontend",
   "author": "Dai <779091224@qq.com>",
   "scripts": {
     "dev": "vue-cli-service serve",

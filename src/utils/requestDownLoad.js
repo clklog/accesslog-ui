@@ -15,7 +15,6 @@ service.interceptors.request.use(
     if ((config.method === "post" || config.method === "put") && !isMock) {
       if (!config.headers["Content-Type"]) {
         config.headers["Content-Type"] = "application/json;";
-        // config.headers["Content-Type"] = "multipart/form-data;";
       }
       config.data = JSON.stringify(config.data);
     }
@@ -28,18 +27,6 @@ service.interceptors.request.use(
 );
 service.interceptors.response.use(
   (res) => {
-    // console.log(res, "下载------");
-    // return res;
-    // if (!res.type) {
-    //   Message({
-    //     message: res.message || "Error",
-    //     type: "error",
-    //     duration: 5 * 1000,
-    //   });
-    //   return Promise.reject(new Error(res.message || "Error"));
-    // } else {
-    //   return response;
-    // }
     if (res.status != 200) {
       Message({
         message: res.statusText || "Error",
