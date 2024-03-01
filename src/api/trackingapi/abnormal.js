@@ -4,7 +4,7 @@ import request from '@/utils/request'
 // 访问量异常数据
 export function getExceptionPvApi(params) {
   return request({
-    url: '/accesslogapi/accesslog/exception/getExceptionPv',
+    url: '/accesslog/exception/getExceptionPv',
     method: 'post',
     data: params
   })
@@ -12,7 +12,7 @@ export function getExceptionPvApi(params) {
 // 状态码异常数据
 export function getExceptionStatusApi(params) {
   return request({
-    url: '/accesslogapi/accesslog/exception/getExceptionStatus',
+    url: '/accesslog/exception/getExceptionStatus',
     method: 'post',
     data: params
   })
@@ -20,7 +20,7 @@ export function getExceptionStatusApi(params) {
 // ip异常数据
 export function getExceptionIpApi(params) {
   return request({
-    url: '/accesslogapi/accesslog/exception/getExceptionIp',
+    url: '/accesslog/exception/getExceptionIp',
     method: 'post',
     data: params
   })
@@ -28,7 +28,7 @@ export function getExceptionIpApi(params) {
 // 状态码详情
 export function getStatusDetailApi(params) {
   return request({
-    url: '/accesslogapi/accesslog/status/getStatusDetail',
+    url: '/accesslog/status/getStatusDetail',
     method: 'post',
     data: params
   })
