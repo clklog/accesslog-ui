@@ -1,9 +1,9 @@
 <template>
   <div class="block-main public-hoverItem logCon">
-    <div class="block-head">
+    <div class="block-head" @click="$router.push('/logAnalysis/performance/timeConsuming')">
       <div class="block-title">访问Top10</div>
       <div class="block-head-icon">
-        <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
+        <img src="@/assets/images/icon.png" alt="" width="10px" />
       </div>
     </div>
     <div style="width: 100%">

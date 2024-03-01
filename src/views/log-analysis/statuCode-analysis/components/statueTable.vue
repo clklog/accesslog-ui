@@ -90,7 +90,7 @@
               </el-table-column>
               <el-table-column
                 align="center"
-                label="耗时较长次数(>=2秒)"
+                label="耗时较长次数(>=1秒)"
                 sortable="custom"
                 prop="slowPv"
               >
@@ -106,11 +106,11 @@
               <el-table-column
                 align="center"
                 prop="pvRate"
-                label="占比"
+                label="耗时较长次数(>=1秒)占比"
                 sortable="custom"
               >
                 <template slot-scope="scope">
-                  {{ scope.row.visitCountRate }}
+                  {{ scope.row.pvRate | percenTable }}
                 </template>
               </el-table-column>
               <el-table-column

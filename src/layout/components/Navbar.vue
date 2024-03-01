@@ -2,7 +2,9 @@
   <div class="navbar">
     <div class="burying_point">
       <div style="display: flex; align-items: center">
-        <div class="logoFlag" v-if="showFlag">AccessLog</div>
+        <div class="logoFlag" v-if="showFlag">
+          <img class="logo_head" src="@/assets/images/accessLog.jpg" />
+        </div>
         <div v-if="applicationFlag">
           <el-select
             v-model="serveValue"
@@ -206,8 +208,10 @@ export default {
       color: #4d4d4d;
       padding-top: 2px;
       display: flex;
-      .imgLogo {
+       .logo_head {
         height: 44px;
+        width: 150px;
+        object-fit: contain;
       }
     }
   }

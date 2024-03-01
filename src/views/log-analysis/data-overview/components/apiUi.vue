@@ -108,7 +108,7 @@ export default {
           // axisPointer: { type: "shadow" },
         },
         legend: {
-          data: ["访问量(PV)"],
+          // data: ["访问量(PV)"],
           right:'5%',
         },
         grid: {
@@ -146,7 +146,7 @@ export default {
         ],
         series: [
           {
-            name: "访问量(PV)",
+            name: "用户数(UV)",
             type: "bar",
             barWidth: 10,
             data: this.xDataList,

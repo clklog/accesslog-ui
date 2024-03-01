@@ -16,9 +16,14 @@
         height="405"
         border
       >
-        <el-table-column type="index" label="排名" min-width="30%"  :show-overflow-tooltip="true" />
-        <el-table-column prop="status" label="状态码" min-width="30%"  :show-overflow-tooltip="true"/>
-        <el-table-column prop="pv" label="计数" min-width="40%"  :show-overflow-tooltip="true"/>
+        <el-table-column type="index" label="排名" min-width="20%"  :show-overflow-tooltip="true" />
+        <el-table-column prop="status" label="状态码" min-width="25%"  :show-overflow-tooltip="true"/>
+        <el-table-column prop="pv" label="计数" min-width="30%"  :show-overflow-tooltip="true"/>
+        <el-table-column prop="pvRate" label="占比" min-width="25%"  :show-overflow-tooltip="true">
+          <template slot-scope="{row}">
+            {{ row.pvRate | percenTable }}
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>

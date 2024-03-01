@@ -127,11 +127,11 @@
         <el-table-column
           align="center"
           prop="pvRate"
-          label="占比"
+          label="耗时较长次数(>=1秒)占比"
           sortable="custom"
         >
           <template slot-scope="scope">
-            {{ scope.row.pvRate | percentage }}
+            {{ scope.row.pvRate | percenTable }}
           </template>
         </el-table-column>
         <el-table-column

@@ -24,13 +24,13 @@ module.exports = {
   // assetsDir: "static",
 
   //绝对路径
-  // publicPath: "/",
-  // outputDir: "dist",
-  // assetsDir: "static",
+  publicPath: "/",
+  outputDir: "dist",
+  assetsDir: "static",
 
   // 使用相对路径
-  assetsDir: "./assets",
-  publicPath: "",
+  // assetsDir: "./assets",
+  // publicPath: "",
 
   // lintOnSave: process.env.NODE_ENV === 'development',
   lintOnSave: false,

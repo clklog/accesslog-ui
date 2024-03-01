@@ -32,9 +32,15 @@
     </template>
 
     <!-- 浮动logo -->
-    <div class="logoConItem" v-if="showFlag">
+    <div class="logoConItem">
       <div class="logoName">POWERED BY</div>
-      <div>ZCUNSOFT</div>
+      <!-- <div>ZCUNSOFT</div> -->
+      <img
+        class="logoImg"
+        @click="openClklog"
+        src="@/assets/images/logoFIxed.png"
+        alt=""
+      />
     </div>
   </div>
 </template>

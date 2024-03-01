@@ -1,5 +1,6 @@
 <template>
   <div class="login-container">
+    <img style="position: absolute;right: 20px;top: 20px;width: 130px;" src="@/assets/images/clklogLogo.png" alt="">
     <div style="width: 60vw">
       <img
         src="@/assets/images/loginBg.png"
@@ -24,8 +25,7 @@
       >
         <div class="title-container">
           <h3 class="title" style="color: #000">
-            <!-- <img class="logo_head" src="@/assets/images/accessLog.jpg" /> -->
-            AccessLog
+            <img class="logo_head" src="@/assets/images/accessLog.jpg" />
           </h3>
         </div>
         <div
@@ -317,6 +317,7 @@ $light_gray: #eee;
   top: 14px !important;
 }
 .login-container {
+  position: relative;
   min-height: 100%;
   width: 100%;
   background-color: $bg;
@@ -382,7 +383,7 @@ $light_gray: #eee;
       .logo_head {
         height: 66px;
         width: 194px;
-        object-fit: cover;
+        object-fit: contain;
       }
     }
   }
