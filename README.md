@@ -42,10 +42,10 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/国拍日志分析系统/国拍日志分析系统-ui.git
+git clone https://github.com/clklog/accesslog-ui.git
 
 # 进入项目目录
-cd 国拍日志分析系统-ui
+cd accesslog-ui
 
 # 安装依赖
 npm install
@@ -90,7 +90,7 @@ npm run lint -- --fix
 
 ## Online Demo
 
-[在线 Demo](https://demo.国拍日志分析系统.com)
+[在线 Demo](https://demo.clklog.com/)
 
 ## Donate
 ```
