@@ -7,7 +7,7 @@ function resolve(dir) {
   return path.join(__dirname, dir);
 }
 
-const name = defaultSettings.title || "国拍日志分析系统"; // page title
+const name = defaultSettings.title || "AccessLog"; // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -18,18 +18,20 @@ const port = process.env.port || process.env.npm_config_port || 9527; // dev por
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
-  /**
-   * You will need to set publicPath if you plan to deploy your site under a sub path,
-   * for example GitHub Pages. If you plan to deploy your site to https://foo.github.io/bar/,
-   * then publicPath should be set to "/bar/".
-   * In most cases please use '/' !!!
-   * Detail: https://cli.vuejs.org/config/#publicpath
-   * /accesslog/
-   */
-  publicPath: "/accesslog/",
-  // publicPath: "./",
-  outputDir: "dist",
-  assetsDir: "static",
+  // publicPath: "/accesslog/",
+  // // publicPath: "./",
+  // outputDir: "dist",
+  // assetsDir: "static",
+
+  //绝对路径
+  // publicPath: "/",
+  // outputDir: "dist",
+  // assetsDir: "static",
+
+  // 使用相对路径
+  assetsDir: "./assets",
+  publicPath: "",
+
   // lintOnSave: process.env.NODE_ENV === 'development',
   lintOnSave: false,
   productionSourceMap: false,

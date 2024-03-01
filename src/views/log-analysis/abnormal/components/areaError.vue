@@ -1,7 +1,7 @@
 <template>
   <div class="block-main public-hoverItem logCon">
     <div class="block-head">
-      <div class="block-title">地域异常</div>
+      <div class="block-title">地域异常-接口弃用</div>
       <div class="block-head-icon">
         <img src="@/assets/images/icon.png" alt="" width="10px" />
       </div>
@@ -98,12 +98,12 @@ export default {
       this.commonParamsOld = commonParams;
       const { pageNum, pageSize } = this;
       commonParams = Object.assign({ pageNum, pageSize }, commonParams);
-      getExceptionIpApi(commonParams).then((res) => {
-        if (res.code == 200) {
-          this.tableData = res.data.rows;
-          this.total = res.data.total;
-        }
-      });
+      // getExceptionIpApi(commonParams).then((res) => {
+      //   if (res.code == 200) {
+      //     this.tableData = res.data.rows;
+      //     this.total = res.data.total;
+      //   }
+      // });
     },
   },
 };

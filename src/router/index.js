@@ -3,7 +3,7 @@ import Router from "vue-router";
 Vue.use(Router);
 import Layout from "@/layout";
 import logDataAnalysis from "./modules/logo-analysis";
-import businessMonitor from "./modules/business-monitor";
+// import businessMonitor from "./modules/business-monitor";
 
 
 export const constantRoutes = [
@@ -42,23 +42,18 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/logAnalysis/dataOverview',
   },
-  // 嵌套系统统一配置为常量路由
-  logDataAnalysis,
-  businessMonitor,
-  { path: '*', redirect: '/logAnalysis/dataOverview', hidden: true }
-
 ]
 
 export const asyncRoutes = [
-  // logDataAnalysis,
-  // businessMonitor,
-  // { path: '*', redirect: '/logAnalysis/dataOverview', hidden: true }
+  logDataAnalysis,
+  { path: '*', redirect: '/logAnalysis/dataOverview', hidden: true }
 ]
 
 const createRouter = () =>
   new Router({
-    mode: "history", // require service support
-    base: "/accesslog/",
+    // mode: "history", 
+    // base: "/accesslog/",
+    // base: "",
     scrollBehavior: () => ({ y: 0 }),
     routes: constantRoutes,
   });

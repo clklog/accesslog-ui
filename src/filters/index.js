@@ -54,7 +54,6 @@ export function formatTime(seconds) {
   return "--";
 }
 export function localIp() {
-  console.log(window.location.origin, "新的测试");
   if (
     window.location.origin == "http://192.168.100.171:9527" ||
     window.location.origin == "http://localhost:9527"

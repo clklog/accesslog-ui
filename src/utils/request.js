@@ -14,19 +14,9 @@ service.interceptors.request.use(
 
     if (store.getters.token) {
       config.headers["X-Token"] = getToken();
-      // config.headers['Authorization'] =  'Bearer ' + getToken()
     }
-    // 配置诺依框架接口请求
-    if (
-      window.location.origin == "http://192.168.100.171:9527" ||
-      window.location.origin == "http://localhost:9527"
-    ) {
-      config.headers["Authorization"] =
-        "Bearer " +
-        "eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImI5NDc2NTZhLTVmYTAtNGVhOC1hM2JjLWIyMGJmODgyZTNlNSJ9.ClZFunUTPf2wiK7QwHgnpKti7l4ddfUIsTtyNfgy-tlZk4ATjhuKDpSe-ogen6vTGVHtMkfd5xG4Wx8vtofE6A"
-    }else{
-      config.headers['Authorization'] =  'Bearer ' + getToken()
-    }
+   
+    config.headers['Authorization'] =  'Bearer ' + getToken()
 
     const isMock = config.url.includes("/vue-element-admin/user");
     if ((config.method === "post" || config.method === "put") && !isMock) {

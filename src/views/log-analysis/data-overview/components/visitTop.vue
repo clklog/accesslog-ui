@@ -15,14 +15,30 @@
         :cell-style="tableHeaderColor"
         border
       >
-        <el-table-column type="index" label="排名" min-width="20%"  :show-overflow-tooltip="true" />
+        <el-table-column
+          type="index"
+          label="排名"
+          min-width="20%"
+          :show-overflow-tooltip="true"
+        />
         <el-table-column
           prop="uri"
-          min-width="40%"  :show-overflow-tooltip="true"
+          min-width="40%"
+          :show-overflow-tooltip="true"
           label="页面URL"
         />
-        <el-table-column prop="uriCount" label="计数"  min-width="20%"  :show-overflow-tooltip="true"/>
-        <el-table-column prop="avgVisitTime" label="平均耗时(ms)" min-width="20%"  :show-overflow-tooltip="true" />
+        <el-table-column
+          prop="uriCount"
+          label="计数"
+          min-width="20%"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          prop="avgVisitTime"
+          label="平均耗时(ms)"
+          min-width="20%"
+          :show-overflow-tooltip="true"
+        />
       </el-table>
     </div>
   </div>
@@ -33,68 +49,7 @@ import { getUriTop10Api } from "@/api/trackingapi/accessLog";
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "accessLog",
-          num: " 1518 ",
-          time: "5:12:01",
-        },
-        {
-          date: "2016-05-04",
-          name: "ACCESSLOG",
-          num: " 1517 ",
-          time: "15:12:01",
-        },
-        {
-          date: "2016-05-01",
-          name: "项目2",
-          num: " 1519 ",
-          time: "19:12:01",
-        },
-        {
-          date: "2016-05-03",
-          name: "项目3",
-          num: " 1516 ",
-          time: "17:12:01",
-        },
-        {
-          date: "2016-05-02",
-          name: "accessLog",
-          num: " 1518 ",
-          time: "5:12:01",
-        },
-        {
-          date: "2016-05-04",
-          name: "ACCESSLOG",
-          num: " 1517 ",
-          time: "15:12:01",
-        },
-        {
-          date: "2016-05-01",
-          name: "项目2",
-          num: " 1519 ",
-          time: "19:12:01",
-        },
-        {
-          date: "2016-05-03",
-          name: "项目3",
-          num: " 1516 ",
-          time: "17:12:01",
-        },
-        {
-          date: "2016-05-01",
-          name: "项目2",
-          num: " 1519 ",
-          time: "19:12:01",
-        },
-        {
-          date: "2016-05-03",
-          name: "项目3",
-          num: " 1516 ",
-          time: "17:12:01",
-        },
-      ],
+      tableData: [],
     };
   },
   mounted() {},

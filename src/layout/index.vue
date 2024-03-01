@@ -62,13 +62,6 @@ export default {
     TagsView,
   },
   created() {
-    if (this.$options.filters.localIp()) {
-      this.showFlag = true;
-      this.$store.dispatch("app/toggleSideBar", true);
-    } else {
-      this.showFlag = false;
-      this.$store.dispatch("app/toggleSideBar", false);
-    }
     this.initNavBar();
   },
 

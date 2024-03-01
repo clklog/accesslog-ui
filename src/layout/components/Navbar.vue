@@ -1,10 +1,8 @@
 <template>
-  <div class="navbar" >
+  <div class="navbar">
     <div class="burying_point">
       <div style="display: flex; align-items: center">
-        <div class="logoFlag" v-if="showFlag">
-          国拍日志分析系统
-        </div>
+        <div class="logoFlag" v-if="showFlag">AccessLog</div>
         <div v-if="applicationFlag">
           <el-select
             v-model="serveValue"
@@ -71,7 +69,7 @@ export default {
       dateTime: "",
       dateWeek: "",
       showFlag: true,
-      navbarFlag:false,
+      navbarFlag: false,
     };
   },
   created() {
@@ -87,16 +85,8 @@ export default {
 
   mounted() {
     this.initHost(this.$route.path);
-    if (window.location.origin == "http://192.168.100.171:9527" ||
-    window.location.origin == "http://localhost:9527"
-    ) {
-      console.log("是否展开还是关闭");
-      this.showFlag = true;
-      this.$store.dispatch("app/toggleSideBar", true);
-    } else {
-      this.showFlag = false;
-      this.$store.dispatch("app/toggleSideBar", false);
-    }
+    this.showFlag = true;
+    this.$store.dispatch("app/toggleSideBar", true);
   },
   computed: {
     ...mapGetters(["sidebar", "avatar", "device", "applicationCode "]),
@@ -124,9 +114,6 @@ export default {
         this.applicationFlag = true;
       }
     },
-    handleChangeProject(val) {
-      this.$store.dispatch("tracking/setProject", val);
-    },
     getServer() {
       getServerApi(this.commonParams).then((res) => {
         if (res.code == 200) {
@@ -135,12 +122,15 @@ export default {
             return { ["label"]: "application-name:" + item, ["value"]: item };
           });
           if (this.options.length > 0) {
-            this.serveValue = this.options[1].value;
+            this.serveValue = this.options[0].value;
           }
-
+          localStorage.setItem("applicationCode", JSON.stringify(this.serveValue));
           this.handleChangeProject(this.serveValue);
         }
       });
+    },
+    handleChangeProject(val) {
+      this.$store.dispatch("tracking/setProject", val);
     },
     initDate() {
       const date = new Date();
