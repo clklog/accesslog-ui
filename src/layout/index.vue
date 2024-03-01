@@ -34,7 +34,6 @@
     <!-- 浮动logo -->
     <div class="logoConItem">
       <div class="logoName">POWERED BY</div>
-      <!-- <div>ZCUNSOFT</div> -->
       <img
         class="logoImg"
         @click="openClklog"
@@ -117,6 +116,9 @@ export default {
     handleClickOutside() {
       this.$store.dispatch("app/closeSideBar", { withoutAnimation: false });
     },
+    openClklog() {
+      window.open(`https://clklog.com/#/introduce`);
+    },
   },
 };
 </script>
@@ -131,6 +133,7 @@ export default {
   display: flex;
   z-index: 2000;
   .logoImg {
+    cursor: pointer;
     height: 16px;
     object-fit: cover;
   }
