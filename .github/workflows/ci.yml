@@ -4,16 +4,16 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'main'
-      - 'demo'
+      - "main"
+      - "demo"
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
     branches:
-      - 'main'
-      - 'demo'
+      - "main"
+      - "demo"
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 14
-          cache: 'npm'
+          cache: "npm"
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
