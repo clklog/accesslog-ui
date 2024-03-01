@@ -32,7 +32,7 @@ const tableRouter = {
             path: 'timeConsuming',
             component: () => import('@/views/log-analysis/performance-analysis/timeConsuming.vue'),
             name: 'timeConsuming',
-            meta: { title: '超1秒页面分析' }
+            meta: { title: '页面分析' }
           },
           {
             path: 'timingDiagram',

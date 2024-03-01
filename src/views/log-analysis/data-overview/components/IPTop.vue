@@ -1,7 +1,7 @@
 <template>
   <div class="block-main public-hoverItem logCon">
     <div class="block-head">
-      <div class="block-title"></div>
+      <div class="block-title">IP访问量Top10</div>
       <div class="block-head-icon" >
         <!-- @click="$router.push('/logAnalysis/abnormal')" -->
         <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
@@ -34,9 +34,6 @@ export default {
     getIpTop10(commonParams) {
       getIpTop10Api(commonParams).then((res) => {
         if (res.code == 200) {
-          // if (res.data && res.data.length > 10) {
-          //   this.tableData = res.data.slice(0,10);
-          // }
           this.xDataList = [];
           this.yDataList = [];
           this.ipList = res.data.slice(0, 10).reverse();

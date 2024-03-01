@@ -1,6 +1,6 @@
 import defaultSettings from '@/settings'
 
-const title = defaultSettings.title || '国拍日志分析系统'
+const title = defaultSettings.title || 'AccessLog'
 
 export default function getPageTitle(pageTitle) {
   if (pageTitle) {

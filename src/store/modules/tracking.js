@@ -1,12 +1,7 @@
 const state = {
-  // applicationCode : '货清清'
-  applicationCode : 'cnb.mgt',
+  applicationCode : JSON.parse(localStorage.getItem("applicationCode")) || 'cnb.mgt',
   httpHost:'',
   checkDate:'Day',
-  // checkDate:{
-  //   current:'今日',
-  //   last:'昨日',
-  // },
 }
 
 const mutations = {

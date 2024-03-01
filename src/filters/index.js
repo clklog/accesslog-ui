@@ -33,6 +33,12 @@ export function percentage(s) {
   }
   return "--";
 }
+export function percenTable(s) {
+  if (s) {
+    return (s * 100).toFixed(2) + "%";
+  }
+  return 0;
+}
 
 export function formatTime(seconds) {
   if (seconds) {
@@ -54,7 +60,6 @@ export function formatTime(seconds) {
   return "--";
 }
 export function localIp() {
-  console.log(window.location.origin, "新的测试");
   if (
     window.location.origin == "http://192.168.100.171:9527" ||
     window.location.origin == "http://localhost:9527"

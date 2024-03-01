@@ -918,7 +918,8 @@ export default {
           ? "0" + (date.getMonth() + 1)
           : date.getMonth() + 1) +
         "-" +
-        date.getDate();
+        // date.getDate();
+        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
       this.currentTime = [dateTime, dateTime];
       this.timeSlot = dateTime;
       this.initDate(this.currentTime); //默认日期
@@ -934,7 +935,8 @@ export default {
           ? "0" + (date.getMonth() + 1)
           : date.getMonth() + 1) +
         "-" +
-        date.getDate();
+        // date.getDate();
+        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
       let toData =
         new Date(new Date().toLocaleDateString()).getTime() + 8 * 3600 * 1000;
       if (val == "day") {

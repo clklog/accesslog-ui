@@ -1,6 +1,6 @@
 module.exports = {
   // title: 'Vue Element Admin',
-  title: '国拍日志分析系统',
+  title: 'AccessLog',
 
   /**
    * @type {boolean} true | false

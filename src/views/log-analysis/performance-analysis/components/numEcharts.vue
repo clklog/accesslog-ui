@@ -4,7 +4,17 @@
     <div v-if="timingList">
       <div id="dataChart" class="flowEchart"></div>
     </div>
-    <div v-else style="display: flex;justify-content: center;align-items: center;height: 230px;">暂无数据</div>
+    <div
+      v-else
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 230px;
+      "
+    >
+      暂无数据
+    </div>
   </div>
 </template>
 
@@ -62,9 +72,8 @@ export default {
       apiList.rows.map((item, index) => {
         item.name = item.uri;
         if (item.name.length > 55) {
-          item.name =  item.name.substring(0, 50)+'...'
+          item.name = item.name.substring(0, 50) + "...";
         }
-       
       });
       this.dataChart.seriesData = apiList.rows;
       this.dataChart.roundsData = apiList.times;
@@ -108,8 +117,8 @@ export default {
           "#E9967A",
         ],
         tooltip: {
-          trigger: "axis",
-          position: 'center',
+          trigger: "axis", // 相对位置
+          position: ["50%", "0"],
         },
         dataZoom: [
           {

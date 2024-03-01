@@ -1,16 +1,18 @@
 <template>
   <div
     class="search_wrappy public-table-block public-hoverItem"
-    style="position: relative;"
+    style="position: relative"
   >
     <span class="public-firstHead">性能分析</span>
 
     <div class="flow-indicator public_indicator" style="margin-top: 10px">
+     
+
       <div class="flow-item" style="font-size: 13px; color: #4d4d4d">
         请选择要排除的文件类型：
       </div>
 
-      <div class="flow-item">
+      <div class="flow-item" style="margin-top: 5px;">
         <el-checkbox-group
           v-model="performFilter"
           class="checkBoxStyle"
@@ -46,7 +48,24 @@
           @keyup.enter.native="toSearch()"
           @change="toSearch()"
         ></el-input>
+
+        <!-- <el-checkbox style="margin-left: 55px;" label="overSecond">超过一秒</el-checkbox> -->
       </div>
+
+      <div class="flow-item" style="font-size: 13px; color: #4d4d4d">
+        请选择页面响应时间范围：
+      </div>
+      <el-checkbox-group
+        v-model="overSecond"
+        class="checkBoxStyle"
+        @change="overSecondEvent"
+        style="margin-top: 5px;margin-bottom: 5px;"
+      >
+        <el-checkbox style="margin-left: 10px" label="overSecond"
+          >超过一秒</el-checkbox
+        >
+      </el-checkbox-group>
+
     </div>
 
     <div
@@ -108,11 +127,11 @@
         <el-table-column
           align="center"
           prop="pvRate"
-          label="占比"
+          label="耗时较长次数(>=1秒)占比"
           sortable="custom"
         >
           <template slot-scope="scope">
-            {{ scope.row.pvRate | percentage }}
+            {{ scope.row.pvRate | percenTable }}
           </template>
         </el-table-column>
         <el-table-column
@@ -170,10 +189,14 @@ export default {
       applicationData: "",
       hostList: [],
       hostChange: "",
+      overSecond: false,
     };
   },
   mounted() {},
   methods: {
+    overSecondEvent() {
+      this.getPerformanceDetail(this.commonParams);
+    },
     getIndex($index) {
       return (this.currentPage - 1) * this.pageSize + $index + 1;
     },
@@ -186,7 +209,7 @@ export default {
       this.hostChange = val;
       this.getPerformanceDetail(this.commonParams);
     },
-   
+
     // 其它格式
     inputFilterEvent(val) {
       if (this.inputOther) {
@@ -232,8 +255,7 @@ export default {
       }
       this.getPerformanceDetail(this.commonParams);
     },
-    confirmEvent() {
-    },
+    confirmEvent() {},
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 2) {
         return "text-align:left";
@@ -281,10 +303,7 @@ export default {
         { pageNum, pageSize, sortOrder },
         this.commonParams
       );
-      //   if (!this.commonParams.sortName) {
-      //     this.commonParams.sortName = null
-      //   }
-
+      this.commonParams.isOverOneSecond = this.overSecond;
       getPerformanceDetailApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           this.performanceList = res.data.rows;

@@ -32,9 +32,15 @@
     </template>
 
     <!-- 浮动logo -->
-    <div class="logoConItem" v-if="showFlag">
+    <div class="logoConItem">
       <div class="logoName">POWERED BY</div>
-      <div>ZCUNSOFT</div>
+      <!-- <div>ZCUNSOFT</div> -->
+      <img
+        class="logoImg"
+        @click="openClklog"
+        src="@/assets/images/logoFIxed.png"
+        alt=""
+      />
     </div>
   </div>
 </template>
@@ -62,13 +68,6 @@ export default {
     TagsView,
   },
   created() {
-    if (this.$options.filters.localIp()) {
-      this.showFlag = true;
-      this.$store.dispatch("app/toggleSideBar", true);
-    } else {
-      this.showFlag = false;
-      this.$store.dispatch("app/toggleSideBar", false);
-    }
     this.initNavBar();
   },
 
