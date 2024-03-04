@@ -69,5 +69,5 @@ jobs:
       - name: Push image to Aliyun Docker Registry
         run: |
           docker buildx imagetools create \
-            --tag registry.cn-shanghai.aliyuncs.com/clklog/access_api:${{ steps.set-tag.outputs.tag }} \
+            --tag registry.cn-shanghai.aliyuncs.com/clklog/accesslog-ui:${{ steps.set-tag.outputs.tag }} \
             zcunsoft/accesslog-ui:${{ steps.set-tag.outputs.tag }}
