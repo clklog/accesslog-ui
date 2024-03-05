@@ -148,8 +148,9 @@ import { copyObj } from "@/utils/copy";
 import {
   getStatusListApi,
   getStatusFlowTrendApi,
-  getStatusDetailApi,
+  // getStatusDetailApi,
 } from "@/api/trackingapi/status";
+import { getPerformanceDetailApi } from "@/api/trackingapi/performance";
 export default {
   data() {
     return {
@@ -205,7 +206,7 @@ export default {
         httpHost: "",
       },
       newArray: {},
-      newApplication: "",
+      newApplication: this.$store.getters.applicationCode,
     };
   },
   computed: {
@@ -214,7 +215,7 @@ export default {
     },
   },
   watch: {
-    applicationCode(val) {
+    applicationCode(val,old) {
       console.log(val, "新值");
       this.newApplication = val;
     },
@@ -248,7 +249,7 @@ export default {
       this.commonParams.status = this.propStatu.property;
       this.commonParams.httpHost = this.propStatu.httpHost;
       this.commonParams.applicationCode = this.newApplication;
-      getStatusDetailApi(this.commonParams).then((res) => {
+      getPerformanceDetailApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           this.statuDetailList = res.data.rows;
           this.total = res.data.total;
