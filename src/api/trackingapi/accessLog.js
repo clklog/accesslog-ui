@@ -35,23 +35,24 @@ export function getFlowTrendApi(params) {
   })
 }
 
-// 获取耗时TOP10数据
-export function getRequestTimeTop10Api(params) {
-  return request({
-    url: '/accesslog/getRequestTimeTop10',
-    method: 'post',
-    data: params
-  })
-}
+//  弃用获取耗时TOP10数据  
+// export function getRequestTimeTop10Api(params) {
+//   return request({
+//     url: '/accesslog/getRequestTimeTop10',
+//     method: 'post',
+//     data: params
+//   })
+// }
 
-// 获取访问TOP10数据
-export function getUriTop10Api(params) {
-  return request({
-    url: '/accesslog/getUriTop10',
-    method: 'post',
-    data: params
-  })
-}
+// 弃用获取访问TOP10数据
+// export function getUriTop10Api(params) {
+//   return request({
+//     url: '/accesslog/getUriTop10',
+//     method: 'post',
+//     data: params
+//   })
+// }
+
 // 获取IP访问量TOP10数据
 export function getIpTop10Api(params) {
   return request({
@@ -103,14 +104,9 @@ export function getIpByProvinceApi(params) {
   })
 }
 
-
-
-// ------------------------------------------------------
-
 // 按应用流量指标概览
 export function getHostOverviewApi(params) {
   return request({
-    // url: '/accesslog/getHostOverview',
     url: '/getHostOverview',
     method: 'post',
     data: params
@@ -119,7 +115,6 @@ export function getHostOverviewApi(params) {
 // 指标概览
 export function getOverviewApi(params) {
   return request({
-    // url: '/accesslog/getOverview',
     url: '/getOverview',
     method: 'post',
     data: params
@@ -133,11 +128,3 @@ export function getPerformanceDetailApi(params) {
     data: params
   })
 }
-//状态码分析
-// export function getStatusApi(params) {
-//   return request({
-//     url: '/getStatus',
-//     method: 'post',
-//     data: params
-//   })
-// }
