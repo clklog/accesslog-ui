@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import { getRequestTimeTop10Api } from "@/api/trackingapi/accessLog";
+import { getPerformanceDetailApi } from "@/api/trackingapi/performance";
+import { copyObj } from "@/utils/copy";
 export default {
   data() {
     return {
@@ -46,9 +47,14 @@ export default {
       }
     },
     getRequestTimeTop10(commonParams) {
-      getRequestTimeTop10Api(commonParams).then((res) => {
+      let params = copyObj(commonParams)
+      params.pageSize = 10;
+      params.pageNum = 1;
+      params.sortName = 'maxVisitTime';
+      params.sortOrder = 'desc';
+      getPerformanceDetailApi(params).then((res) => {
         if (res.code == 200) {
-          this.timeTopLIst = res.data;
+          this.timeTopLIst = res.data.rows;
         }
       });
     },

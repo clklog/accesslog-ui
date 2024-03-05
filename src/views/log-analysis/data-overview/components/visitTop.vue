@@ -1,6 +1,9 @@
 <template>
   <div class="block-main public-hoverItem logCon">
-    <div class="block-head" @click="$router.push('/logAnalysis/performance/timeConsuming')">
+    <div
+      class="block-head"
+      @click="$router.push('/logAnalysis/performance/timeConsuming')"
+    >
       <div class="block-title">访问Top10</div>
       <div class="block-head-icon">
         <img src="@/assets/images/icon.png" alt="" width="10px" />
@@ -28,7 +31,7 @@
           label="页面URL"
         />
         <el-table-column
-          prop="uriCount"
+          prop="pv"
           label="计数"
           min-width="20%"
           :show-overflow-tooltip="true"
@@ -45,7 +48,8 @@
 </template>
 
 <script>
-import { getUriTop10Api } from "@/api/trackingapi/accessLog";
+import { getPerformanceDetailApi } from "@/api/trackingapi/performance";
+import { copyObj } from "@/utils/copy";
 export default {
   data() {
     return {
@@ -62,9 +66,14 @@ export default {
       }
     },
     getUriTop10(commonParams) {
-      getUriTop10Api(commonParams).then((res) => {
+      let params = copyObj(commonParams)
+      params.sortName = 'pv';
+      params.sortOrder = 'desc';
+      params.pageSize = 10;
+      params.pageNum = 1;
+      getPerformanceDetailApi(params).then((res) => {
         if (res.code == 200) {
-          this.tableData = res.data;
+          this.tableData = res.data.rows;
         }
       });
     },

@@ -68,25 +68,6 @@ export default {
         this.$refs.statueTable.getStatusData(this.commonParams);
       });
     },
-    // getStatusData(val) {
-    //   // console.log(val, "val-------");
-    //   let params = copyObj(this.commonParams);
-    //   params.host = val;
-    //   getStatusApi(params).then((res) => {
-    //     if (res.code == 200) {
-         
-    //       this.statuCodeList = res.data;
-    //       this.statuCodeList = this.statuCodeList.map((item) => {
-    //         return { ["label"]: 'statu', ["value"]: item };
-    //       });
-
-    //       this.total = res.data.total;
-    //       this.allDataList.push(res.data);
-    //       console.log(this.allDataList, "allDataList----");
-    //     }
-    //   });
-    // },
-
     setFilterBarParams(val) {
       this.filterBarParams = copyObj(val);
     },

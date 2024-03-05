@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { getStatusApi } from "@/api/trackingapi/status";
+import { getStatusApi } from "@/api/trackingapi/accessLog";
 import echarts from "echarts";
 export default {
   data() {

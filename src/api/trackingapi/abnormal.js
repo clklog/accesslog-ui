@@ -25,11 +25,11 @@ export function getExceptionIpApi(params) {
     data: params
   })
 }
-// 状态码详情
-export function getStatusDetailApi(params) {
-  return request({
-    url: '/accesslog/status/getStatusDetail',
-    method: 'post',
-    data: params
-  })
-}
+// // 状态码详情
+// export function getStatusDetailApi(params) {
+//   return request({
+//     url: '/accesslog/status/getStatusDetail',
+//     method: 'post',
+//     data: params
+//   })
+// }
