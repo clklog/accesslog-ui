@@ -36,7 +36,7 @@
           hostLength > 2
         "
       >
-        <log-index ref="logIndex"></log-index>
+        <log-index ref="logIndex" @visitDataEvent = "visitDataEvent"></log-index>
       </div>
     </div>
   </div>
@@ -116,6 +116,9 @@ export default {
     },
   },
   methods: {
+    visitDataEvent(){
+      this.getServerOverViewEvent()
+    },
     getOverview() {
       getOverviewApi(this.commonParams).then((res) => {
         if (res.code == 200) {
@@ -127,6 +130,20 @@ export default {
     },
     getServerOverview() {
       this.hostLength = this.httpHost;
+      this.getServerOverViewEvent()
+      this.$nextTick(() => {
+        this.$refs.dataTrend.getFlowTrendEvent(this.commonParams);
+        this.$refs.timeTop.getRequestTimeTop10(this.commonParams);
+        this.$refs.visitTop.getUriTop10(this.commonParams);
+        this.$refs.visitSource.getReferrerTop10(this.commonParams);
+        this.$refs.Status.getStatus(this.commonParams);
+        this.$refs.ipTop.getIpTop10(this.commonParams);
+        this.$refs.apiUi.getUa(this.commonParams);
+        this.$refs.funApi.getRequestMethod(this.commonParams);
+        this.$refs.ipDistribution.getIpByProvince(this.commonParams);
+      });
+    },
+    getServerOverViewEvent(){
       getServerOverviewApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           this.overList = res.data;
@@ -138,17 +155,6 @@ export default {
             );
           });
         }
-      });
-      this.$nextTick(() => {
-        this.$refs.dataTrend.getFlowTrendEvent(this.commonParams);
-        this.$refs.timeTop.getRequestTimeTop10(this.commonParams);
-        this.$refs.visitTop.getUriTop10(this.commonParams);
-        this.$refs.visitSource.getReferrerTop10(this.commonParams);
-        this.$refs.Status.getStatus(this.commonParams);
-        this.$refs.ipTop.getIpTop10(this.commonParams);
-        this.$refs.apiUi.getUa(this.commonParams);
-        this.$refs.funApi.getRequestMethod(this.commonParams);
-        this.$refs.ipDistribution.getIpByProvince(this.commonParams);
       });
     },
     logEchartsEvent() {
