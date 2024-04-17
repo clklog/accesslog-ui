@@ -35,24 +35,6 @@ export function getFlowTrendApi(params) {
   })
 }
 
-//  弃用获取耗时TOP10数据  
-// export function getRequestTimeTop10Api(params) {
-//   return request({
-//     url: '/accesslog/getRequestTimeTop10',
-//     method: 'post',
-//     data: params
-//   })
-// }
-
-// 弃用获取访问TOP10数据
-// export function getUriTop10Api(params) {
-//   return request({
-//     url: '/accesslog/getUriTop10',
-//     method: 'post',
-//     data: params
-//   })
-// }
-
 // 获取IP访问量TOP10数据
 export function getIpTop10Api(params) {
   return request({
@@ -128,3 +110,20 @@ export function getPerformanceDetailApi(params) {
     data: params
   })
 }
+//获取ip列表
+export function getIpListApi(params) {
+  return request({
+    url: '/accesslog/ip/getIpList',
+    method: 'post',
+    data: params
+  })
+}
+//按地域获取IP分布统计数据
+export function getIpByAreaApi(params) {
+  return request({
+    url: '/accesslog/ip/getIpByArea',
+    method: 'post',
+    data: params
+  })
+}
+

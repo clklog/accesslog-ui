@@ -1,7 +1,7 @@
 <template>
   <div class="block-main public-hoverItem logCon">
-    <div class="block-head">
-      <div style="display: flex; align-items: center">
+    <div class="block-head" style="position: relative;">
+      <div style="display: flex; align-items: center;z-index: 999;" >
         <div class="block-title">趋势图</div>
         <el-radio-group
           size="mini"
@@ -14,6 +14,13 @@
           <el-radio-button label="week">按周</el-radio-button>
           <el-radio-button label="month">按月</el-radio-button>
         </el-radio-group>
+      </div>
+      <div
+        class="block-head-icon"
+        @click="$router.push('/logAnalysis/trend')"
+        style="width: 100%;position: absolute;right: 0;"
+      >
+        <img src="@/assets/images/icon.png" alt="" width="10px" />
       </div>
     </div>
     <div class="block-echarts">

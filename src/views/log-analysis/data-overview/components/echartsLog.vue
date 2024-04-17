@@ -64,9 +64,7 @@ export default {
         },
         tooltip: {
           trigger: "item",
-          // formatter: "{a} <br/> {c} ({d}%)",
           formatter: (params) => {
-            // console.log(params);
             let htmlStr;
             if (params.data.flag) {
               // 平均时长的展示
@@ -105,13 +103,9 @@ export default {
         // },
         series: [
           {
-            // name: "日志分析",
             type: "pie",
-            // radius: "40%",
-            radius: ["40%", "55%"],
-            // center: ["30%", "40%"],
+            radius: ["30%", "45%"],
             avoidLabelOverlap: true,
-            // 自定义颜色
             itemStyle: {
               normal: {
                 color: (item) => {
@@ -119,13 +113,11 @@ export default {
                 },
               },
             },
-
             label: {
               normal: {
                 show: true,
                 padding: [20, 0],
-                position: "outside", // 标签位于饼图外部
-                // formatter:  "({d}%)",
+                position: "outside",
                 formatter: (params) => {
                   if (params.data.flag) {
                     return params.value;
@@ -139,23 +131,9 @@ export default {
               emphasis: {
                 show: true,
               },
-              // emphasis: {
-              //   label: {
-              //     show: true,
-              //     fontSize: "30",
-              //     fontWeight: "bold",
-              //   },
-              // },
             },
-            // labelLine: {
-            //   minTurnAngle: 0,
-            // },
             labelLine: {
-              // length: 10, // 引导线起点到文字的距离
-              // length2: 30, // 引导线终点到饼图边缘的距离
-              // smooth: true, // 弯曲程度
-              // position: "outside", // 标签位于饼图外部
-              // show: true,
+              length: 10, // 引导线起点到文字的距离
               lineStyle: {
                 color: "rgba(255, 255, 255, 0.3)",
               },
@@ -185,7 +163,6 @@ export default {
           }
         });
       });
-      // console.log(this.chartData,"this.chartData-------");
     },
   },
 };

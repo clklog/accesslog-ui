@@ -14,6 +14,18 @@ const tableRouter = {
         name: 'dataOverview',
         meta: { title:'数据概览' }
       },
+      {
+        path: 'trend',
+        component: () => import('@/views/trend-analysis/index.vue'),
+        name: 'trend',
+        meta: { title:'趋势分析' }
+      },
+      {
+        path: 'ip',
+        component: () => import('@/views/ip-analysis/index.vue'),
+        name: 'ip',
+        meta: { title:'IP分析' }
+      },
       {  
         path: 'abnormal',
         component: () => import('@/views/log-analysis/abnormal/index.vue'),
@@ -48,6 +60,8 @@ const tableRouter = {
         name: 'statuCode',
         meta: { title:'状态码分析' }
       },
+      
+      
     ]
   }
   export default tableRouter

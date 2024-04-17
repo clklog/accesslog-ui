@@ -375,3 +375,59 @@ export function toThousandFilter(num) {
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+// 当前日期
+export function formatDateToday() {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // 月份是从0开始计数的，需要加1
+  const day = String(currentDate.getDate()).padStart(2, "0");
+  const formattedDate = `${year}-${month}-${day}`;
+  return formattedDate;
+}
+// 获取当前小时的方式
+export function getCurrentHour() {
+  const currentDate = new Date();
+  let currentHour = currentDate.getHours();
+
+  // 如果当前小时小于 10，则在前面添加 0
+  currentHour = currentHour < 10 ? "0" + currentHour : currentHour;
+
+  return currentHour;
+}
+export function formatTimeTable(seconds) {
+  if (seconds) {
+    seconds = Math.floor(seconds);
+    var hours = Math.floor(seconds / 3600);
+    var minutes = Math.floor((seconds - hours * 3600) / 60);
+    var seconds = seconds - hours * 3600 - minutes * 60;
+
+    if (hours < 10) {
+      hours = "0" + hours;
+    }
+    if (minutes < 10) {
+      minutes = "0" + minutes;
+    }
+    if (seconds < 10) {
+      seconds = "0" + seconds;
+    }
+    return hours + ":" + minutes + ":" + seconds;
+  } else {
+    return 0;
+  }
+}
+// 获取当前日期年月日------
+export function todateFunc() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  return `${year}-${month < 10 ? '0' + month : month }-${day < 10 ? '0' + day : day}`;
+}
+// 时间戳转换为年月日---------
+export function timeStampFunc(timestamp) {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
