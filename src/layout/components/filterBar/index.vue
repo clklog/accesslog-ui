@@ -73,7 +73,12 @@
         <el-date-picker
           v-if="byCalendar"
           class="timnePickCSS"
-          style="margin-left: 20px; width: 250px; height: 30px"
+          style="
+            margin-left: 20px;
+            width: 250px;
+            height: 30px;
+            line-height: 30px !important;
+          "
           v-model="currentTime"
           ref="tiemPick"
           type="daterange"
@@ -85,6 +90,30 @@
           @change="checkDateEvnet"
         >
         </el-date-picker>
+
+        <!-- 对比时间段 -->
+        <div style="margin-left: 20px; line-height: 30px" v-if="ByContrast">
+          <el-checkbox v-model="checked" @change="checkTimeSlot">{{
+            checkLabel
+          }}</el-checkbox>
+        </div>
+        <div v-show="contrastFlag">
+          <!-- 日期2 -->
+          <el-date-picker
+            class="timnePickCSS"
+            style="margin-left: 20px; width: 250px; height: 30px"
+            v-model="contrastValue"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            :picker-options="pickerBeginOption"
+            @change="checkContrast"
+          >
+          </el-date-picker>
+        </div>
+
         <!-- 100ms时序图 -->
         <el-date-picker
           v-if="ByTimeSlot"
@@ -129,9 +158,6 @@
             margin-left: 20px;
           "
         >
-          <!-- <div style="font-size: 12px; color: #4d4d4d; padding-left: 6px">
-            host:
-          </div> -->
           <el-select
             class="year"
             v-model="timeValue"
@@ -140,7 +166,6 @@
             style="width: 150px"
             @change="handleTimeValue"
           >
-            <!-- <i class="el-icon-delete"></i> -->
             <el-option
               v-for="item in timeDateList"
               :key="item.value"
@@ -150,46 +175,20 @@
             </el-option>
           </el-select>
         </div>
-
-        <!-- host -->
         <div
-          v-if="ByHost"
+          v-if="ByData"
           style="
-            display: flex;
-            border: 1px solid #acb2ba;
-            border-radius: 4px;
-            align-items: center;
-            height: 30px;
             margin-left: 20px;
+            height: 32px;
+            display: flex;
+            align-items: center;
           "
         >
-          <div style="font-size: 12px; color: #4d4d4d; padding-left: 6px">
-            host:
-          </div>
-          <el-select
-            class="appli_select"
-            v-model="hostValue"
-            placeholder="请选择应用"
-            size="small"
-            style="min-width: 100px"
-            @change="handleChangeProject"
-          >
-            <el-option
-              v-for="item in hostData"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-              :disabled="item.disabled"
-            >
-            </el-option>
-          </el-select>
-        </div>
-
-        <div v-if="ByData" style="margin-left: 20px; height: 30px">
           <el-radio-group
+            @change="handleRadioEvent"
             size="mini"
             v-model="timeType"
-            style="font-size: 13px; height: 30px"
+            style="font-size: 13px; height: 32px"
           >
             <el-radio-button label="hour" :disabled="dayFlag ? true : false"
               >按时</el-radio-button
@@ -205,6 +204,42 @@
             >
           </el-radio-group>
         </div>
+
+        <!-- host -->
+        <div
+          v-if="ByHost"
+          style="
+            display: flex;
+            border: 1px solid #acb2ba;
+            border-radius: 4px;
+            align-items: center;
+            height: 30px;
+            margin-left: 20px;
+          "
+        >
+          <div style="font-size: 12px; color: #4d4d4d; padding-left: 6px">
+            主机:
+          </div>
+          <el-select
+            class="appli_select"
+            v-model="hostValue"
+            placeholder="请选择应用"
+            size="small"
+            style="min-width: 110px"
+            @change="handleChangeProject"
+          >
+            <el-option
+              v-for="item in hostData"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+       
 
         <div v-if="ByArea" class="areaContent">
           <div class="areaItem">
@@ -263,16 +298,6 @@
             </el-radio-group>
           </div>
         </div>
-
-        <!-- <div style="display: flex; position: fixed; right: 30px">
-          <div class="btnEvent" @click="download">
-            <i
-              class="el-icon-download"
-              style="padding-right: 3px; font-size: 14px"
-            ></i
-            >下载
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
@@ -283,7 +308,7 @@ import { blobDownloads } from "@/utils/localDownloadUtil.js";
 import { string } from "clipboard";
 import { province } from "@/utils/province";
 import { getHostApi } from "@/api/trackingapi/accessLog.js";
-
+import { copyObj } from "@/utils/copy";
 export default {
   props: {
     byTimeType: {
@@ -334,9 +359,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    ByContrast: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
+      checked: false,
       checkMonth: "",
       checkDay: "",
       segmentTime: "Day",
@@ -575,38 +605,22 @@ export default {
       hostData: [],
       hostValue: "all",
       segmentTimeList: this.$options.filters.formatToday(), //默认今日日期
-      // whoId: "31010619611113281x", //证件号
       whoId: "", //证件号
       blurFlag: false,
       timeSlotList: [],
       toDate: [],
+      checkLabel: "对比时间段", //对比
+      contrastValue: "",
+      contrastFlag: "",
     };
   },
   mounted() {
     this.handleAdd();
-    // 暂定30天 有数值
-    // let date = new Date();
-    // let toData =
-    //   new Date(new Date().toLocaleDateString()).getTime() + 8 * 3600 * 1000;
-    // let dateTime =
-    //   date.getFullYear() +
-    //   "-" +
-    //   (date.getMonth() + 1 < 10
-    //     ? "0" + (date.getMonth() + 1)
-    //     : date.getMonth() + 1) +
-    //   "-" +
-    //   date.getDate();
-    // this.timeDifference = toData - 29 * 3600 * 24 * 1000;
-    // this.timestampToTime(this.timeDifference);
-    // this.currentTime = [this.checkDateTime, dateTime];
-    // this.startTime = this.currentTime[0];
-    // this.endTime = this.currentTime[1];
-    // ------------------end
     this.getHostList();
     // 初始值调用
     if (this.$route.path == "/business/monitorPanel") {
       this.$emit("setFilterBarParams", this.commonParams);
-    }else if (this.$route.path == "/business/globalTopology") {
+    } else if (this.$route.path == "/business/globalTopology") {
       this.$emit("setFilterBarParams", this.commonParams);
     }
   },
@@ -635,7 +649,6 @@ export default {
       return province;
     },
     defaultParams() {
-      // const { startTime, endTime,segmentTimeList,segmentTime } = this;
       const { startTime, endTime, segmentTimeList, timeSlotList } = this;
       if (this.BySegment) {
         return {
@@ -663,9 +676,13 @@ export default {
         httpHost,
         timeValue,
         timeSlot,
+        contrastValue,
       } = this;
       if (this.ByArea) {
         obj = Object.assign(obj, { province });
+      }
+      if (this.ByData) {
+        obj = Object.assign(obj, { timeType });
       }
       if (this.ByHost) {
         obj = Object.assign(obj, { httpHost });
@@ -679,24 +696,32 @@ export default {
       if (this.ByTimeSlot) {
         obj = Object.assign(obj, { timeValue, timeSlot });
       }
-
+      // 对比的时间
+      if (this.ByContrast) {
+        obj = Object.assign(obj, { contrastValue });
+      }
       return obj;
     },
   },
   watch: {
-    commonParams(val) {
-      // console.log(this.$route.path, "route.path");
-      if (
-        
-        this.$route.path != "/business/railwayTrack" &&
-        this.$route.path != "/business/monitorPanel" &&
-        this.$route.path != "/business/globalTopology"
-      ) {
-        this.setTopFilterParams(val);
-        this.commonData = val;
-      }
+    commonParams: {
+      deep: false,
+      immediate: false,
+      handler(newVal, oldVal) {
+        if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+          this.$nextTick(() => {
+            if (
+              this.$route.path != "/business/railwayTrack" &&
+              this.$route.path != "/business/monitorPanel" &&
+              this.$route.path != "/business/globalTopology"
+            ) {
+              this.setTopFilterParams(newVal);
+              this.commonData = newVal;
+            }
+          });
+        }
+      },
     },
-
     applicationCode: {
       handler(newValue, oldValue) {
         this.hostValue = "all";
@@ -706,6 +731,52 @@ export default {
     },
   },
   methods: {
+    handleRadioEvent() {
+      // this.clearEvent();
+    },
+    clearEvent() {
+      this.checked = false;
+      this.contrastFlag = false;
+      this.checkLabel = "对比时间段";
+      this.contrastValue = "";
+    },
+    checkTimeSlot(val) {
+      switch (val) {
+        case true:
+          this.checkLabel = "对比";
+          this.contrastValue = "";
+          break;
+        case false:
+          this.checkLabel = "对比时间段";
+          this.contrastValue = "";
+          this.dateFlag = null;
+          break;
+      }
+      this.contrastFlag = val;
+    },
+    // 对比日期2
+    checkContrast(val) {
+      this.dateFlag = 2;
+      let copyDate = copyObj(this.contrastValue);
+      const dateOne =
+        Date.parse(this.currentTime[1]) - Date.parse(this.currentTime[0]); // 日期一的时间差值
+      const toDate = this.$options.filters.todateFunc(); //当日
+      const rangeDate = Date.parse(toDate) - Date.parse(this.contrastValue[0]); //日期二的时间差值
+
+      if (rangeDate >= dateOne) {
+        const dateTwoEndtimeStamp = Date.parse(this.contrastValue[0]) + dateOne;
+        let automaticDate =
+          this.$options.filters.timeStampFunc(dateTwoEndtimeStamp);
+        this.contrastValue[1] = automaticDate;
+      } else {
+        // 没有这个范围进行逆向取值
+        const reverseDate = Date.parse(this.contrastValue[0]) - dateOne;
+        let automaticDate = this.$options.filters.timeStampFunc(reverseDate);
+        this.contrastValue[0] = automaticDate;
+        this.contrastValue[1] = copyDate[1];
+      }
+      console.log(this.contrastValue, "contrastValue----");
+    },
     // 增加时间段传值
     segmentTimeEvent(val) {
       switch (val) {
@@ -763,9 +834,6 @@ export default {
       this.$store.dispatch("tracking/setDate", val);
     },
     handleTimeValue(val) {},
-    checkTimeSlot(val) {
-    },
-
     numberEvent(val) {
       let path = this.$route.path;
       if (path == "/business/railwayTrack") {
@@ -777,7 +845,7 @@ export default {
         let obj = {};
         obj = Object.assign(params, this.defaultParams);
         this.setTopFilterParams(obj);
-      }else if(path == "/business/globalTopology"){
+      } else if (path == "/business/globalTopology") {
         this.setTopFilterParams(this.commonParams);
       }
     },
@@ -842,6 +910,7 @@ export default {
     },
 
     checkDateEvnet(val) {
+      this.clearEvent();
       this.timeFlag = "";
       this.startTime = val[0];
       this.endTime = val[1];
@@ -919,7 +988,7 @@ export default {
           : date.getMonth() + 1) +
         "-" +
         // date.getDate();
-        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
+        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate());
       this.currentTime = [dateTime, dateTime];
       this.timeSlot = dateTime;
       this.initDate(this.currentTime); //默认日期
@@ -927,6 +996,7 @@ export default {
 
     // 单选切换时间
     handleChange(val) {
+      this.clearEvent();
       var date = new Date();
       let dateTime =
         date.getFullYear() +
@@ -936,26 +1006,30 @@ export default {
           : date.getMonth() + 1) +
         "-" +
         // date.getDate();
-        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
+        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate());
       let toData =
         new Date(new Date().toLocaleDateString()).getTime() + 8 * 3600 * 1000;
       if (val == "day") {
         this.currentTime = [dateTime, dateTime];
         this.dateTimeCount(1);
+        this.timeType = "hour";
       } else if (val == "previous") {
         this.timeDifference = toData - 3600 * 24 * 1000;
         this.timestampToTime(this.timeDifference);
         this.currentTime = [this.checkDateTime, this.checkDateTime];
         this.dateTimeCount(1);
+        this.timeType = "hour";
       } else if (val == "week") {
         this.timeDifference = toData - 6 * 3600 * 24 * 1000;
         this.timestampToTime(this.timeDifference);
         this.currentTime = [this.checkDateTime, dateTime];
         this.dateTimeCount(6);
+        this.timeType = "day";
       } else {
         this.timeDifference = toData - 29 * 3600 * 24 * 1000;
         this.timestampToTime(this.timeDifference);
         this.currentTime = [this.checkDateTime, dateTime];
+        this.timeType = "week";
         this.dateTimeCount(29);
       }
       this.startTime = this.currentTime[0];
@@ -994,19 +1068,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 ::v-deep {
-  .year {
-    // .el-input__inner {
-    //   //如果你的style 加了scoped 需要加/deep/
-    //   // @/assets/images/fkfx.png
-    //   background: url("../../../assets/images/fkfx.png") no-repeat; //引入icon
-    //   background-size: 12px 12px; //这个是图片的大小，在这里不能直接设置width  height,设置宽高其实是select的宽高，图片可能会失真只设置宽度  高度auto也行
-    //   background-position: 4px 5px; //在input中定位置  这两个参数是x  y坐标
-    //   // padding: 0 0 0 26px; //需要设置padding 把placeholder向右移
-    //   // box-sizing: border-box;
-    //   // font-size: 14px;
-    // }
-  }
+  // .el-checkbox {
+  //   margin-right: 0 !important;
+  //   // min-width: 20px !important;
 
+  // }
   .el-input--medium .el-input__inner {
     height: 30px !important;
     line-height: 30px !important;
@@ -1026,6 +1092,7 @@ export default {
     height: 30px;
     line-height: 30px;
     border-bottom-width: 0;
+    padding-left: 5px;
   }
 
   // 日历样式start
@@ -1079,7 +1146,6 @@ export default {
   .checkContent {
     position: fixed;
     width: 100%;
-    line-height: 66px;
     align-items: center;
     min-height: 66px;
     z-index: 500;

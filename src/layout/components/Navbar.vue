@@ -121,7 +121,7 @@ export default {
         if (res.code == 200) {
           const originalArray = res.data;
           this.options = originalArray.map((item) => {
-            return { ["label"]: "application-name:" + item, ["value"]: item };
+            return { ["label"]: "应用名称：" + item, ["value"]: item };
           });
           if (this.options.length > 0) {
             this.serveValue = this.options[0].value;
@@ -181,7 +181,7 @@ export default {
     height: 50px;
     margin-left: 20px;
     .custom_select {
-      width: 230px;
+      width: 180px;
       ::v-deep {
         .el-select .el-input.is-focus .el-input__inner {
           background-color: #fff !important;

@@ -1,7 +1,7 @@
 <template>
   <div class="block-main public-hoverItem logCon">
-    <div class="block-head" style="position: relative;">
-      <div class="block-title" style="display: flex; align-items: center;z-index: 999;" >
+    <div class="block-head">
+      <div class="block-title">
         IP分布
         <el-radio-group
           size="mini"
@@ -13,9 +13,8 @@
           <el-radio-button label="table">列表</el-radio-button>
         </el-radio-group>
       </div>
-      <div class="block-head-icon" @click="$router.push('/logAnalysis/ip')"
-        style="width: 100%;position: absolute;right: 0;">
-        <img src="@/assets/images/icon.png" alt="" width="10px" />
+      <div class="block-head-icon">
+        <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
     <div id="app" style="width: 100%">
@@ -117,7 +116,7 @@ export default {
       areaListData: [],
       getAreaList: null,
       checkValue: "map",
-      commonParamsOld: "",
+      commonParamsOld:'',
     };
   },
   mounted() {},
@@ -130,27 +129,20 @@ export default {
       }
     },
     changeEchartEvent(val) {
-      if (val == "map") {
+      if (val == 'map') {
         this.showScatterInGeo();
       }
     },
     getIpByProvince(commonParams) {
       this.commonParamsOld = commonParams;
-      getIpByAreaApi(commonParams).then((res) => {
+      getIpByProvinceApi(commonParams).then((res) => {
         if (res.code == 200) {
           this.provinceList.map((item) => {
             item.value = 0;
           });
           let maxValue = [];
-          function containsChinese(str) {
-            return /[\u4E00-\u9FA5]/.test(str);
-          }
-          const filteredData = res.data.filter((obj) => {
-            const province = obj.province ? obj.province.trim() : "";
-            return province !== "" && containsChinese(province);
-          });
-          this.areaListData = filteredData;
-          let result = filteredData;
+          this.areaListData = res.data;
+          let result = res.data;
           for (let i = 0; i < this.provinceList.length; i++) {
             this.provinceList[i].visitCountRate = 0;
             this.provinceList[i].uv = 0;
