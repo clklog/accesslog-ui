@@ -1,12 +1,18 @@
 <template>
   <div>
     <div class="documentation-container">
-      <FilterBar
+      <!-- <FilterBar
         byTimeType
         byCalendar
         ByHost
         ByData
         ByContrast
+        @setFilterBarParams="setFilterBarParams"
+      /> -->
+      <FilterBar
+        byTimeType
+        byCalendar
+        ByHost
         @setFilterBarParams="setFilterBarParams"
       />
     </div>
@@ -44,14 +50,18 @@
           </div>
         </div>
       </div> -->
-      <trend-echart ref="trendEchart"></trend-echart>
+      <!-- <trend-echart ref="trendEchart"></trend-echart> -->
+      <div class="block-line">
+        <data-trend ref="dataTrend"></data-trend>
+        <!-- <ip-distribution ref="ipDistribution"></ip-distribution> -->
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import originView from "@/components/origin-view";
-import { trendEchart } from "./components/index";
+import { trendEchart, dataTrend, trendTable } from "./components/index";
 import { FilterBar } from "@/layout/components";
 import { copyObj } from "@/utils/copy";
 export default {
@@ -59,6 +69,8 @@ export default {
     FilterBar,
     originView,
     trendEchart,
+    dataTrend,
+    trendTable,
   },
   data() {
     return {
@@ -100,10 +112,10 @@ export default {
     handleCheckPointer() {},
     initApi(params) {
       this.$nextTick(() => {
-        this.$refs.trendEchart.trendApiEvent(params);
+        //this.$refs.trendEchart.trendApiEvent(params);
+        this.$refs.dataTrend.getFlowTrendEvent(this.commonParams);
       });
     },
-
     setFilterBarParams(val) {
       this.filterBarParams = copyObj(val);
     },

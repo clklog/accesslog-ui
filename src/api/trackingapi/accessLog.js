@@ -118,6 +118,7 @@ export function getIpListApi(params) {
     data: params
   })
 }
+
 //按地域获取IP分布统计数据
 export function getIpByAreaApi(params) {
   return request({
@@ -127,3 +128,11 @@ export function getIpByAreaApi(params) {
   })
 }
 
+//获取ip详情列表
+export function getIpDetailListApi(params) {
+  return request({
+    url: '/accesslog/ip/getIpDetailList',
+    method: 'post',
+    data: params
+  })
+}

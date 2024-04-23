@@ -215,9 +215,19 @@
             align-items: center;
             height: 30px;
             margin-left: 20px;
+            display: flex;
+            align-items: center;
           "
         >
-          <div style="font-size: 12px; color: #4d4d4d; padding-left: 6px">
+          <div
+            style="
+              height: 28px;
+              line-height: 30px;
+              font-size: 12px;
+              color: #4d4d4d;
+              padding-left: 6px;
+            "
+          >
             主机:
           </div>
           <el-select
@@ -238,8 +248,6 @@
             </el-option>
           </el-select>
         </div>
-
-       
 
         <div v-if="ByArea" class="areaContent">
           <div class="areaItem">
@@ -1077,6 +1085,26 @@ export default {
     height: 30px !important;
     line-height: 30px !important;
   }
+
+  .el-date-editor {
+    .el-range-separator {
+      display: flex;
+      align-items: center;
+    }
+  }
+  .el-date-editor {
+    .el-range__icon {
+      display: flex;
+      align-items: center;
+    }
+  }
+  .el-date-editor {
+    .el-range__close-icon {
+      display: flex;
+      align-items: center;
+    }
+  }
+
   @import "~@/styles/components/custom-radio.scss";
   @import "~@/styles/components/custom-select.scss";
   .appli_select .el-input__inner {
@@ -1087,7 +1115,7 @@ export default {
     border-bottom-width: 1px;
     border-bottom: 1px solid #acb2ba;
     background-color: transparent;
-    font-size: 12px;
+    font-size: 14px;
     transform: scale(0.9);
     height: 30px;
     line-height: 30px;

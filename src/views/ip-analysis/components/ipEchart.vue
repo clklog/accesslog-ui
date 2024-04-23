@@ -7,7 +7,7 @@
             <div style="display: flex">
               <div class="mapCharts" style="position: relative">
                 <!-- 指标 -->
-                <!-- <div style="position: absolute; left: 0">
+                <div style="position: absolute; left: 0">
                   <div
                     style="
                       display: flex;
@@ -40,7 +40,7 @@
                       </el-option>
                     </el-select>
                   </div>
-                </div> -->
+                </div>
                 <!-- echarts -->
                 <div
                   id="echart_china"
@@ -124,21 +124,22 @@ export default {
       hostValue: "访客数",
       labelProperty: "uv",
       rateProperty: "uvRate",
+      //指标选择列表
       hostList: [
         { label: "浏览量", value: "浏览量", id: "pv", rate: "pvRate" },
         { label: "访客数", value: "访客数", id: "uv", rate: "uvRate" },
-        {
-          label: "访问次数",
-          value: "访问次数",
-          id: "visitCount",
-          rate: "visitCountRate",
-        },
-        {
-          label: "新访客数",
-          value: "新访客数",
-          id: "newUv",
-          rate: "newUvRate",
-        },
+        // {
+        //   label: "访问次数",
+        //   value: "访问次数",
+        //   id: "visitCount",
+        //   rate: "visitCountRate",
+        // },
+        // {
+        //   label: "新访客数",
+        //   value: "新访客数",
+        //   id: "newUv",
+        //   rate: "newUvRate",
+        // },
         { label: "IP数", value: "IP数", id: "ipCount", rate: "ipCountRate" },
       ],
       worldList: [],
@@ -199,12 +200,11 @@ export default {
     handleClick(val) {
       if (this.activeMap == "province") {
         this.getIpByAreaApiEvent();
-        this.$bus.$emit("$IpEvent",'province')
+        this.$bus.$emit("$IpEvent", "province");
       } else {
         this.countryApiEvent();
-        this.$bus.$emit("$IpEvent",'country')
+        this.$bus.$emit("$IpEvent", "country");
       }
-      
     },
     showScatterInGeo() {
       let _that = this;
@@ -289,6 +289,7 @@ export default {
     },
     getIpByAreaApiEvent() {
       this.commonParams.summaryOptions = this.activeMap;
+      this.commonParams.indicator = this.labelProperty;
       getIpByAreaApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           if (res.data && res.data.length > 0) {
@@ -297,7 +298,7 @@ export default {
             }
             // 过滤出包含中文的对象
             const filteredData = res.data.filter((obj) => {
-              const province = obj.province ? obj.province.trim() : '';
+              const province = obj.province ? obj.province.trim() : "";
               return province !== "" && containsChinese(province);
             });
             this.apiProvinceList = filteredData;
@@ -340,14 +341,12 @@ export default {
             for (let j = 0; j < resList.length; j++) {
               if (this.newWorldList[i].name == resList[j].country) {
                 this.newWorldList[i].value = resList[j].uv;
-
-                // this.newWorldList[i].visitCountRate =
-                //   resList[j].visitCountRate || 0;
-
-                // this.newWorldList[i].pv = resList[j].pv;
-                // this.newWorldList[i].pvRate = resList[j].pvRate;
+                this.newWorldList[i].pv = resList[j].pv;
+                this.newWorldList[i].pvRate = resList[j].pvRate;
                 this.newWorldList[i].uv = resList[j].uv;
                 this.newWorldList[i].uvRate = resList[j].uvRate;
+                this.newWorldList[i].ipCount = resList[j].ipCount;
+                this.newWorldList[i].ipCountRate = resList[j].ipCountRate;
               }
               if (this.newWorldList[i].name != "中国") {
                 maxValue.push(this.newWorldList[i].value);
@@ -382,22 +381,28 @@ export default {
           tooltip: {
             trigger: "item",
             formatter(params) {
-              let visitCountRate, uv, uvRate, pvRate, pv;
+              let visitCountRate, pvRate, pv, uv, uvRate, ipCount, ipCountRate;
               if (params.data) {
                 visitCountRate = _this.$options.filters.percenTable(
                   params.data.visitCountRate
                 );
-                uv = params.data.uv;
                 pv = params.data.pv;
+                uv = params.data.uv;
+                ipCount = params.data.ipCount;
                 pvRate = _this.$options.filters.percenTable(params.data.pvRate);
                 uvRate = _this.$options.filters.percenTable(params.data.uvRate);
+                ipCountRate = _this.$options.filters.percenTable(
+                  params.data.ipCountRate
+                );
               }
 
               let htmlStr = `
                 <div style="padding:10px;">
                   <div style='font-size:14px;'> ${params.name}</div>
                   <p style='text-align:left;margin-top:10px;'>
+                    浏览量：${pv || 0}(占比：${pvRate || 0})<br/>
                     访客数：${uv || 0}(占比：${uvRate || 0})<br/>
+                    IP数：${ipCount || 0}(占比：${ipCountRate || 0})<br/>
                   </p>
                 </div>
                 `;
@@ -452,6 +457,11 @@ export default {
       window.addEventListener("resize", () => {
         worldChart.resize();
       });
+    },
+    handleChangeProject(val) {
+      this.labelProperty = val.id;
+      this.rateProperty = val.rate;
+      this.getIpByAreaApiEvent();
     },
   },
 };
