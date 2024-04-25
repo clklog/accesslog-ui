@@ -739,6 +739,23 @@ export default {
     },
   },
   methods: {
+    changeByDateValue() {
+      if (this.startTime == this.endTime) {
+        this.timeType = "hour";
+      } else {
+        //月 2476800000
+        let timeDiff = Date.parse(this.endTime) - Date.parse(this.startTime);
+        if (timeDiff > 489600000 && timeDiff != 604800000) {
+          this.timeType = "week";
+        } else {
+          this.timeType = "day";
+        }
+        // 大于三个月按月标准
+        if (timeDiff > 7776000000) {
+          this.timeType = "month";
+        }
+      }
+    },
     handleRadioEvent() {
       // this.clearEvent();
     },
@@ -940,6 +957,7 @@ export default {
       }
       let result = (endTime - startTime) / (3600 * 24 * 1000);
       this.dateTimeCount(result);
+      this.changeByDateValue();
     },
     // 日期计算
     dateTimeCount(result) {
@@ -1043,6 +1061,7 @@ export default {
       this.startTime = this.currentTime[0];
       this.endTime = this.currentTime[1];
       this.$store.dispatch("tracking/setDate", val);
+      this.changeByDateValue();
     },
     // 时间戳转换器
     timestampToTime(timestamp) {

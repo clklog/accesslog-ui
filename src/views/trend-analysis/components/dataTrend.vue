@@ -1,9 +1,10 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
-    <div class="block-head" style="position: relative">
-      <div style="display: flex; align-items: center; z-index: 999">
-        <div class="block-title">趋势图</div>
-        <el-radio-group
+  <div style="width:100%;">
+    <div class="block-main public-hoverItem logCon">
+      <div class="block-head" style="position: relative">
+        <div style="display: flex; align-items: center; z-index: 999">
+          <div class="block-title">趋势图</div>
+          <!-- <el-radio-group
           size="mini"
           v-model="timeType"
           style="font-size: 13px; height: 30px; padding-left: 20px"
@@ -13,14 +14,14 @@
           <el-radio-button label="day">按日</el-radio-button>
           <el-radio-button label="week">按周</el-radio-button>
           <el-radio-button label="month">按月</el-radio-button>
-        </el-radio-group>
+        </el-radio-group> -->
+        </div>
+      </div>
+      <div class="block-echarts" v-loading="loading">
+        <div id="visitchart" class="visitEchart"></div>
+        <div id="dataChart" class="flowEchart"></div>
       </div>
     </div>
-    <div class="block-echarts">
-      <div id="visitchart" class="visitEchart"></div>
-      <div id="dataChart" class="flowEchart"></div>
-    </div>
-
     <trend-table
       v-loading="loading"
       ref="trendTable"
@@ -76,32 +77,9 @@ export default {
       this.getFlowTrendEvent(this.oldCommonParams, "check");
     },
     getFlowTrendEvent(commonParams, event) {
+      this.loading = true;
       this.oldCommonParams = commonParams;
       let copyParams = JSON.parse(JSON.stringify(commonParams));
-      if (!event) {
-        if (copyParams.startTime == copyParams.endTime) {
-          copyParams.timeType = "hour";
-          this.timeType = "hour";
-        } else {
-          //月 2476800000
-          let timeDiff =
-            Date.parse(copyParams.endTime) - Date.parse(copyParams.startTime);
-          if (timeDiff > 489600000 && timeDiff != 604800000) {
-            copyParams.timeType = "week";
-            this.timeType = "week";
-          } else {
-            copyParams.timeType = "day";
-            this.timeType = "day";
-          }
-          // 大于三个月按月标准
-          if (timeDiff > 7776000000) {
-            copyParams.timeType = "month";
-            this.timeType = "month";
-          }
-        }
-      } else {
-        copyParams.timeType = this.timeType;
-      }
       getFlowTrendApi(copyParams).then((res) => {
         if (res.code == 200) {
           this.$refs.trendTable.trendApiEvent(res.data, copyParams);
@@ -134,6 +112,9 @@ export default {
           this.pvMax = this.pvList;
           this.initFlowEchart(); //line chart
           this.initVisitEchart(); //双线图
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },

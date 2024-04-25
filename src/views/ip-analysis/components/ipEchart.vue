@@ -41,7 +41,7 @@
                     </el-select>
                   </div>
                 </div>
-                <!-- echarts -->
+                <!-- 中国地图 -->
                 <div
                   id="echart_china"
                   ref="echart_china"
@@ -98,10 +98,105 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="按国家" name="country">
-            <div
-              id="chart"
-              style="width: 70vw; height: 400px; margin-left: 5vw"
-            ></div>
+            <div style="display: flex">
+              <div class="mapCharts" style="position: relative">
+                <!-- 指标 -->
+                <div style="position: absolute; left: 0">
+                  <div
+                    style="
+                      display: flex;
+                      border: 1px solid #acb2ba;
+                      border-radius: 4px;
+                      align-items: center;
+                      height: 30px;
+                      margin-left: 50px;
+                    "
+                  >
+                    <div
+                      style="font-size: 11px; color: #4d4d4d; padding-left: 6px"
+                    >
+                      指标:
+                    </div>
+                    <el-select
+                      class="appli_select"
+                      v-model="hostValue"
+                      placeholder="请选择指标"
+                      size="small"
+                      style="width: 130px; z-index: 1"
+                    >
+                      <el-option
+                        v-for="item in hostList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        @click.native="handleChangeProject(item)"
+                      >
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+                <!-- 世界地图 -->
+                <div
+                  id="chart"
+                  style="
+                    width: 45vw;
+                    height: 400px;
+                    margin-left: 3vw;
+                    margin-right: 3vw;
+                  "
+                ></div>
+              </div>
+              <div class="mapTable">
+                <div
+                  style="
+                    width: 500px;
+                    height: 410px;
+                    margin-top: 30px;
+                    overflow: hidden;
+                    margin-bottom: 30px;
+                  "
+                >
+                  <el-table
+                    class="public-radius"
+                    ref="singleTable"
+                    height="400"
+                    :header-cell-style="{
+                      textAlign: 'center',
+                      background: '#f7fafe  ',
+                    }"
+                    :cell-style="{ textAlign: 'center' }"
+                    border
+                    :data="apiCountyList"
+                    highlight-current-row
+                    style="width: 100%"
+                  >
+                    <el-table-column type="index" width="80"> </el-table-column>
+                    <el-table-column
+                      :show-overflow-tooltip="true"
+                      property="country"
+                      label="国家"
+                      width="200"
+                    >
+                      <template slot-scope="{ row }">
+                        <span>{{ row.country || "未知" }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      :property="labelProperty"
+                      :label="hostValue"
+                    >
+                    </el-table-column>
+
+                    <el-table-column
+                      :formatter="dateFormat"
+                      :property="rateProperty"
+                      label="占比"
+                    >
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </div>
+            </div>
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -183,6 +278,7 @@ export default {
       ],
       activeMap: "province",
       apiProvinceList: [], //省份
+      apiCountyList: [], //国家
       maxValue: 200,
       commonParams: {},
       newWorldList: [],
@@ -235,7 +331,6 @@ export default {
             return htmlStr;
           },
         },
-
         visualMap: {
           min: 0,
           max: this.maxValue || 200,
@@ -336,6 +431,7 @@ export default {
         if (res.code == 200) {
           let maxValue = [];
           let resList = res.data;
+          this.apiCountyList = resList;
           this.newWorldList = copyObj(worldData.dataArr);
           for (let i = 0; i < this.newWorldList.length; i++) {
             for (let j = 0; j < resList.length; j++) {

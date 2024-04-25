@@ -13,6 +13,7 @@
         byTimeType
         byCalendar
         ByHost
+        ByData
         @setFilterBarParams="setFilterBarParams"
       />
     </div>
