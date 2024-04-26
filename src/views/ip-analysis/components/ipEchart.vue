@@ -2,7 +2,11 @@
   <div>
     <div class="area_container public-hoverItem">
       <div style="width: 100%; position: relative">
-        <el-tabs @tab-click="handleClick" v-model="activeMap">
+        <el-tabs
+          @tab-click="handleClick"
+          v-model="activeMap"
+          v-loading="loading"
+        >
           <el-tab-pane label="按省份" name="province">
             <div style="display: flex">
               <div class="mapCharts" style="position: relative">
@@ -216,6 +220,7 @@ export default {
   mixins: [resize],
   data() {
     return {
+      loading: false,
       hostValue: "访客数",
       labelProperty: "uv",
       rateProperty: "uvRate",
@@ -383,6 +388,7 @@ export default {
       this.getIpByAreaApiEvent();
     },
     getIpByAreaApiEvent() {
+      this.loading = true;
       this.commonParams.summaryOptions = this.activeMap;
       this.commonParams.indicator = this.labelProperty;
       getIpByAreaApi(this.commonParams).then((res) => {
@@ -399,6 +405,9 @@ export default {
             this.apiProvinceList = filteredData;
             this.checkMapDataEvent();
           }
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },

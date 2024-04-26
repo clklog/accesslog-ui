@@ -43,7 +43,7 @@
             <span v-text="getIndex(scope.$index)"> </span>
           </template>
         </el-table-column>
-        <el-table-column prop="ip" label="IP" width="160">
+        <el-table-column prop="ip" label="IP" width="200">
           <template slot-scope="{ row }">
             <div class="custom-ip-cell">
               <span class="ip-text">{{ row.ip }}</span>
@@ -74,37 +74,27 @@
             </div>
           </template>
         </el-table-column> -->
-        <el-table-column
-          prop="country"
-          label="国家"
-          sortable="custom"
-          width="100"
-        >
+        <el-table-column prop="country" label="国家" sortable="custom">
           <template slot-scope="{ row }">
             {{ row.country }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="province"
-          label="省"
-          sortable="custom"
-          width="100"
-        >
+        <el-table-column prop="province" label="省" sortable="custom">
           <template slot-scope="{ row }">
             {{ row.province }}
           </template>
         </el-table-column>
-        <el-table-column prop="city" label="城市" sortable="custom" width="100">
+        <el-table-column prop="city" label="城市" sortable="custom">
           <template slot-scope="{ row }">
             {{ row.city }}
           </template>
         </el-table-column>
-        <el-table-column prop="pv" label="浏览量" sortable="custom" width="100">
+        <el-table-column prop="pv" label="浏览量" sortable="custom" width="120">
           <template slot-scope="{ row }">
             {{ row.pv }}
           </template>
         </el-table-column>
-        <el-table-column prop="httpUserAgent" label="userAgent采样">
+        <!-- <el-table-column prop="httpUserAgent" label="userAgent采样">
           <template slot-scope="{ row }">
             {{ row.httpUserAgent }}
           </template>
@@ -113,7 +103,7 @@
           <template slot-scope="{ row }">
             {{ row.uri }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
       <div class="block">
         <el-pagination
@@ -194,7 +184,6 @@
       <el-table
         class="public-radius"
         :header-cell-style="{ textAlign: 'center', background: '#f7fafe ' }"
-        :cell-style="{ textAlign: 'center' }"
         :data="ipDetailTableList"
         border
         @sort-change="sortChangeIp($event)"
@@ -211,11 +200,17 @@
             {{ row.uri }}
           </template>
         </el-table-column>
+        <el-table-column prop="httpUserAgent" label="userAgent采样">
+          <template slot-scope="{ row }">
+            {{ row.httpUserAgent }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="pv"
           label="访问次数"
           sortable="custom"
           width="100"
+          align="center"
         >
           <template slot-scope="{ row }">
             {{ row.pv }}
@@ -226,12 +221,18 @@
           label="耗时较长次数(>=1秒)"
           sortable="custom"
           width="100"
+          align="center"
         >
           <template slot-scope="{ row }">
             {{ row.slowPv }}
           </template>
         </el-table-column>
-        <el-table-column prop="maxVisitTime" label="最大耗时(毫秒)" width="100">
+        <el-table-column
+          prop="maxVisitTime"
+          label="最大耗时(毫秒)"
+          width="100"
+          align="center"
+        >
           <template slot-scope="{ row }">
             {{ row.maxVisitTime }}
           </template>
@@ -240,6 +241,7 @@
           prop="pvRate"
           label="耗时较长次数(>=1秒)占比"
           width="100"
+          align="center"
         >
           <template slot-scope="{ row }">
             {{ row.pvRate }}
@@ -250,6 +252,7 @@
           label="平均耗时(毫秒)"
           sortable="custom"
           width="100"
+          align="center"
         >
           <template slot-scope="{ row }">
             {{ row.avgVisitTime }}
@@ -306,6 +309,7 @@ export default {
       },
       commonParamsIp: {},
       performFilter: [],
+      otherFlag: true,
       inputOther: "",
       otherFilter: [],
       imgFormatList: [],
@@ -413,6 +417,15 @@ export default {
       }
       this.getPerformanceDetail();
     },
+    // 其它格式
+    inputFilterEvent(val) {
+      if (this.inputOther) {
+        this.otherFlag = false;
+      } else {
+        this.otherFlag = true;
+      }
+    },
+    confirmEvent() {},
     // 主要格式
     performEvent(e) {
       this.imgFormatList = [];
@@ -424,6 +437,18 @@ export default {
         }
       });
       this.imgFormatList = this.imgFormatList.flat(Infinity);
+      this.getIpDetailApiEvent();
+    },
+    toSearch() {
+      this.otherFilter = ["其他"];
+      if (this.inputOther) {
+        this.otherList = this.$options.filters.emptyString(
+          ";",
+          this.inputOther
+        );
+      } else {
+        this.otherList = [];
+      }
       this.getIpDetailApiEvent();
     },
     getIpDetailApiEvent() {
@@ -518,6 +543,8 @@ export default {
   border-radius: 6px;
   box-sizing: border-box;
   margin-bottom: 20px;
+  justify-content: flex-end;
+
   .search-area-form {
     padding: 10px;
 
