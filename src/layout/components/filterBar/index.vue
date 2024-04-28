@@ -215,9 +215,19 @@
             align-items: center;
             height: 30px;
             margin-left: 20px;
+            display: flex;
+            align-items: center;
           "
         >
-          <div style="font-size: 12px; color: #4d4d4d; padding-left: 6px">
+          <div
+            style="
+              height: 28px;
+              line-height: 30px;
+              font-size: 12px;
+              color: #4d4d4d;
+              padding-left: 6px;
+            "
+          >
             主机:
           </div>
           <el-select
@@ -238,8 +248,6 @@
             </el-option>
           </el-select>
         </div>
-
-       
 
         <div v-if="ByArea" class="areaContent">
           <div class="areaItem">
@@ -731,6 +739,23 @@ export default {
     },
   },
   methods: {
+    changeByDateValue() {
+      if (this.startTime == this.endTime) {
+        this.timeType = "hour";
+      } else {
+        //月 2476800000
+        let timeDiff = Date.parse(this.endTime) - Date.parse(this.startTime);
+        if (timeDiff > 489600000 && timeDiff != 604800000) {
+          this.timeType = "week";
+        } else {
+          this.timeType = "day";
+        }
+        // 大于三个月按月标准
+        if (timeDiff > 7776000000) {
+          this.timeType = "month";
+        }
+      }
+    },
     handleRadioEvent() {
       // this.clearEvent();
     },
@@ -932,6 +957,7 @@ export default {
       }
       let result = (endTime - startTime) / (3600 * 24 * 1000);
       this.dateTimeCount(result);
+      this.changeByDateValue();
     },
     // 日期计算
     dateTimeCount(result) {
@@ -1035,6 +1061,7 @@ export default {
       this.startTime = this.currentTime[0];
       this.endTime = this.currentTime[1];
       this.$store.dispatch("tracking/setDate", val);
+      this.changeByDateValue();
     },
     // 时间戳转换器
     timestampToTime(timestamp) {
@@ -1077,6 +1104,26 @@ export default {
     height: 30px !important;
     line-height: 30px !important;
   }
+
+  .el-date-editor {
+    .el-range-separator {
+      display: flex;
+      align-items: center;
+    }
+  }
+  .el-date-editor {
+    .el-range__icon {
+      display: flex;
+      align-items: center;
+    }
+  }
+  .el-date-editor {
+    .el-range__close-icon {
+      display: flex;
+      align-items: center;
+    }
+  }
+
   @import "~@/styles/components/custom-radio.scss";
   @import "~@/styles/components/custom-select.scss";
   .appli_select .el-input__inner {
@@ -1087,7 +1134,7 @@ export default {
     border-bottom-width: 1px;
     border-bottom: 1px solid #acb2ba;
     background-color: transparent;
-    font-size: 12px;
+    font-size: 14px;
     transform: scale(0.9);
     height: 30px;
     line-height: 30px;

@@ -23,12 +23,12 @@ module.exports = {
   // outputDir: "dist",
   // assetsDir: "static",
 
-  //绝对路径
+  //绝对路径（发布生产环境）
   publicPath: "/",
   outputDir: "dist",
   assetsDir: "static",
 
-  // 使用相对路径
+  // 使用相对路径（发布到测试环境）
   // assetsDir: "./assets",
   // publicPath: "",
 
