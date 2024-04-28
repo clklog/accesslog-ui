@@ -250,7 +250,6 @@ export default {
         });
       }
     },
-
     checkHeadName() {
       switch (this.headLegeRadio) {
         case "用户数(UV)":
