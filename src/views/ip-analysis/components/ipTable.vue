@@ -10,7 +10,7 @@
       <div class="search-area">
         <div class="search-area-form">
           <div class="search-area-form-item">
-            IP:
+            <!-- IP:
             <el-input
               v-model="ipInput"
               placeholder="请输入IP"
@@ -24,7 +24,20 @@
               icon="el-icon-search"
               @click="getIpListApiEvent"
               >搜索</el-button
+            > -->
+            <el-input
+              placeholder="请输入搜索词"
+              size="small"
+              v-model="ipInput"
+              style="width: 300px"
+              @keyup.enter.native="getIpListApiEvent()"
             >
+              <i
+                slot="suffix"
+                class="el-input__icon el-icon-search"
+                @click="getIpListApiEvent()"
+              ></i>
+            </el-input>
           </div>
         </div>
       </div>
@@ -121,9 +134,21 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
-      width="1000px"
+      width="70%"
+      top="8vh"
+      bottom="8vh"
+      @close="closeEvent"
     >
-      <div class="flow-indicator public_indicator" style="margin-top: 2px">
+      <div style="border: 1px solid #d8e2ef !important">
+        <dialogBar
+          byTimeType
+          byCalendar
+          ref="dialogBar"
+          @setFilterBarParams="setFilterBarParamsIpDetail"
+        ></dialogBar>
+      </div>
+
+      <div class="flow-indicator public_indicator" style="margin-top: 10px">
         <div class="flow-item" style="font-size: 13px; color: #4d4d4d">
           请选择要排除的文件类型：
         </div>
@@ -166,7 +191,6 @@
 
           <!-- <el-checkbox style="margin-left: 55px;" label="overSecond">超过一秒</el-checkbox> -->
         </div>
-
         <div class="flow-item" style="font-size: 13px; color: #4d4d4d">
           请选择页面响应时间范围：
         </div>
@@ -198,11 +222,6 @@
         <el-table-column prop="uri" label="页面URL">
           <template slot-scope="{ row }">
             {{ row.uri }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="httpUserAgent" label="userAgent采样">
-          <template slot-scope="{ row }">
-            {{ row.httpUserAgent }}
           </template>
         </el-table-column>
         <el-table-column
@@ -258,6 +277,11 @@
             {{ row.avgVisitTime }}
           </template>
         </el-table-column>
+        <el-table-column prop="httpUserAgent" label="userAgent">
+          <template slot-scope="{ row }">
+            {{ row.httpUserAgent }}
+          </template>
+        </el-table-column>
       </el-table>
       <div class="block">
         <el-pagination
@@ -279,7 +303,11 @@
 import moment from "moment";
 import { getIpListApi, getIpDetailListApi } from "@/api/trackingapi/accessLog";
 import { copyObj } from "@/utils/copy";
+import { dialogBar } from "@/layout/components";
 export default {
+  components: {
+    dialogBar,
+  },
   data() {
     return {
       isAreaType: "地域",
@@ -315,6 +343,7 @@ export default {
       imgFormatList: [],
       otherList: [],
       overSecond: false,
+      timeFlag: "day",
     };
   },
   filters: {
@@ -338,6 +367,22 @@ export default {
     this.$bus.$off(["$IpEvent"]);
   },
   methods: {
+    setFilterBarParamsIpDetail(val) {
+      if (
+        this.commonParamsIp.startTime != val.startTime ||
+        this.commonParamsIp.endTime != val.endTime
+      ) {
+        this.commonParamsIp.startTime = val.startTime;
+        this.commonParamsIp.endTime = val.endTime;
+        this.getIpDetailApiEvent();
+      }
+
+      //console.log(this.commonParamsIp, "this.commonParamsIp");
+    },
+    // 弹框清空事件
+    closeEvent() {
+      this.$refs.dialogBar.clearEvent();
+    },
     sortChange(e) {
       if (e.order && e.order == "ascending") {
         // 降序
@@ -403,6 +448,30 @@ export default {
       this.dialogVisible = true;
       this.ipSelect = row.ip;
       this.dialogTitle = "IP[" + row.ip + "]访问详情";
+      this.$nextTick(() => {
+        const toDate = this.$options.filters.todateFunc(); //当日
+        let timeStamp =
+          new Date(this.commonParams.endTime).getTime() -
+          new Date(this.commonParams.startTime).getTime();
+        if (timeStamp == 0) {
+          if (toDate == this.commonParams.startTime) {
+            this.timeFlag = "day";
+          } else {
+            this.timeFlag = "previous";
+          }
+        } else if (timeStamp == 518400000) {
+          this.timeFlag = "week";
+        } else if (timeStamp == 2505600000) {
+          this.timeFlag = "month";
+        } else {
+          this.timeFlag = "";
+        }
+        this.commonParams.timeFlag = this.timeFlag;
+        //console.log(this.commonParams, "this.commonParams");
+        this.$refs.dialogBar.dialogbarEvent(this.commonParams);
+      });
+      this.commonParamsIp.startTime = this.commonParams.startTime;
+      this.commonParamsIp.endTime = this.commonParams.endTime;
       this.getIpDetailApiEvent();
     },
     // 其他事件多选框
@@ -460,8 +529,8 @@ export default {
       this.commonParamsIp.ip = this.ipSelect;
       this.commonParamsIp.applicationCode = this.commonParams.applicationCode;
       this.commonParamsIp.httpHost = this.commonParams.httpHost;
-      this.commonParamsIp.startTime = this.commonParams.startTime;
-      this.commonParamsIp.endTime = this.commonParams.endTime;
+      // this.commonParamsIp.startTime = this.commonParams.startTime;
+      // this.commonParamsIp.endTime = this.commonParams.endTime;
       //console.log(this.commonParamsIp, "this.commonParamsIp");
       this.commonParamsIp.limits = [...this.imgFormatList, ...this.otherList];
       this.commonParamsIp.isOverOneSecond = this.overSecond;
@@ -520,6 +589,23 @@ export default {
     transform: scale(0.9);
     height: 30px;
     line-height: 30px;
+  }
+
+  .el-dialog {
+    border-radius: 6px;
+  }
+  .el-dialog__headerbtn {
+    top: 15px;
+  }
+  .el-dialog__header {
+    //padding: 0 !important;
+    border-radius: 6px;
+  }
+
+  .el-dialog__body {
+    padding: 10px 20px 30px 20px;
+    background-color: #eef4fd;
+    border-radius: 6px;
   }
 }
 
