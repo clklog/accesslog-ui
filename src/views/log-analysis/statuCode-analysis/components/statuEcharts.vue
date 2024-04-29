@@ -148,7 +148,7 @@ export default {
                     "：" +
                     params.data.pv +
                     // "\n" +
-                     
+
                     "(" +
                     params.percent +
                     "%" +
@@ -164,7 +164,6 @@ export default {
             },
             labelLine: {
               show: true,
-             
             },
             labelLayout: {
               // 选择合适的标签布局策略
@@ -228,6 +227,24 @@ export default {
           axisTick: {
             show: false,
             alignWithLabel: true,
+          },
+          type: "value",
+          splitNumber: 5, // 分割为5段，包括0和100%
+          min: 0,
+          max: 1,
+          interval: 0.2, // 间隔为0.2，确保有五个主要刻度
+          axisLabel: {
+            //rotate: 50,
+            //formatter: "{value}%", // 将值格式化为百分比
+            formatter (value) {
+              return (value * 100).toFixed(0) + "%";
+            },
+          },
+          splitLine: {
+            // 添加分隔线以匹配刻度
+            lineStyle: {
+              type: "solid",
+            },
           },
         },
         series: [

@@ -1,7 +1,7 @@
 <template>
   <div class="block-main public-hoverItem logCon">
-    <div class="block-head" style="position: relative;">
-      <div style="display: flex; align-items: center;z-index: 999;" >
+    <div class="block-head" style="position: relative">
+      <div style="display: flex; align-items: center; z-index: 999">
         <div class="block-title">趋势图</div>
         <el-radio-group
           size="mini"
@@ -18,7 +18,7 @@
       <div
         class="block-head-icon"
         @click="$router.push('/logAnalysis/trend')"
-        style="width: 100%;position: absolute;right: 0;"
+        style="width: 100%; position: absolute; right: 0"
       >
         <img src="@/assets/images/icon.png" alt="" width="10px" />
       </div>
@@ -82,15 +82,17 @@ export default {
           //月 2476800000
           let timeDiff =
             Date.parse(copyParams.endTime) - Date.parse(copyParams.startTime);
-          if (timeDiff > 489600000 && timeDiff != 604800000) {
+          // 选择日期进行按时按日自动刷选
+          if (timeDiff == 0) {
+            copyParams.timeType = "hour";
+            this.timeType = "hour";
+          } else if (timeDiff > 0 && timeDiff < 2592000000) {
+            copyParams.timeType = "day";
+            this.timeType = "day";
+          } else if (timeDiff >= 2592000000 && timeDiff < 7776000000) {
             copyParams.timeType = "week";
             this.timeType = "week";
           } else {
-            copyParams.timeType = "day";
-            this.timeType = "day";
-          }
-          // 大于三个月按月标准
-          if (timeDiff > 7776000000) {
             copyParams.timeType = "month";
             this.timeType = "month";
           }
@@ -195,6 +197,18 @@ export default {
             },
             type: "value",
             min: 0,
+            axisLabel: {
+              rotate: 45, // 旋转角度
+              fontSize: 10,
+              //超过1万显示单位万
+              formatter: function (value) {
+                if (value >= 10000) {
+                  return value / 10000 + "万";
+                } else {
+                  return value;
+                }
+              },
+            },
             // max: this.uvMax,
           },
           {
@@ -204,6 +218,18 @@ export default {
             // max: this.pvMax,
             axisTick: {
               show: false,
+            },
+            axisLabel: {
+              rotate: 45, // 旋转角度
+              fontSize: 10,
+              //超过1万显示单位万
+              formatter: function (value) {
+                if (value >= 10000) {
+                  return value / 10000 + "万";
+                } else {
+                  return value;
+                }
+              },
             },
           },
         ],
@@ -336,11 +362,23 @@ export default {
             type: "value",
             nameTextStyle: {
               fontWeight: 400,
-              fontSize: 13,
+              fontSize: 12,
               color: "#2c7be5",
             },
             axisTick: {
               show: false,
+            },
+            axisLabel: {
+              rotate: 45, // 旋转角度
+              fontSize: 10,
+              //超过1万显示单位万
+              formatter: function (value) {
+                if (value >= 10000) {
+                  return value / 10000 + "万";
+                } else {
+                  return value;
+                }
+              },
             },
           },
         ],

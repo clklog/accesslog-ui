@@ -743,15 +743,15 @@ export default {
       if (this.startTime == this.endTime) {
         this.timeType = "hour";
       } else {
-        //月 2476800000
         let timeDiff = Date.parse(this.endTime) - Date.parse(this.startTime);
-        if (timeDiff > 489600000 && timeDiff != 604800000) {
+        // 选择日期进行按时按日自动刷选
+        if (timeDiff == 0) {
+          this.timeType = "hour";
+        } else if (timeDiff > 0 && timeDiff < 2592000000) {
+          this.timeType = "day";
+        } else if (timeDiff >= 2592000000 && timeDiff < 7776000000) {
           this.timeType = "week";
         } else {
-          this.timeType = "day";
-        }
-        // 大于三个月按月标准
-        if (timeDiff > 7776000000) {
           this.timeType = "month";
         }
       }

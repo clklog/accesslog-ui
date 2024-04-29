@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%;">
+  <div style="width: 100%">
     <div class="block-main public-hoverItem logCon">
       <div class="block-head" style="position: relative">
         <div style="display: flex; align-items: center; z-index: 999">
@@ -180,6 +180,18 @@ export default {
             },
             type: "value",
             min: 0,
+            axisLabel: {
+              rotate: 45, // 旋转角度
+              fontSize: 10,
+              //超过1万显示单位万
+              formatter: function (value) {
+                if (value >= 10000) {
+                  return value / 10000 + "万";
+                } else {
+                  return value;
+                }
+              },
+            },
             // max: this.uvMax,
           },
           {
@@ -189,6 +201,18 @@ export default {
             // max: this.pvMax,
             axisTick: {
               show: false,
+            },
+            axisLabel: {
+              rotate: 45, // 旋转角度
+              fontSize: 10,
+              //超过1万显示单位万
+              formatter: function (value) {
+                if (value >= 10000) {
+                  return value / 10000 + "万";
+                } else {
+                  return value;
+                }
+              },
             },
           },
         ],
@@ -320,11 +344,23 @@ export default {
             type: "value",
             nameTextStyle: {
               fontWeight: 400,
-              fontSize: 13,
+              fontSize: 12,
               color: "#2c7be5",
             },
             axisTick: {
               show: false,
+            },
+            axisLabel: {
+              rotate: 45, // 旋转角度
+              fontSize: 10,
+              //超过1万显示单位万
+              formatter: function (value) {
+                if (value >= 10000) {
+                  return value / 10000 + "万";
+                } else {
+                  return value;
+                }
+              },
             },
           },
         ],
