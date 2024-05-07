@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head" style="position: relative">
       <div style="display: flex; align-items: center; z-index: 999">
         <div class="block-title">趋势图</div>
@@ -8,6 +8,7 @@
           v-model="timeType"
           style="font-size: 13px; height: 30px; padding-left: 20px"
           @change="changeDateEvent"
+          :disabled="!indexCanClick"
         >
           <el-radio-button label="hour">按时</el-radio-button>
           <el-radio-button label="day">按日</el-radio-button>
@@ -59,11 +60,15 @@ export default {
       },
       myChart: [],
       oldCommonParams: {},
+      loading: false,
     };
   },
   computed: {
     httpHost() {
       return this.$store.getters.httpHost;
+    },
+    indexCanClick() {
+      return this.$store.getters.indexCanClick;
     },
   },
   watch: {},
@@ -71,7 +76,8 @@ export default {
     changeDateEvent() {
       this.getFlowTrendEvent(this.oldCommonParams, "check");
     },
-    getFlowTrendEvent(commonParams, event) {
+    async getFlowTrendEvent(commonParams, event) {
+      this.loading = true;
       this.oldCommonParams = commonParams;
       let copyParams = JSON.parse(JSON.stringify(commonParams));
       if (!event) {
@@ -100,7 +106,7 @@ export default {
       } else {
         copyParams.timeType = this.timeType;
       }
-      getFlowTrendApi(copyParams).then((res) => {
+      await getFlowTrendApi(copyParams).then((res) => {
         if (res.code == 200) {
           this.xLineList = [];
           this.bodySentBytesList = [];
@@ -132,6 +138,9 @@ export default {
           this.pvMax = this.pvList;
           this.initFlowEchart(); //line chart
           this.initVisitEchart(); //双线图
+          this.loading = false;
+        }else{
+          this.loading = false;
         }
       });
     },

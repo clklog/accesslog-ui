@@ -16,6 +16,7 @@ const getters = {
   applicationCode : state => state.tracking.applicationCode ,
   httpHost: state => state.tracking.httpHost,
   checkDate: state => state.tracking.checkDate,
-  filterBar: state => state.filterBar.checkList
+  filterBar: state => state.filterBar.checkList,
+  indexCanClick: state => state.app.indexCanClick,
 }
 export default getters

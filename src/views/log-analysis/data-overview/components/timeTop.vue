@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loanding">
     <div class="block-head" @click="$router.push('/logAnalysis/performance/timeConsuming')">
       <div class="block-title">耗时Top10</div>
       <div class="block-head-icon" >
@@ -35,6 +35,7 @@ export default {
   data() {
     return {
       timeTopLIst: [],
+      loanding: false,
     };
   },
   mounted() {},
@@ -46,15 +47,19 @@ export default {
         return "text-align:center";
       }
     },
-    getRequestTimeTop10(commonParams) {
+    async getRequestTimeTop10(commonParams) {
+      this.loanding = true;
       let params = copyObj(commonParams)
       params.pageSize = 10;
       params.pageNum = 1;
       params.sortName = 'maxVisitTime';
       params.sortOrder = 'desc';
-      getPerformanceDetailApi(params).then((res) => {
+      await getPerformanceDetailApi(params).then((res) => {
         if (res.code == 200) {
+          this.loanding = false;
           this.timeTopLIst = res.data.rows;
+        }else{
+          this.loanding = false;
         }
       });
     },

@@ -9,9 +9,8 @@
       />
     </div>
     <div class="public-block">
-      <head-overview ref="headOverview"></head-overview>
+      <head-overview ref="headOverview" v-loading="loading"></head-overview>
       <!-- host饼状图 -->
-
       <div class="block-line">
         <data-trend ref="dataTrend"></data-trend>
         <ip-distribution ref="ipDistribution"></ip-distribution>
@@ -36,7 +35,7 @@
           hostLength > 2
         "
       >
-        <log-index ref="logIndex" @visitDataEvent = "visitDataEvent"></log-index>
+        <log-index ref="logIndex" @visitDataEvent="visitDataEvent"></log-index>
       </div>
     </div>
   </div>
@@ -65,7 +64,6 @@ import {
   visitTop,
   visitSource,
 } from "./components/index";
-
 export default {
   components: {
     FilterBar,
@@ -88,6 +86,7 @@ export default {
       sortOrder: "desc",
       overList: [],
       hostLength: 0,
+      loading: false,
     };
   },
 
@@ -116,8 +115,8 @@ export default {
     },
   },
   methods: {
-    visitDataEvent(){
-      this.getServerOverViewEvent()
+    visitDataEvent() {
+      this.getServerOverViewEvent();
     },
     getOverview() {
       getOverviewApi(this.commonParams).then((res) => {
@@ -128,32 +127,61 @@ export default {
         }
       });
     },
-    getServerOverview() {
+    async getServerOverview() {
+      //this.$store.getters.indexCanClick = false;
+      console.log("this.$store.getters.indexCanClick", this.$store.getters.indexCanClick);
+      this.$store.dispatch("app/setIndexCanClick", false);
+      console.log("this.$store.getters.indexCanClick", this.$store.getters.indexCanClick);
+      this.loading = true;
       this.hostLength = this.httpHost;
-      this.getServerOverViewEvent()
-      this.$nextTick(() => {
-        this.$refs.dataTrend.getFlowTrendEvent(this.commonParams);
-        this.$refs.timeTop.getRequestTimeTop10(this.commonParams);
-        this.$refs.visitTop.getUriTop10(this.commonParams);
-        this.$refs.visitSource.getReferrerTop10(this.commonParams);
-        this.$refs.Status.getStatus(this.commonParams);
-        this.$refs.ipTop.getIpTop10(this.commonParams);
-        this.$refs.apiUi.getUa(this.commonParams);
-        this.$refs.funApi.getRequestMethod(this.commonParams);
-        this.$refs.ipDistribution.getIpByProvince(this.commonParams);
-      });
+      console.log("================");
+      await this.getServerOverViewEvent();
+      // this.$nextTick(() => {
+      //   this.$refs.dataTrend.getFlowTrendEvent(this.commonParams);
+      //   this.$refs.timeTop.getRequestTimeTop10(this.commonParams);
+      //   this.$refs.visitTop.getUriTop10(this.commonParams);
+      //   this.$refs.visitSource.getReferrerTop10(this.commonParams);
+      //   this.$refs.Status.getStatus(this.commonParams);
+      //   this.$refs.ipTop.getIpTop10(this.commonParams);
+      //   this.$refs.apiUi.getUa(this.commonParams);
+      //   this.$refs.funApi.getRequestMethod(this.commonParams);
+      //   this.$refs.ipDistribution.getIpByProvince(this.commonParams);
+      // });
+      console.log("1");
+      await this.$refs.dataTrend.getFlowTrendEvent(this.commonParams);
+      console.log("2");
+      await this.$refs.ipDistribution.getIpByProvince(this.commonParams);
+      console.log("3");
+      await this.$refs.timeTop.getRequestTimeTop10(this.commonParams);
+      console.log("4");
+      await this.$refs.visitTop.getUriTop10(this.commonParams);
+      console.log("5");
+      await this.$refs.ipTop.getIpTop10(this.commonParams);
+      console.log("6");
+      await this.$refs.apiUi.getUa(this.commonParams);
+      console.log("7");
+      await this.$refs.Status.getStatus(this.commonParams);
+      console.log("8");
+      await this.$refs.visitSource.getReferrerTop10(this.commonParams);
+      console.log("9");
+      await this.$refs.funApi.getRequestMethod(this.commonParams);
+      this.$store.dispatch("app/setIndexCanClick", true);
+      console.log("this.$store.getters.indexCanClick", this.$store.getters.indexCanClick);
     },
-    getServerOverViewEvent(){
-      getServerOverviewApi(this.commonParams).then((res) => {
+    async getServerOverViewEvent() {
+      await getServerOverviewApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           this.overList = res.data;
-          this.logEchartsEvent()
+          this.logEchartsEvent();
           this.$nextTick(() => {
             this.$refs.headOverview.overviewEvent(
               res.data.totalAccesslogFlowDetail,
               this.commonParams
             );
           });
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },

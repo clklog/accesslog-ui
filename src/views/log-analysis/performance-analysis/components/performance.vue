@@ -81,6 +81,7 @@
         border
         @sort-change="sortChange($event)"
         style="width: 100%; margin-top: 12px"
+        v-loading="loading"
       >
         <el-table-column label="序号" type="index" width="80" align="center">
           <template slot-scope="scope">
@@ -167,17 +168,14 @@ export default {
   data() {
     return {
       filterBarParams: {},
-
       pageNum: 1,
       pageSize: 10,
       sortName: null,
       sortOrder: "desc",
-
       status: "200",
       performanceList: [],
       total: 0,
       currentPage: 1,
-
       performFilter: [],
       otherFilter: [],
       otherFlag: true,
@@ -190,6 +188,7 @@ export default {
       hostList: [],
       hostChange: "",
       overSecond: false,
+      loading: false,
     };
   },
   mounted() {},
@@ -295,8 +294,8 @@ export default {
     },
     // 性能分析文件
     getPerformanceDetail(commonParams) {
+      this.loading = true;
       this.commonParams = copyObj(commonParams);
-
       this.commonParams.limits = [...this.imgFormatList, ...this.otherList];
       const { sortOrder, pageNum, pageSize } = this;
       this.commonParams = Object.assign(
@@ -306,8 +305,11 @@ export default {
       this.commonParams.isOverOneSecond = this.overSecond;
       getPerformanceDetailApi(this.commonParams).then((res) => {
         if (res.code == 200) {
+          this.loading = false;
           this.performanceList = res.data.rows;
           this.total = res.data.total;
+        }else{
+          this.loading = false;
         }
       });
     },

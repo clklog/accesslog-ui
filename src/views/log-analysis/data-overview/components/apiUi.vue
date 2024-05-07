@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head">
       <div class="block-title">
         请求UA
@@ -46,7 +46,6 @@
           min-width="30%"
           :show-overflow-tooltip="true"
         />
-       
       </el-table>
     </div>
   </div>
@@ -64,6 +63,7 @@ export default {
       yDataList: [],
       checkValue: "TOP10",
       UAListData: [],
+      loading: false,
     };
   },
   mounted() {
@@ -71,13 +71,14 @@ export default {
   },
   methods: {
     changeEchartEvent(val) {
-      if (val == 'TOP10') {
+      if (val == "TOP10") {
         this.uiApiEcharts();
       }
     },
     // getUaApi
-    getUa(commonParams) {
-      getUaApi(commonParams).then((res) => {
+    async getUa(commonParams) {
+      this.loading = true;
+      await getUaApi(commonParams).then((res) => {
         if (res.code == 200) {
           this.UAListData = res.data;
           this.xDataList = [];
@@ -97,6 +98,9 @@ export default {
           });
           // console.log(this.xDataList, this.yDataList);
           this.uiApiEcharts();
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },
@@ -109,7 +113,7 @@ export default {
         },
         legend: {
           // data: ["访问量(PV)"],
-          right:'5%',
+          right: "5%",
         },
         grid: {
           left: "35%",

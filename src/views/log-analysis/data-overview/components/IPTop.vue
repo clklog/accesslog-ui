@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head">
       <div class="block-title">IP访问量Top10</div>
       <div class="block-head-icon" >
@@ -24,6 +24,7 @@ export default {
       xDataList: [],
       yDataList: [],
       ipList: [],
+      loading: false,
     };
   },
   mounted() {},
@@ -31,8 +32,9 @@ export default {
     toPageEvent(){
       this.$router.push('/logAnalysis/abnormal')
     },
-    getIpTop10(commonParams) {
-      getIpTop10Api(commonParams).then((res) => {
+    async getIpTop10(commonParams) {
+      this.loading = true;
+      await getIpTop10Api(commonParams).then((res) => {
         if (res.code == 200) {
           this.xDataList = [];
           this.yDataList = [];
@@ -51,6 +53,9 @@ export default {
           });
           // console.log(this.xDataList, this.yDataList);
           this.initIpEcharts();
+          this.loading = false;
+        }else{
+          this.loading = false;
         }
       });
     },

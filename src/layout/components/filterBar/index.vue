@@ -50,6 +50,7 @@
             v-model="timeFlag"
             class="checkBoxStyle"
             @change="handleChange"
+            :disabled="!indexCanClick"
           >
             <el-radio label="day">今日</el-radio>
             <el-radio label="previous">昨日</el-radio>
@@ -88,6 +89,7 @@
           value-format="yyyy-MM-dd"
           :picker-options="pickerBeginOption"
           @change="checkDateEvnet"
+          :disabled="!indexCanClick"
         >
         </el-date-picker>
 
@@ -237,6 +239,7 @@
             size="small"
             style="min-width: 110px"
             @change="handleChangeProject"
+            :disabled="!indexCanClick"
           >
             <el-option
               v-for="item in hostData"
@@ -374,6 +377,7 @@ export default {
   },
   data() {
     return {
+      //indexCanClick: this.$store.getters.indexCanClick,
       checked: false,
       checkMonth: "",
       checkDay: "",
@@ -578,7 +582,6 @@ export default {
           },
         ],
       },
-
       showBtn: true,
       dateRange: null, //日期范围
       isIndeterminate: false,
@@ -635,6 +638,9 @@ export default {
   computed: {
     applicationCode() {
       return this.$store.getters.applicationCode;
+    },
+    indexCanClick() {
+      return this.$store.getters.indexCanClick;
     },
     channel() {
       if (this.channelValue) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head">
       <div class="block-title">请求方法</div>
       <div class="block-head-icon">
@@ -18,12 +18,14 @@ export default {
     return {
       funApis: null,
       funList: [],
+      loading: false,
     };
   },
   mounted() {},
   methods: {
-    getRequestMethod(commonParams) {
-      getRequestMethodApi(commonParams).then((res) => {
+    async getRequestMethod(commonParams) {
+      this.loading = true;
+      await getRequestMethodApi(commonParams).then((res) => {
         if (res.code == 200) {
           this.funList = res.data;
           this.funList.map((item) => {
@@ -32,6 +34,9 @@ export default {
           });
           // console.log(this.funList,"funList----");
           this.funApiEcharts();
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },
@@ -57,12 +62,14 @@ export default {
             let htmlStr;
             htmlStr = `
               <div style="padding:10px;">
-                <div style='font-size:14px;'>请求方式： ${params.data.requestMethod}</div>
+                <div style='font-size:14px;'>请求方式： ${
+                  params.data.requestMethod
+                }</div>
                 <div style='font-size:14px;margin-top:5px;'>占比： ${
                   params.percent + "%"
                 }</div>
                 <div style='font-size:14px;margin-top:5px;'> 总量： ${
-                 params.data.pv
+                  params.data.pv
                 }</div>
                
               </div>
