@@ -70,6 +70,9 @@ export default {
     this.uiApiEcharts();
   },
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     changeEchartEvent(val) {
       if (val == "TOP10") {
         this.uiApiEcharts();

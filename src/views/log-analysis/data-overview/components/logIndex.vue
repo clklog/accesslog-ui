@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem" style="width: 100%">
+  <div class="block-main public-hoverItem" style="width: 100%" v-loading="loading">
     <div class="block-title public-firstHead">访问数据占比</div>
     <div style="display: flex; justify-content: space-between">
       <div class="logCon">
@@ -155,9 +155,13 @@ export default {
         sortName: "",
         sortOrder: "",
       },
+      loading: false,
     };
   },
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     sortChange(e) {
       if (e.order && e.order == "ascending") {
         // 降序
@@ -195,6 +199,7 @@ export default {
       }
     },
     logEvent(val) {
+      this.loading = true;
       this.tableData = val;
       this.clearEcharts();
       this.logList = val;
@@ -240,6 +245,7 @@ export default {
         this.msg.rows4 = this.xaxis;
         this.msg.chartData5 = this.pieEcharts.avgVisitTime;
         this.msg.rows5 = this.xaxis;
+        this.loading = false;
       } else {
         this.msg = Object.assign(
           {},
@@ -258,6 +264,7 @@ export default {
             chartData6: [],
           }
         );
+        this.loading = false;
       }
     },
     clearEcharts() {

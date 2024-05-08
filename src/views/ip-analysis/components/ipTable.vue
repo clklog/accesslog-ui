@@ -10,23 +10,8 @@
       <div class="search-area">
         <div class="search-area-form">
           <div class="search-area-form-item">
-            <!-- IP:
             <el-input
-              v-model="ipInput"
-              placeholder="请输入IP"
-              size="small"
-              style="width: 200px"
-            ></el-input>
-            <el-button
-              style="margin-left: 10px"
-              size="small"
-              type="primary"
-              icon="el-icon-search"
-              @click="getIpListApiEvent"
-              >搜索</el-button
-            > -->
-            <el-input
-              placeholder="请输入搜索词"
+              placeholder="请输入IP值"
               size="small"
               v-model="ipInput"
               style="width: 300px"
@@ -610,6 +595,8 @@ export default {
 }
 
 .custom-ip-cell {
+  height: 16px;
+  line-height: 16px;
   display: flex;
   align-items: center; /* 可选，保持IP和按钮在同一垂直线上 */
 
@@ -625,10 +612,10 @@ export default {
 .search-area {
   display: flex;
   align-items: center;
-  border: 1px solid #d8e2ef;
+  //border: 1px solid #d8e2ef;
   border-radius: 6px;
   box-sizing: border-box;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   justify-content: flex-end;
 
   .search-area-form {
@@ -636,6 +623,28 @@ export default {
 
     .search-area-form-item {
       font-size: 14px;
+
+      //el-input去掉边框
+      ::v-deep {
+        .el-input__inner {
+          //border-bottom: 1px solid #d8e2ef;
+          font-size: 14px;
+          color: #333;
+          width: 300px;
+          height: 30px;
+          line-height: 30px;
+          padding: 0;
+          margin: 0;
+          padding-right: 30px;
+          box-shadow: none;
+          //文字右对齐
+          text-align: right;
+          &:focus {
+            border-color: #d8e2ef;
+            box-shadow: none;
+          }
+        }
+      }
     }
   }
 }

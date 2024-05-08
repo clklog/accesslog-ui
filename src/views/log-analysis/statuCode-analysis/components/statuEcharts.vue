@@ -1,5 +1,5 @@
 <template>
-  <div class="public-table-block public-hoverItem logCon">
+  <div class="public-table-block public-hoverItem logCon" v-loading="loading">
     <span class="public-firstHead">请求状态占比</span>
     <div style="display: flex">
       <div style="width: 50%">
@@ -38,6 +38,7 @@ export default {
 
       xbarData: [],
       ybarData: [],
+      loading: false,
     };
   },
   computed: {
@@ -51,6 +52,7 @@ export default {
   mounted() {},
   methods: {
     echartEvent(commonParams) {
+      this.loading = true;
       getStatusApi(commonParams).then((res) => {
         if (res.code == 200) {
           this.xbarData = [];
@@ -73,6 +75,9 @@ export default {
           this.pieStatuEcharts();
           //  bar echarts
           this.barStatuEcharts();
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },
@@ -236,7 +241,7 @@ export default {
           axisLabel: {
             //rotate: 50,
             //formatter: "{value}%", // 将值格式化为百分比
-            formatter (value) {
+            formatter(value) {
               return (value * 100).toFixed(0) + "%";
             },
           },

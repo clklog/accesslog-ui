@@ -73,6 +73,9 @@ export default {
   },
   watch: {},
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     changeDateEvent() {
       this.getFlowTrendEvent(this.oldCommonParams, "check");
     },

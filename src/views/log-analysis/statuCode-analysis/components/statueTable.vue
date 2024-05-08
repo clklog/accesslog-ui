@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="public-block">
-      <div class="search_wrappy public-table-block public-hoverItem">
+      <div
+        class="search_wrappy public-table-block public-hoverItem"
+        v-loading="loading"
+      >
         <span class="public-firstHead">状态码分析</span>
         <div class="flow-indicator public_indicator" style="margin-top: 10px">
           <div class="flow-item" style="margin: 12px 10px">
@@ -207,6 +210,7 @@ export default {
       },
       newArray: {},
       newApplication: this.$store.getters.applicationCode,
+      loading: false,
     };
   },
   computed: {
@@ -215,8 +219,8 @@ export default {
     },
   },
   watch: {
-    applicationCode(val,old) {
-      console.log(val, "新值");
+    applicationCode(val, old) {
+      //console.log(val, "新值");
       this.newApplication = val;
     },
   },
@@ -246,6 +250,7 @@ export default {
       if (row) {
         this.propStatu.httpHost = row.httpHost;
       }
+      this.loading = true;
       this.commonParams.status = this.propStatu.property;
       this.commonParams.httpHost = this.propStatu.httpHost;
       this.commonParams.applicationCode = this.newApplication;
@@ -253,10 +258,14 @@ export default {
         if (res.code == 200) {
           this.statuDetailList = res.data.rows;
           this.total = res.data.total;
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },
     getStatusFlowTrend(commonParams) {
+      this.loading = true;
       getStatusFlowTrendApi(commonParams).then((res) => {
         if (res.code == 200) {
           let statuList = res.data;
@@ -281,31 +290,32 @@ export default {
             return acc;
           }, []);
           this.tableList = mergedArr;
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },
-
     getStatusData(commonParams) {
       this.statuDetailList = [];
       this.newArray = JSON.parse(JSON.stringify(commonParams));
-      this.commonParams = Object.assign(this.newArray, this.commonParams);
+      this.commonParams = Object.assign(this.commonParams, this.newArray);
       getStatusListApi(commonParams).then((res) => {
         if (res.code == 200) {
           this.statuCodeList = res.data;
-          let filteredArray = []
+          let filteredArray = [];
           filteredArray = this.statuCodeList.filter((number) => {
             const firstDigit = number.toString()[0];
             return firstDigit === "4" || firstDigit === "5";
           });
           if (filteredArray.length > 1) {
-            this.statusFilter = filteredArray
-          }else{
+            this.statusFilter = filteredArray;
+          } else {
             this.statusFilter = res.data;
           }
           if (res.data.length < 6) {
             this.statusFilter = res.data;
           }
-
 
           this.statuCodeList = this.statuCodeList.map((item) => {
             return { ["statu"]: item };

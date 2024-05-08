@@ -29,6 +29,9 @@ export default {
   },
   mounted() {},
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     toPageEvent(){
       this.$router.push('/logAnalysis/abnormal')
     },

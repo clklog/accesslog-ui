@@ -70,8 +70,7 @@
 
     <div
       class="public-Table-minHeight"
-      style="min-height: 400px"
-      v-if="performanceList.length > 0"
+      style="min-height: 400px"  
     >
       <el-table
         class="public-radius"

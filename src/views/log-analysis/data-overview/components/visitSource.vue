@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon" v-loading="loanding">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head">
       <div class="block-title">访问来源Top10</div>
       <div class="block-head-icon">
@@ -55,11 +55,14 @@ export default {
   data() {
     return {
       tableData: [],
-      loanding: false,
+      loading: false,
     };
   },
   mounted() {},
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 1) {
         return "text-align:left";
@@ -68,13 +71,13 @@ export default {
       }
     },
     async getReferrerTop10(commonParams) {
-      this.loanding = true;
+      this.loading = true;
       await getReferrerTop10Api(commonParams).then((res) => {
         if (res.code == 200) {
           this.tableData = res.data;
-          this.loanding = false;
+          this.loading = false;
         } else {
-          this.loanding = false;
+          this.loading = false;
         }
       });
     },

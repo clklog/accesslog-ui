@@ -23,6 +23,9 @@ export default {
   },
   mounted() {},
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     async getRequestMethod(commonParams) {
       this.loading = true;
       await getRequestMethodApi(commonParams).then((res) => {

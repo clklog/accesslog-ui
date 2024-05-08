@@ -393,18 +393,16 @@ export default {
       this.commonParams.indicator = this.labelProperty;
       getIpByAreaApi(this.commonParams).then((res) => {
         if (res.code == 200) {
-          if (res.data && res.data.length > 0) {
-            function containsChinese(str) {
-              return /[\u4E00-\u9FA5]/.test(str);
-            }
-            // 过滤出包含中文的对象
-            const filteredData = res.data.filter((obj) => {
-              const province = obj.province ? obj.province.trim() : "";
-              return province !== "" && containsChinese(province);
-            });
-            this.apiProvinceList = filteredData;
-            this.checkMapDataEvent();
+          function containsChinese(str) {
+            return /[\u4E00-\u9FA5]/.test(str);
           }
+          // 过滤出包含中文的对象
+          const filteredData = res.data.filter((obj) => {
+            const province = obj.province ? obj.province.trim() : "";
+            return province !== "" && containsChinese(province);
+          });
+          this.apiProvinceList = filteredData;
+          this.checkMapDataEvent();
           this.loading = false;
         } else {
           this.loading = false;
