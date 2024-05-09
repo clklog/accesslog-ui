@@ -54,94 +54,100 @@
             ></el-table-column>
           </el-table>
         </div>
-
-        <div
-          class="public-Table-minHeight"
-          style="min-height: 400px"
-          v-if="statuDetailList.length > 0"
-        >
-          <el-table
-            :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
-            :cell-style="tableHeaderColor1"
-            :data="statuDetailList"
-            :cell-class-name="cellClassName"
-            @sort-change="sortChange($event)"
-            style="width: 100%; margin-top: 12px"
-          >
-            <!-- <el-table-column label="状态码200	"> -->
-            <el-table-column
-              :label="propStatu.httpHost + '状态码' + propStatu.property"
-            >
-              <el-table-column type="index" label="序号">
-                <template slot-scope="scope">
-                  <span v-text="getIndex(scope.$index)"> </span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="uri"
-                label="Url"
-                width="650"
-                :show-overflow-tooltip="true"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="pv"
-                align="center"
-                label="访问次数	"
-                sortable="custom"
-              >
-              </el-table-column>
-              <el-table-column
-                align="center"
-                label="耗时较长次数(>=1秒)"
-                sortable="custom"
-                prop="slowPv"
-              >
-                <template slot-scope="scope"> {{ scope.row.slowPv }}</template>
-              </el-table-column>
-              <el-table-column
-                align="center"
-                prop="maxVisitTime"
-                label="最大耗时(毫秒)"
-                sortable="custom"
-              >
-              </el-table-column>
-              <el-table-column
-                align="center"
-                prop="pvRate"
-                label="耗时较长次数(>=1秒)占比"
-                sortable="custom"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.pvRate | percenTable }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                align="center"
-                prop="avgVisitTime"
-                label="平均耗时(毫秒)"
-                sortable="custom"
-              >
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="block" v-if="statuDetailList.length > 0">
-          <el-pagination
-            :pager-count="5"
-            prev-text
-            next-text="下一页"
-            :current-page="currentPage"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
       </div>
     </div>
+
+    <el-dialog
+      title="状态码详细数据"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :close-on-click-modal="false"
+    >
+      <div
+        class="public-Table-minHeight"
+        style="min-height: 200px"
+      >
+        <el-table
+          :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
+          :cell-style="tableHeaderColor1"
+          :data="statuDetailList"
+          :cell-class-name="cellClassName"
+          @sort-change="sortChange($event)"
+          style="width: 100%; margin-top: 12px"
+          v-loading="loadingDetail"
+        >
+          <el-table-column
+            :label="propStatu.httpHost + '状态码' + propStatu.property"
+          >
+            <el-table-column type="index" label="序号">
+              <template slot-scope="scope">
+                <span v-text="getIndex(scope.$index)"> </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="uri"
+              label="Url"
+              width="650"
+              :show-overflow-tooltip="true"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="pv"
+              align="center"
+              label="访问次数	"
+              sortable="custom"
+            >
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="耗时较长次数(>=1秒)"
+              sortable="custom"
+              prop="slowPv"
+            >
+              <template slot-scope="scope"> {{ scope.row.slowPv }}</template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="maxVisitTime"
+              label="最大耗时(毫秒)"
+              sortable="custom"
+            >
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="pvRate"
+              label="耗时较长次数(>=1秒)占比"
+              sortable="custom"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.pvRate | percenTable }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="avgVisitTime"
+              label="平均耗时(毫秒)"
+              sortable="custom"
+            >
+            </el-table-column>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="block" v-if="statuDetailList.length > 0">
+        <el-pagination
+          :pager-count="5"
+          prev-text
+          next-text="下一页"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -162,7 +168,6 @@ export default {
       pageNum: 1,
       pageSize: 10,
       status: "200",
-
       total: 0,
       currentPage: 1,
       current: {
@@ -202,8 +207,6 @@ export default {
         status: "",
       },
       statuDetailList: [],
-      total: 0,
-      currentPage: 1,
       propStatu: {
         property: "",
         httpHost: "",
@@ -211,6 +214,8 @@ export default {
       newArray: {},
       newApplication: this.$store.getters.applicationCode,
       loading: false,
+      dialogVisible: false,
+      loadingDetail: false,
     };
   },
   computed: {
@@ -220,7 +225,6 @@ export default {
   },
   watch: {
     applicationCode(val, old) {
-      //console.log(val, "新值");
       this.newApplication = val;
     },
   },
@@ -244,13 +248,16 @@ export default {
     },
     // 状态码详细数据table
     conSelected(row, prop) {
+      this.dialogVisible = true;
+      this.loadingDetail = true;
+      this.statuDetailList = [];
+      this.total = 0;
       if (prop) {
         this.propStatu.property = prop.property;
       }
       if (row) {
         this.propStatu.httpHost = row.httpHost;
       }
-      this.loading = true;
       this.commonParams.status = this.propStatu.property;
       this.commonParams.httpHost = this.propStatu.httpHost;
       this.commonParams.applicationCode = this.newApplication;
@@ -258,9 +265,9 @@ export default {
         if (res.code == 200) {
           this.statuDetailList = res.data.rows;
           this.total = res.data.total;
-          this.loading = false;
+          this.loadingDetail = false;
         } else {
-          this.loading = false;
+          this.loadingDetail = false;
         }
       });
     },
