@@ -6,6 +6,20 @@
         <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
+    <div
+      style="
+        display: flex;
+        font-size: 14px;
+        color: #909399;
+        text-align: center;
+        width: 100%;
+        margin-top: 50px;
+        justify-content: center;
+      "
+      v-if="funList.length == 0"
+    >
+      暂无数据
+    </div>
     <div id="funApiEchart"></div>
   </div>
 </template>
@@ -28,8 +42,9 @@ export default {
     },
     async getRequestMethod(commonParams) {
       this.loading = true;
+      this.funList = [];
       await getRequestMethodApi(commonParams).then((res) => {
-        if (res.code == 200) {
+        if (res.code == 200 && res.data.length > 0) {
           this.funList = res.data;
           this.funList.map((item) => {
             item.value = item.pvRate;
@@ -40,6 +55,8 @@ export default {
           this.loading = false;
         } else {
           this.loading = false;
+          this.funApis = null;
+          this.funApiEcharts();
         }
       });
     },

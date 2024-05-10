@@ -2,12 +2,25 @@
   <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head">
       <div class="block-title">IP访问量Top10</div>
-      <div class="block-head-icon" >
+      <div class="block-head-icon">
         <!-- @click="$router.push('/logAnalysis/abnormal')" -->
         <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
-    <div class="block-echarts">
+    <div
+      style="
+        display: flex;
+        font-size: 14px;
+        color: #909399;
+        text-align: center;
+        width: 100%;
+        justify-content: center;
+      "
+      v-if="ipList.length == 0 && !loading"
+    >
+      暂无数据
+    </div>
+    <div class="block-echarts" v-else>
       <div id="ipEchart" class="ip_echart"></div>
     </div>
   </div>
@@ -32,32 +45,33 @@ export default {
     setLoading(val) {
       this.loading = val;
     },
-    toPageEvent(){
-      this.$router.push('/logAnalysis/abnormal')
+    toPageEvent() {
+      this.$router.push("/logAnalysis/abnormal");
     },
     async getIpTop10(commonParams) {
       this.loading = true;
+      this.ipList = [];
       await getIpTop10Api(commonParams).then((res) => {
-        if (res.code == 200) {
+        if (res.code == 200 && res.data.length > 0) {
           this.xDataList = [];
           this.yDataList = [];
           this.ipList = res.data.slice(0, 10).reverse();
           this.ipList.map((item, index) => {
             if (item.ip) {
               this.yDataList.push(item.ip);
-            }else{
+            } else {
               this.yDataList.push("");
             }
             if (item.pv) {
               this.xDataList.push(item.pv);
-            }else{
+            } else {
               this.yDataList.push(0);
             }
           });
           // console.log(this.xDataList, this.yDataList);
           this.initIpEcharts();
           this.loading = false;
-        }else{
+        } else {
           this.loading = false;
         }
       });
@@ -71,21 +85,21 @@ export default {
         },
         legend: {
           data: ["访问量(PV)"],
-          right:'5%',
+          right: "5%",
         },
-      
+
         grid: {
           left: "20%",
-          top:'12%',
-          bottom:"10%",
+          top: "12%",
+          bottom: "10%",
         },
         yAxis: [
           {
             type: "category",
             data: this.yDataList,
             axisLabel: {
-              interval: 0, 
-              rotate: "0", 
+              interval: 0,
+              rotate: "0",
             },
             axisTick: {
               show: false,
@@ -104,8 +118,8 @@ export default {
               alignWithLabel: true,
             },
             axisLabel: {
-              interval: 0, 
-              rotate: "26", 
+              interval: 0,
+              rotate: "26",
             },
           },
         ],
@@ -134,7 +148,7 @@ export default {
             itemStyle: {
               color: "#2c7be5",
             },
-           
+
             barWidth: 10,
             label: {
               show: true,
@@ -149,7 +163,6 @@ export default {
         if (this.ipEchart) {
           this.ipEchart.resize();
         }
-        
       });
     },
   },

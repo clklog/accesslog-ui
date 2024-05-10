@@ -17,36 +17,52 @@
         <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
     </div>
-    <div v-if="checkValue == 'TOP10'" id="uiCharts"></div>
-    <div v-if="checkValue == '全部'">
-      <el-table
-        :data="UAListData"
-        class="public-radius"
-        :header-cell-style="{ textAlign: 'center', background: '#f7fafe ' }"
-        style="width: 100%"
-        height="405px"
-        :cell-style="{ textAlign: 'center' }"
-        border
-      >
-        <el-table-column
-          type="index"
-          label="序号"
-          min-width="30%"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          prop="browser"
-          min-width="40%"
-          :show-overflow-tooltip="true"
-          label="浏览器"
-        />
-        <el-table-column
-          prop="uv"
-          label="用户数(UA)"
-          min-width="30%"
-          :show-overflow-tooltip="true"
-        />
-      </el-table>
+    <div
+      style="
+        display: flex;
+        font-size: 14px;
+        color: #909399;
+        text-align: center;
+        width: 100%;
+        margin-top: 50px;
+        justify-content: center;
+      "
+      v-if="UAListData.length == 0 && !loading"
+    >
+      暂无数据
+    </div>
+    <div v-else>
+      <div v-if="checkValue == 'TOP10'" id="uiCharts"></div>
+      <div v-if="checkValue == '全部'">
+        <el-table
+          :data="UAListData"
+          class="public-radius"
+          :header-cell-style="{ textAlign: 'center', background: '#f7fafe ' }"
+          style="width: 100%"
+          height="405px"
+          :cell-style="{ textAlign: 'center' }"
+          border
+        >
+          <el-table-column
+            type="index"
+            label="序号"
+            min-width="30%"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            prop="browser"
+            min-width="40%"
+            :show-overflow-tooltip="true"
+            label="浏览器"
+          />
+          <el-table-column
+            prop="uv"
+            label="用户数(UA)"
+            min-width="30%"
+            :show-overflow-tooltip="true"
+          />
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -67,22 +83,26 @@ export default {
     };
   },
   mounted() {
-    this.uiApiEcharts();
+    if (this.uAList.length > 0) {
+      this.uiApiEcharts();
+    }
   },
   methods: {
     setLoading(val) {
       this.loading = val;
     },
     changeEchartEvent(val) {
-      if (val == "TOP10") {
+      if (val == "TOP10" && this.uAList.length > 0) {
         this.uiApiEcharts();
       }
     },
     // getUaApi
     async getUa(commonParams) {
       this.loading = true;
+      this.UAListData = [];
+      this.uAList = [];
       await getUaApi(commonParams).then((res) => {
-        if (res.code == 200) {
+        if (res.code == 200 && res.data.length > 0) {
           this.UAListData = res.data;
           this.xDataList = [];
           this.yDataList = [];

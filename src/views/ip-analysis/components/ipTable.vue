@@ -121,10 +121,17 @@
       :visible.sync="dialogVisible"
       width="70%"
       top="8vh"
-      bottom="8vh"
       @close="closeEvent"
     >
-      <div style="border: 1px solid #d8e2ef !important">
+      <div
+        class="public-hoverItem"
+        style="
+          min-height: 50px;
+          background-color: #fbfcfe;
+          padding: 0px 0px;
+          box-sizing: border-box;
+        "
+      >
         <dialogBar
           byTimeType
           byCalendar
@@ -133,152 +140,164 @@
         ></dialogBar>
       </div>
 
-      <div class="flow-indicator public_indicator" style="margin-top: 10px">
-        <div class="flow-item" style="font-size: 13px; color: #4d4d4d">
-          请选择要排除的文件类型：
-        </div>
-        <div class="flow-item" style="margin-top: 5px">
-          <el-checkbox-group
-            v-model="performFilter"
-            class="checkBoxStyle"
-            @change="performEvent"
-          >
-            <el-checkbox label=".js">js文件</el-checkbox>
-            <el-checkbox label=".css">css文件</el-checkbox>
-            <el-checkbox label=".jgp;.png;.gif;.jpeg;.tiff;.tif"
-              >图片文件(jgp;png;gif;jpeg;tiff;tif)</el-checkbox
-            >
-          </el-checkbox-group>
-        </div>
-        <div class="flow-item setSpace">
-          <el-checkbox-group
-            v-model="otherFilter"
-            class="checkBoxStyle"
-            @change="otherFilterEvent"
-          >
-            <el-checkbox
-              :disabled="otherFlag"
-              label="其他"
-              style="margin-right: 0"
-              >其他类型文件</el-checkbox
-            >
-          </el-checkbox-group>
-          <el-input
-            class="other_select"
-            v-model="inputOther"
-            placeholder="请输入文件后缀,多个文件以;分隔"
-            style="width: 205px"
-            @input="inputFilterEvent()"
-            @confirm="confirmEvent()"
-            @keyup.enter.native="toSearch()"
-            @change="toSearch()"
-          ></el-input>
-
-          <!-- <el-checkbox style="margin-left: 55px;" label="overSecond">超过一秒</el-checkbox> -->
-        </div>
-        <div class="flow-item" style="font-size: 13px; color: #4d4d4d">
-          请选择页面响应时间范围：
-        </div>
-        <el-checkbox-group
-          v-model="overSecond"
-          class="checkBoxStyle"
-          @change="getIpDetailApiEvent"
-          style="margin-top: 5px; margin-bottom: 5px"
-        >
-          <el-checkbox style="margin-left: 10px" label="overSecond"
-            >超过一秒</el-checkbox
-          >
-        </el-checkbox-group>
-      </div>
-      <el-table
-        class="public-radius"
-        :header-cell-style="{ textAlign: 'center', background: '#f7fafe ' }"
-        :data="ipDetailTableList"
-        border
-        @sort-change="sortChangeIp($event)"
-        style="width: 100%; margin-top: 20px"
-        v-loading="loadingIpDetailTableList"
+      <div
+        class="public-hoverItem"
+        style="
+          min-height: 80px;
+          background-color: #fbfcfe;
+          padding: 25px 16px;
+          margin-top: 16px;
+          box-sizing: border-box;
+        "
       >
-        <el-table-column label="序号" type="index" width="80" align="center">
-          <template slot-scope="scope">
-            <span v-text="getIndex(scope.$index)"> </span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="uri" label="页面URL">
-          <template slot-scope="{ row }">
-            {{ row.uri }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="pv"
-          label="访问次数"
-          sortable="custom"
-          width="100"
-          align="center"
+        <div class="flow-indicator public_indicator" style="margin-top: 10px">
+          <div class="flow-item" style="font-size: 13px; color: #4d4d4d">
+            请选择要排除的文件类型：
+          </div>
+          <div class="flow-item" style="margin-top: 5px">
+            <el-checkbox-group
+              v-model="performFilter"
+              class="checkBoxStyle"
+              @change="performEvent"
+            >
+              <el-checkbox label=".js">js文件</el-checkbox>
+              <el-checkbox label=".css">css文件</el-checkbox>
+              <el-checkbox label=".jgp;.png;.gif;.jpeg;.tiff;.tif"
+                >图片文件(jgp;png;gif;jpeg;tiff;tif)</el-checkbox
+              >
+            </el-checkbox-group>
+          </div>
+          <div class="flow-item setSpace">
+            <el-checkbox-group
+              v-model="otherFilter"
+              class="checkBoxStyle"
+              @change="otherFilterEvent"
+            >
+              <el-checkbox
+                :disabled="otherFlag"
+                label="其他"
+                style="margin-right: 0"
+                >其他类型文件</el-checkbox
+              >
+            </el-checkbox-group>
+            <el-input
+              class="other_select"
+              v-model="inputOther"
+              placeholder="请输入文件后缀,多个文件以;分隔"
+              style="width: 205px"
+              @input="inputFilterEvent()"
+              @confirm="confirmEvent()"
+              @keyup.enter.native="toSearch()"
+              @change="toSearch()"
+            ></el-input>
+
+            <!-- <el-checkbox style="margin-left: 55px;" label="overSecond">超过一秒</el-checkbox> -->
+          </div>
+          <div class="flow-item" style="font-size: 13px; color: #4d4d4d">
+            请选择页面响应时间范围：
+          </div>
+          <el-checkbox-group
+            v-model="overSecond"
+            class="checkBoxStyle"
+            @change="getIpDetailApiEvent"
+            style="margin-top: 5px; margin-bottom: 5px"
+          >
+            <el-checkbox style="margin-left: 10px" label="overSecond"
+              >超过一秒</el-checkbox
+            >
+          </el-checkbox-group>
+        </div>
+
+        <el-table
+          class="public-radius"
+          :header-cell-style="{ textAlign: 'center', background: '#f7fafe ' }"
+          :data="ipDetailTableList"
+          border
+          @sort-change="sortChangeIp($event)"
+          style="width: 100%; margin-top: 20px"
+          v-loading="loadingIpDetailTableList"
         >
-          <template slot-scope="{ row }">
-            {{ row.pv }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="slowPv"
-          label="耗时较长次数(>=1秒)"
-          sortable="custom"
-          width="100"
-          align="center"
-        >
-          <template slot-scope="{ row }">
-            {{ row.slowPv }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="maxVisitTime"
-          label="最大耗时(毫秒)"
-          width="100"
-          align="center"
-        >
-          <template slot-scope="{ row }">
-            {{ row.maxVisitTime }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="pvRate"
-          label="耗时较长次数(>=1秒)占比"
-          width="100"
-          align="center"
-        >
-          <template slot-scope="{ row }">
-            {{ row.pvRate }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="avgVisitTime"
-          label="平均耗时(毫秒)"
-          sortable="custom"
-          width="100"
-          align="center"
-        >
-          <template slot-scope="{ row }">
-            {{ row.avgVisitTime }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="httpUserAgent" label="userAgent">
-          <template slot-scope="{ row }">
-            {{ row.httpUserAgent }}
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="block">
-        <el-pagination
-          next-text="下一页"
-          :current-page="pageNumIp"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="pageSizeIp"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totalIp"
-          @size-change="handleSizeChangeIp"
-          @current-change="handleCurrentChangeIp"
-        />
+          <el-table-column label="序号" type="index" width="80" align="center">
+            <template slot-scope="scope">
+              <span v-text="getIndex(scope.$index)"> </span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="uri" label="页面URL">
+            <template slot-scope="{ row }">
+              {{ row.uri }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="pv"
+            label="访问次数"
+            sortable="custom"
+            width="100"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              {{ row.pv }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="slowPv"
+            label="耗时较长次数(>=1秒)"
+            sortable="custom"
+            width="100"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              {{ row.slowPv }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="maxVisitTime"
+            label="最大耗时(毫秒)"
+            width="100"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              {{ row.maxVisitTime }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="pvRate"
+            label="耗时较长次数(>=1秒)占比"
+            width="100"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              {{ row.pvRate }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="avgVisitTime"
+            label="平均耗时(毫秒)"
+            sortable="custom"
+            width="100"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              {{ row.avgVisitTime }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="httpUserAgent" label="userAgent">
+            <template slot-scope="{ row }">
+              {{ row.httpUserAgent }}
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            next-text="下一页"
+            :current-page="pageNumIp"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSizeIp"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalIp"
+            @size-change="handleSizeChangeIp"
+            @current-change="handleCurrentChangeIp"
+          />
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -583,12 +602,20 @@ export default {
     top: 15px;
   }
   .el-dialog__header {
-    //padding: 0 !important;
+    padding: 0 !important;
     border-radius: 6px;
+    height: 44px;
+    line-height: 44px;
+    background: #fbfcfe;
   }
-
+  .el-dialog__title {
+    margin-left: 16px;
+    font-size: 15px;
+    color: #4d4d4d;
+    font-weight: bold;
+  }
   .el-dialog__body {
-    padding: 10px 20px 30px 20px;
+    padding: 16px;
     background-color: #eef4fd;
     border-radius: 6px;
   }

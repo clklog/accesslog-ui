@@ -1,7 +1,21 @@
 <template>
   <div class="public-table-block public-hoverItem logCon" v-loading="loading">
     <span class="public-firstHead">请求状态占比</span>
-    <div style="display: flex">
+    <div
+      style="
+        display: flex;
+        font-size: 14px;
+        color: #909399;
+        text-align: center;
+        width: 100%;
+        margin-top: 50px;
+        justify-content: center;
+      "
+      v-if="funList.length == 0 && !loading"
+    >
+      暂无数据
+    </div>
+    <div style="display: flex" v-else>
       <div style="width: 50%">
         <div id="pieStatu" class="pieStatu"></div>
       </div>
@@ -53,12 +67,12 @@ export default {
   methods: {
     echartEvent(commonParams) {
       this.loading = true;
+      this.funList = [];
       getStatusApi(commonParams).then((res) => {
-        if (res.code == 200) {
+        if (res.code == 200 && res.data.length > 0) {
           this.xbarData = [];
           this.ybarData = [];
           this.funList = res.data;
-
           this.funList.sort((a, b) => {
             const statusA = parseInt(a.status, 10) || 0;
             const statusB = parseInt(b.status, 10) || 0;

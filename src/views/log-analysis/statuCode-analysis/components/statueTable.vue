@@ -64,88 +64,95 @@
       :close-on-click-modal="false"
     >
       <div
-        class="public-Table-minHeight"
-        style="min-height: 200px"
+        class="public-hoverItem"
+        style="
+          min-height: 50px;
+          background-color: #fbfcfe;
+          padding: 25px 16px;
+          box-sizing: border-box;
+        "
       >
-        <el-table
-          :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
-          :cell-style="tableHeaderColor1"
-          :data="statuDetailList"
-          :cell-class-name="cellClassName"
-          @sort-change="sortChange($event)"
-          style="width: 100%; margin-top: 12px"
-          v-loading="loadingDetail"
-        >
-          <el-table-column
-            :label="propStatu.httpHost + '状态码' + propStatu.property"
+        <div class="public-Table-minHeight">
+          <el-table
+            :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
+            :cell-style="tableHeaderColor1"
+            :data="statuDetailList"
+            :cell-class-name="cellClassName"
+            @sort-change="sortChange($event)"
+            style="width: 100%; margin-top: 12px"
+            v-loading="loadingDetail"
           >
-            <el-table-column type="index" label="序号">
-              <template slot-scope="scope">
-                <span v-text="getIndex(scope.$index)"> </span>
-              </template>
-            </el-table-column>
             <el-table-column
-              prop="uri"
-              label="Url"
-              width="650"
-              :show-overflow-tooltip="true"
+              :label="propStatu.httpHost + '状态码' + propStatu.property"
             >
+              <el-table-column type="index" label="序号">
+                <template slot-scope="scope">
+                  <span v-text="getIndex(scope.$index)"> </span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="uri"
+                label="Url"
+                width="650"
+                :show-overflow-tooltip="true"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="pv"
+                align="center"
+                label="访问次数	"
+                sortable="custom"
+              >
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="耗时较长次数(>=1秒)"
+                sortable="custom"
+                prop="slowPv"
+              >
+                <template slot-scope="scope"> {{ scope.row.slowPv }}</template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="maxVisitTime"
+                label="最大耗时(毫秒)"
+                sortable="custom"
+              >
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="pvRate"
+                label="耗时较长次数(>=1秒)占比"
+                sortable="custom"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.pvRate | percenTable }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="avgVisitTime"
+                label="平均耗时(毫秒)"
+                sortable="custom"
+              >
+              </el-table-column>
             </el-table-column>
-            <el-table-column
-              prop="pv"
-              align="center"
-              label="访问次数	"
-              sortable="custom"
-            >
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="耗时较长次数(>=1秒)"
-              sortable="custom"
-              prop="slowPv"
-            >
-              <template slot-scope="scope"> {{ scope.row.slowPv }}</template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="maxVisitTime"
-              label="最大耗时(毫秒)"
-              sortable="custom"
-            >
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="pvRate"
-              label="耗时较长次数(>=1秒)占比"
-              sortable="custom"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.pvRate | percenTable }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="avgVisitTime"
-              label="平均耗时(毫秒)"
-              sortable="custom"
-            >
-            </el-table-column>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="block" v-if="statuDetailList.length > 0">
-        <el-pagination
-          :pager-count="5"
-          prev-text
-          next-text="下一页"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+          </el-table>
+        </div>
+        <div class="block" v-if="statuDetailList.length > 0">
+          <el-pagination
+            :pager-count="5"
+            prev-text
+            next-text="下一页"
+            :current-page="currentPage"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -389,6 +396,31 @@ export default {
 ::v-deep {
   @import "~@/styles/components/el-checkbox.scss";
   @import "~@/styles/components/el-pagination.scss";
+
+  .el-dialog {
+    border-radius: 6px;
+  }
+  .el-dialog__headerbtn {
+    top: 15px;
+  }
+  .el-dialog__header {
+    padding: 0 !important;
+    border-radius: 6px;
+    height: 44px;
+    line-height: 44px;
+    background: #fbfcfe;
+  }
+  .el-dialog__title {
+    margin-left: 16px;
+    font-size: 15px;
+    color: #4d4d4d;
+    font-weight: bold;
+  }
+  .el-dialog__body {
+    padding: 16px;
+    background-color: #eef4fd;
+    border-radius: 6px;
+  }
 }
 ::v-deep .myTableStyle .el-table thead.is-group th {
   background: none;
