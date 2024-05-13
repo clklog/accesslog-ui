@@ -6,53 +6,73 @@
         v-loading="loading"
       >
         <span class="public-firstHead">状态码分析</span>
-        <div class="flow-indicator public_indicator" style="margin-top: 10px">
-          <div class="flow-item" style="margin: 12px 10px">
-            <div class="flow-title">状态码筛选</div>
-            <el-checkbox-group
-              v-model="statusFilter"
-              class="checkBoxStyle"
-              @change="handleStatus"
+        <div v-if="statuCodeList.length > 0">
+          <div class="flow-indicator public_indicator" style="margin-top: 10px">
+            <div class="flow-item" style="margin: 12px 10px">
+              <div class="flow-title">状态码筛选</div>
+              <el-checkbox-group
+                v-model="statusFilter"
+                class="checkBoxStyle"
+                @change="handleStatus"
+              >
+                <el-checkbox
+                  v-for="(item, index) in statuCodeList"
+                  :label="item.statu"
+                  :value="item.statu"
+                  :key="index"
+                ></el-checkbox>
+              </el-checkbox-group>
+            </div>
+          </div>
+          <div class="myTableStyle">
+            <el-table
+              :header-cell-style="{
+                background: '#f7fafe ',
+                textAlign: 'center',
+              }"
+              class="public-radius"
+              :cell-style="tableHeaderColor"
+              :data="tableList"
+              border
+              style="margin: 20px 0"
+              @row-click="conSelected"
             >
-              <el-checkbox
-                v-for="(item, index) in statuCodeList"
-                :label="item.statu"
-                :value="item.statu"
+              <!-- host 头部事件 -->
+              <el-table-column label="状态码" width="300">
+                <el-table-column
+                  prop="httpHost"
+                  label="host"
+                  width="300"
+                  :show-overflow-tooltip="true"
+                >
+                </el-table-column>
+              </el-table-column>
+
+              <el-table-column
+                v-for="(item, index) in tableLabel"
                 :key="index"
-              ></el-checkbox>
-            </el-checkbox-group>
+                :label="item.label"
+                :prop="item.prop"
+                style="cursor: pointer"
+                @click="conSelected(scope, item.prop)"
+              ></el-table-column>
+            </el-table>
           </div>
         </div>
-        <div class="myTableStyle">
-          <el-table
-            :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
-            class="public-radius"
-            :cell-style="tableHeaderColor"
-            :data="tableList"
-            border
-            style="margin: 20px 0"
-            @row-click="conSelected"
-          >
-            <!-- host 头部事件 -->
-            <el-table-column label="状态码" width="300">
-              <el-table-column
-                prop="httpHost"
-                label="host"
-                width="300"
-                :show-overflow-tooltip="true"
-              >
-              </el-table-column>
-            </el-table-column>
-
-            <el-table-column
-              v-for="(item, index) in tableLabel"
-              :key="index"
-              :label="item.label"
-              :prop="item.prop"
-              style="cursor: pointer"
-              @click="conSelected(scope, item.prop)"
-            ></el-table-column>
-          </el-table>
+        <div
+          style="
+            display: flex;
+            font-size: 14px;
+            color: #909399;
+            text-align: center;
+            width: 100%;
+            margin-top: 50px;
+            padding-bottom: 100px;
+            justify-content: center;
+          "
+          v-else
+        >
+          暂无数据
         </div>
       </div>
     </div>
