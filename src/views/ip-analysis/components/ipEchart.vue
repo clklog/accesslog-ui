@@ -2,12 +2,16 @@
   <div>
     <div class="area_container public-hoverItem">
       <div style="width: 100%; position: relative">
-        <el-tabs @tab-click="handleClick" v-model="activeMap">
+        <el-tabs
+          @tab-click="handleClick"
+          v-model="activeMap"
+          v-loading="loading"
+        >
           <el-tab-pane label="按省份" name="province">
             <div style="display: flex">
               <div class="mapCharts" style="position: relative">
                 <!-- 指标 -->
-                <!-- <div style="position: absolute; left: 0">
+                <div style="position: absolute; left: 0">
                   <div
                     style="
                       display: flex;
@@ -40,8 +44,8 @@
                       </el-option>
                     </el-select>
                   </div>
-                </div> -->
-                <!-- echarts -->
+                </div>
+                <!-- 中国地图 -->
                 <div
                   id="echart_china"
                   ref="echart_china"
@@ -98,10 +102,105 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="按国家" name="country">
-            <div
-              id="chart"
-              style="width: 70vw; height: 400px; margin-left: 5vw"
-            ></div>
+            <div style="display: flex">
+              <div class="mapCharts" style="position: relative">
+                <!-- 指标 -->
+                <div style="position: absolute; left: 0">
+                  <div
+                    style="
+                      display: flex;
+                      border: 1px solid #acb2ba;
+                      border-radius: 4px;
+                      align-items: center;
+                      height: 30px;
+                      margin-left: 50px;
+                    "
+                  >
+                    <div
+                      style="font-size: 11px; color: #4d4d4d; padding-left: 6px"
+                    >
+                      指标:
+                    </div>
+                    <el-select
+                      class="appli_select"
+                      v-model="hostValue"
+                      placeholder="请选择指标"
+                      size="small"
+                      style="width: 130px; z-index: 1"
+                    >
+                      <el-option
+                        v-for="item in hostList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        @click.native="handleChangeProject(item)"
+                      >
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+                <!-- 世界地图 -->
+                <div
+                  id="chart"
+                  style="
+                    width: 45vw;
+                    height: 400px;
+                    margin-left: 3vw;
+                    margin-right: 3vw;
+                  "
+                ></div>
+              </div>
+              <div class="mapTable">
+                <div
+                  style="
+                    width: 500px;
+                    height: 410px;
+                    margin-top: 30px;
+                    overflow: hidden;
+                    margin-bottom: 30px;
+                  "
+                >
+                  <el-table
+                    class="public-radius"
+                    ref="singleTable"
+                    height="400"
+                    :header-cell-style="{
+                      textAlign: 'center',
+                      background: '#f7fafe  ',
+                    }"
+                    :cell-style="{ textAlign: 'center' }"
+                    border
+                    :data="apiCountyList"
+                    highlight-current-row
+                    style="width: 100%"
+                  >
+                    <el-table-column type="index" width="80"> </el-table-column>
+                    <el-table-column
+                      :show-overflow-tooltip="true"
+                      property="country"
+                      label="国家"
+                      width="200"
+                    >
+                      <template slot-scope="{ row }">
+                        <span>{{ row.country || "未知" }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      :property="labelProperty"
+                      :label="hostValue"
+                    >
+                    </el-table-column>
+
+                    <el-table-column
+                      :formatter="dateFormat"
+                      :property="rateProperty"
+                      label="占比"
+                    >
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </div>
+            </div>
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -121,24 +220,26 @@ export default {
   mixins: [resize],
   data() {
     return {
+      loading: false,
       hostValue: "访客数",
       labelProperty: "uv",
       rateProperty: "uvRate",
+      //指标选择列表
       hostList: [
         { label: "浏览量", value: "浏览量", id: "pv", rate: "pvRate" },
         { label: "访客数", value: "访客数", id: "uv", rate: "uvRate" },
-        {
-          label: "访问次数",
-          value: "访问次数",
-          id: "visitCount",
-          rate: "visitCountRate",
-        },
-        {
-          label: "新访客数",
-          value: "新访客数",
-          id: "newUv",
-          rate: "newUvRate",
-        },
+        // {
+        //   label: "访问次数",
+        //   value: "访问次数",
+        //   id: "visitCount",
+        //   rate: "visitCountRate",
+        // },
+        // {
+        //   label: "新访客数",
+        //   value: "新访客数",
+        //   id: "newUv",
+        //   rate: "newUvRate",
+        // },
         { label: "IP数", value: "IP数", id: "ipCount", rate: "ipCountRate" },
       ],
       worldList: [],
@@ -182,6 +283,7 @@ export default {
       ],
       activeMap: "province",
       apiProvinceList: [], //省份
+      apiCountyList: [], //国家
       maxValue: 200,
       commonParams: {},
       newWorldList: [],
@@ -199,12 +301,11 @@ export default {
     handleClick(val) {
       if (this.activeMap == "province") {
         this.getIpByAreaApiEvent();
-        this.$bus.$emit("$IpEvent",'province')
+        this.$bus.$emit("$IpEvent", "province");
       } else {
         this.countryApiEvent();
-        this.$bus.$emit("$IpEvent",'country')
+        this.$bus.$emit("$IpEvent", "country");
       }
-      
     },
     showScatterInGeo() {
       let _that = this;
@@ -235,7 +336,6 @@ export default {
             return htmlStr;
           },
         },
-
         visualMap: {
           min: 0,
           max: this.maxValue || 200,
@@ -288,21 +388,24 @@ export default {
       this.getIpByAreaApiEvent();
     },
     getIpByAreaApiEvent() {
+      this.loading = true;
       this.commonParams.summaryOptions = this.activeMap;
+      this.commonParams.indicator = this.labelProperty;
       getIpByAreaApi(this.commonParams).then((res) => {
         if (res.code == 200) {
-          if (res.data && res.data.length > 0) {
-            function containsChinese(str) {
-              return /[\u4E00-\u9FA5]/.test(str);
-            }
-            // 过滤出包含中文的对象
-            const filteredData = res.data.filter((obj) => {
-              const province = obj.province ? obj.province.trim() : '';
-              return province !== "" && containsChinese(province);
-            });
-            this.apiProvinceList = filteredData;
-            this.checkMapDataEvent();
+          function containsChinese(str) {
+            return /[\u4E00-\u9FA5]/.test(str);
           }
+          // 过滤出包含中文的对象
+          const filteredData = res.data.filter((obj) => {
+            const province = obj.province ? obj.province.trim() : "";
+            return province !== "" && containsChinese(province);
+          });
+          this.apiProvinceList = filteredData;
+          this.checkMapDataEvent();
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },
@@ -335,19 +438,18 @@ export default {
         if (res.code == 200) {
           let maxValue = [];
           let resList = res.data;
+          this.apiCountyList = resList;
           this.newWorldList = copyObj(worldData.dataArr);
           for (let i = 0; i < this.newWorldList.length; i++) {
             for (let j = 0; j < resList.length; j++) {
               if (this.newWorldList[i].name == resList[j].country) {
                 this.newWorldList[i].value = resList[j].uv;
-
-                // this.newWorldList[i].visitCountRate =
-                //   resList[j].visitCountRate || 0;
-
-                // this.newWorldList[i].pv = resList[j].pv;
-                // this.newWorldList[i].pvRate = resList[j].pvRate;
+                this.newWorldList[i].pv = resList[j].pv;
+                this.newWorldList[i].pvRate = resList[j].pvRate;
                 this.newWorldList[i].uv = resList[j].uv;
                 this.newWorldList[i].uvRate = resList[j].uvRate;
+                this.newWorldList[i].ipCount = resList[j].ipCount;
+                this.newWorldList[i].ipCountRate = resList[j].ipCountRate;
               }
               if (this.newWorldList[i].name != "中国") {
                 maxValue.push(this.newWorldList[i].value);
@@ -382,22 +484,28 @@ export default {
           tooltip: {
             trigger: "item",
             formatter(params) {
-              let visitCountRate, uv, uvRate, pvRate, pv;
+              let visitCountRate, pvRate, pv, uv, uvRate, ipCount, ipCountRate;
               if (params.data) {
                 visitCountRate = _this.$options.filters.percenTable(
                   params.data.visitCountRate
                 );
-                uv = params.data.uv;
                 pv = params.data.pv;
+                uv = params.data.uv;
+                ipCount = params.data.ipCount;
                 pvRate = _this.$options.filters.percenTable(params.data.pvRate);
                 uvRate = _this.$options.filters.percenTable(params.data.uvRate);
+                ipCountRate = _this.$options.filters.percenTable(
+                  params.data.ipCountRate
+                );
               }
 
               let htmlStr = `
                 <div style="padding:10px;">
                   <div style='font-size:14px;'> ${params.name}</div>
                   <p style='text-align:left;margin-top:10px;'>
+                    浏览量：${pv || 0}(占比：${pvRate || 0})<br/>
                     访客数：${uv || 0}(占比：${uvRate || 0})<br/>
+                    IP数：${ipCount || 0}(占比：${ipCountRate || 0})<br/>
                   </p>
                 </div>
                 `;
@@ -452,6 +560,11 @@ export default {
       window.addEventListener("resize", () => {
         worldChart.resize();
       });
+    },
+    handleChangeProject(val) {
+      this.labelProperty = val.id;
+      this.rateProperty = val.rate;
+      this.getIpByAreaApiEvent();
     },
   },
 };

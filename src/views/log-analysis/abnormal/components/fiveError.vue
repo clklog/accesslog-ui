@@ -14,6 +14,7 @@
         style="width: 100%"
         :cell-style="tableHeaderColor"
         border
+        v-loading="loading"
       >
         <el-table-column
           type="index"
@@ -67,6 +68,7 @@ export default {
       total: 0,
       commonParamsOld: "",
       status: "500",
+      loading: false,
     };
   },
   mounted() {},
@@ -90,13 +92,17 @@ export default {
       }
     },
     getExceptionStatus(commonParams) {
+      this.loading = true;
       this.commonParamsOld = commonParams;
       const { pageNum, pageSize, status } = this;
       commonParams = Object.assign({ pageNum, pageSize, status }, commonParams);
       getExceptionStatusApi(commonParams).then((res) => {
         if (res.code == 200) {
+          this.loading = false;
           this.tableData = res.data.rows;
           this.total = res.data.total;
+        } else {
+          this.loading = false;
         }
       });
     },

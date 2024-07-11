@@ -1,62 +1,98 @@
 <template>
   <div>
     <div class="public-block">
-      <div class="search_wrappy public-table-block public-hoverItem">
+      <div
+        class="search_wrappy public-table-block public-hoverItem"
+        v-loading="loading"
+      >
         <span class="public-firstHead">状态码分析</span>
-        <div class="flow-indicator public_indicator" style="margin-top: 10px">
-          <div class="flow-item" style="margin: 12px 10px">
-            <div class="flow-title">状态码筛选</div>
-            <el-checkbox-group
-              v-model="statusFilter"
-              class="checkBoxStyle"
-              @change="handleStatus"
+        <div v-if="statuCodeList.length > 0">
+          <div class="flow-indicator public_indicator" style="margin-top: 10px">
+            <div class="flow-item" style="margin: 12px 10px">
+              <div class="flow-title">状态码筛选</div>
+              <el-checkbox-group
+                v-model="statusFilter"
+                class="checkBoxStyle"
+                @change="handleStatus"
+              >
+                <el-checkbox
+                  v-for="(item, index) in statuCodeList"
+                  :label="item.statu"
+                  :value="item.statu"
+                  :key="index"
+                ></el-checkbox>
+              </el-checkbox-group>
+            </div>
+          </div>
+          <div class="myTableStyle">
+            <el-table
+              :header-cell-style="{
+                background: '#f7fafe ',
+                textAlign: 'center',
+              }"
+              class="public-radius"
+              :cell-style="tableHeaderColor"
+              :data="tableList"
+              border
+              style="margin: 20px 0"
+              @row-click="conSelected"
             >
-              <el-checkbox
-                v-for="(item, index) in statuCodeList"
-                :label="item.statu"
-                :value="item.statu"
+              <!-- host 头部事件 -->
+              <el-table-column label="状态码" width="300">
+                <el-table-column
+                  prop="httpHost"
+                  label="host"
+                  width="300"
+                  :show-overflow-tooltip="true"
+                >
+                </el-table-column>
+              </el-table-column>
+
+              <el-table-column
+                v-for="(item, index) in tableLabel"
                 :key="index"
-              ></el-checkbox>
-            </el-checkbox-group>
+                :label="item.label"
+                :prop="item.prop"
+                style="cursor: pointer"
+                @click="conSelected(scope, item.prop)"
+              ></el-table-column>
+            </el-table>
           </div>
         </div>
-        <div class="myTableStyle">
-          <el-table
-            :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
-            class="public-radius"
-            :cell-style="tableHeaderColor"
-            :data="tableList"
-            border
-            style="margin: 20px 0"
-            @row-click="conSelected"
-          >
-            <!-- host 头部事件 -->
-            <el-table-column label="状态码" width="300">
-              <el-table-column
-                prop="httpHost"
-                label="host"
-                width="300"
-                :show-overflow-tooltip="true"
-              >
-              </el-table-column>
-            </el-table-column>
-
-            <el-table-column
-              v-for="(item, index) in tableLabel"
-              :key="index"
-              :label="item.label"
-              :prop="item.prop"
-              style="cursor: pointer"
-              @click="conSelected(scope, item.prop)"
-            ></el-table-column>
-          </el-table>
-        </div>
-
         <div
-          class="public-Table-minHeight"
-          style="min-height: 400px"
-          v-if="statuDetailList.length > 0"
+          style="
+            display: flex;
+            font-size: 14px;
+            color: #909399;
+            text-align: center;
+            width: 100%;
+            margin-top: 50px;
+            padding-bottom: 100px;
+            justify-content: center;
+          "
+          v-else
         >
+          暂无数据
+        </div>
+      </div>
+    </div>
+
+    <el-dialog
+      title="状态码详细数据"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :close-on-click-modal="false"
+    >
+      <div
+        class="public-hoverItem"
+        style="
+          min-height: 50px;
+          background-color: #fbfcfe;
+          padding: 25px 16px;
+          box-sizing: border-box;
+        "
+      >
+        <div class="public-Table-minHeight">
           <el-table
             :header-cell-style="{ background: '#f7fafe ', textAlign: 'center' }"
             :cell-style="tableHeaderColor1"
@@ -64,8 +100,8 @@
             :cell-class-name="cellClassName"
             @sort-change="sortChange($event)"
             style="width: 100%; margin-top: 12px"
+            v-loading="loadingDetail"
           >
-            <!-- <el-table-column label="状态码200	"> -->
             <el-table-column
               :label="propStatu.httpHost + '状态码' + propStatu.property"
             >
@@ -138,7 +174,7 @@
           />
         </div>
       </div>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -159,7 +195,6 @@ export default {
       pageNum: 1,
       pageSize: 10,
       status: "200",
-
       total: 0,
       currentPage: 1,
       current: {
@@ -199,14 +234,15 @@ export default {
         status: "",
       },
       statuDetailList: [],
-      total: 0,
-      currentPage: 1,
       propStatu: {
         property: "",
         httpHost: "",
       },
       newArray: {},
       newApplication: this.$store.getters.applicationCode,
+      loading: false,
+      dialogVisible: false,
+      loadingDetail: false,
     };
   },
   computed: {
@@ -215,8 +251,7 @@ export default {
     },
   },
   watch: {
-    applicationCode(val,old) {
-      console.log(val, "新值");
+    applicationCode(val, old) {
       this.newApplication = val;
     },
   },
@@ -240,6 +275,10 @@ export default {
     },
     // 状态码详细数据table
     conSelected(row, prop) {
+      this.dialogVisible = true;
+      this.loadingDetail = true;
+      this.statuDetailList = [];
+      this.total = 0;
       if (prop) {
         this.propStatu.property = prop.property;
       }
@@ -253,10 +292,14 @@ export default {
         if (res.code == 200) {
           this.statuDetailList = res.data.rows;
           this.total = res.data.total;
+          this.loadingDetail = false;
+        } else {
+          this.loadingDetail = false;
         }
       });
     },
     getStatusFlowTrend(commonParams) {
+      this.loading = true;
       getStatusFlowTrendApi(commonParams).then((res) => {
         if (res.code == 200) {
           let statuList = res.data;
@@ -281,31 +324,32 @@ export default {
             return acc;
           }, []);
           this.tableList = mergedArr;
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },
-
     getStatusData(commonParams) {
       this.statuDetailList = [];
       this.newArray = JSON.parse(JSON.stringify(commonParams));
-      this.commonParams = Object.assign(this.newArray, this.commonParams);
+      this.commonParams = Object.assign(this.commonParams, this.newArray);
       getStatusListApi(commonParams).then((res) => {
         if (res.code == 200) {
           this.statuCodeList = res.data;
-          let filteredArray = []
+          let filteredArray = [];
           filteredArray = this.statuCodeList.filter((number) => {
             const firstDigit = number.toString()[0];
             return firstDigit === "4" || firstDigit === "5";
           });
           if (filteredArray.length > 1) {
-            this.statusFilter = filteredArray
-          }else{
+            this.statusFilter = filteredArray;
+          } else {
             this.statusFilter = res.data;
           }
           if (res.data.length < 6) {
             this.statusFilter = res.data;
           }
-
 
           this.statuCodeList = this.statuCodeList.map((item) => {
             return { ["statu"]: item };
@@ -372,6 +416,31 @@ export default {
 ::v-deep {
   @import "~@/styles/components/el-checkbox.scss";
   @import "~@/styles/components/el-pagination.scss";
+
+  .el-dialog {
+    border-radius: 6px;
+  }
+  .el-dialog__headerbtn {
+    top: 15px;
+  }
+  .el-dialog__header {
+    padding: 0 !important;
+    border-radius: 6px;
+    height: 44px;
+    line-height: 44px;
+    background: #fbfcfe;
+  }
+  .el-dialog__title {
+    margin-left: 16px;
+    font-size: 15px;
+    color: #4d4d4d;
+    font-weight: bold;
+  }
+  .el-dialog__body {
+    padding: 16px;
+    background-color: #eef4fd;
+    border-radius: 6px;
+  }
 }
 ::v-deep .myTableStyle .el-table thead.is-group th {
   background: none;

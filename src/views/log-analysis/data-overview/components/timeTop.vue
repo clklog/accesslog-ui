@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head" @click="$router.push('/logAnalysis/performance/timeConsuming')">
       <div class="block-title">耗时Top10</div>
       <div class="block-head-icon" >
@@ -35,10 +35,14 @@ export default {
   data() {
     return {
       timeTopLIst: [],
+      loading: false,
     };
   },
   mounted() {},
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 1) {
         return "text-align:left";
@@ -46,15 +50,19 @@ export default {
         return "text-align:center";
       }
     },
-    getRequestTimeTop10(commonParams) {
+    async getRequestTimeTop10(commonParams) {
+      this.loading = true;
       let params = copyObj(commonParams)
       params.pageSize = 10;
       params.pageNum = 1;
       params.sortName = 'maxVisitTime';
       params.sortOrder = 'desc';
-      getPerformanceDetailApi(params).then((res) => {
+      await getPerformanceDetailApi(params).then((res) => {
         if (res.code == 200) {
+          this.loading = false;
           this.timeTopLIst = res.data.rows;
+        }else{
+          this.loading = false;
         }
       });
     },

@@ -136,7 +136,8 @@ export default {
           if (
             this.commonParams.timeType == "hour" &&
             this.commonParams.endTime == this.commonParams.startTime &&
-            this.commonParams.startTime == toDateTime && !this.contrastValue
+            this.commonParams.startTime == toDateTime &&
+            !this.contrastValue
           ) {
             let currentHout = this.$options.filters.getCurrentHour();
             let newArray = copyObj(res.data).reverse();
@@ -249,8 +250,6 @@ export default {
         });
       }
     },
-
-
     checkHeadName() {
       switch (this.headLegeRadio) {
         case "用户数(UV)":
