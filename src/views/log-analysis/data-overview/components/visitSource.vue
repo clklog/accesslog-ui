@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head">
       <div class="block-title">访问来源Top10</div>
       <div class="block-head-icon">
@@ -15,7 +15,12 @@
         style="width: 100%"
         border
       >
-        <el-table-column type="index" label="排名" min-width="15%" :show-overflow-tooltip="true" />
+        <el-table-column
+          type="index"
+          label="排名"
+          min-width="15%"
+          :show-overflow-tooltip="true"
+        />
         <el-table-column
           prop="httpReferrer"
           min-width="55%"
@@ -23,8 +28,18 @@
           label="来源网站"
         >
         </el-table-column>
-        <el-table-column prop="pv" label="访问量(PV)" min-width="15%"  :show-overflow-tooltip="true"/>
-        <el-table-column prop="pvRate" label="占比" min-width="15%" :show-overflow-tooltip="true">
+        <el-table-column
+          prop="pv"
+          label="访问量(PV)"
+          min-width="15%"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          prop="pvRate"
+          label="占比"
+          min-width="15%"
+          :show-overflow-tooltip="true"
+        >
           <template slot-scope="scope">
             {{ scope.row.pvRate | percentage }}
           </template>
@@ -40,10 +55,14 @@ export default {
   data() {
     return {
       tableData: [],
+      loading: false,
     };
   },
   mounted() {},
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 1) {
         return "text-align:left";
@@ -51,10 +70,14 @@ export default {
         return "text-align:center";
       }
     },
-    getReferrerTop10(commonParams) {
-      getReferrerTop10Api(commonParams).then((res) => {
+    async getReferrerTop10(commonParams) {
+      this.loading = true;
+      await getReferrerTop10Api(commonParams).then((res) => {
         if (res.code == 200) {
           this.tableData = res.data;
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },

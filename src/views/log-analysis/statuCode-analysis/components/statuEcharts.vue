@@ -1,7 +1,21 @@
 <template>
-  <div class="public-table-block public-hoverItem logCon">
+  <div class="public-table-block public-hoverItem logCon" v-loading="loading">
     <span class="public-firstHead">请求状态占比</span>
-    <div style="display: flex">
+    <div
+      style="
+        display: flex;
+        font-size: 14px;
+        color: #909399;
+        text-align: center;
+        width: 100%;
+        margin-top: 50px;
+        justify-content: center;
+      "
+      v-if="funList.length == 0 && !loading"
+    >
+      暂无数据
+    </div>
+    <div style="display: flex" v-else>
       <div style="width: 50%">
         <div id="pieStatu" class="pieStatu"></div>
       </div>
@@ -38,6 +52,7 @@ export default {
 
       xbarData: [],
       ybarData: [],
+      loading: false,
     };
   },
   computed: {
@@ -51,12 +66,13 @@ export default {
   mounted() {},
   methods: {
     echartEvent(commonParams) {
+      this.loading = true;
+      this.funList = [];
       getStatusApi(commonParams).then((res) => {
-        if (res.code == 200) {
+        if (res.code == 200 && res.data.length > 0) {
           this.xbarData = [];
           this.ybarData = [];
           this.funList = res.data;
-
           this.funList.sort((a, b) => {
             const statusA = parseInt(a.status, 10) || 0;
             const statusB = parseInt(b.status, 10) || 0;
@@ -73,6 +89,9 @@ export default {
           this.pieStatuEcharts();
           //  bar echarts
           this.barStatuEcharts();
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },
@@ -148,7 +167,7 @@ export default {
                     "：" +
                     params.data.pv +
                     // "\n" +
-                     
+
                     "(" +
                     params.percent +
                     "%" +
@@ -164,7 +183,6 @@ export default {
             },
             labelLine: {
               show: true,
-             
             },
             labelLayout: {
               // 选择合适的标签布局策略
@@ -228,6 +246,24 @@ export default {
           axisTick: {
             show: false,
             alignWithLabel: true,
+          },
+          type: "value",
+          splitNumber: 5, // 分割为5段，包括0和100%
+          min: 0,
+          max: 1,
+          interval: 0.2, // 间隔为0.2，确保有五个主要刻度
+          axisLabel: {
+            //rotate: 50,
+            //formatter: "{value}%", // 将值格式化为百分比
+            formatter(value) {
+              return (value * 100).toFixed(0) + "%";
+            },
+          },
+          splitLine: {
+            // 添加分隔线以匹配刻度
+            lineStyle: {
+              type: "solid",
+            },
           },
         },
         series: [

@@ -1,42 +1,46 @@
 <template>
-  <div class="block-main public-hoverItem logCon" v-loading="loading">
-    <div class="block-head" style="position: relative">
-      <div style="display: flex; align-items: center; z-index: 999">
-        <div class="block-title">趋势图</div>
-        <el-radio-group
+  <div style="width: 100%">
+    <div class="block-main public-hoverItem logCon">
+      <div class="block-head" style="position: relative">
+        <div style="display: flex; align-items: center; z-index: 999">
+          <div class="block-title">趋势图</div>
+          <!-- <el-radio-group
           size="mini"
           v-model="timeType"
           style="font-size: 13px; height: 30px; padding-left: 20px"
           @change="changeDateEvent"
-          :disabled="!indexCanClick"
         >
           <el-radio-button label="hour">按时</el-radio-button>
           <el-radio-button label="day">按日</el-radio-button>
           <el-radio-button label="week">按周</el-radio-button>
           <el-radio-button label="month">按月</el-radio-button>
-        </el-radio-group>
+        </el-radio-group> -->
+        </div>
       </div>
-      <div
-        class="block-head-icon"
-        @click="$router.push('/logAnalysis/trend')"
-        style="width: 100%; position: absolute; right: 0"
-      >
-        <img src="@/assets/images/icon.png" alt="" width="10px" />
+      <div class="block-echarts" v-loading="loading">
+        <div id="visitchart" class="visitEchart"></div>
+        <div id="dataChart" class="flowEchart"></div>
       </div>
     </div>
-    <div class="block-echarts">
-      <div id="visitchart" class="visitEchart"></div>
-      <div id="dataChart" class="flowEchart"></div>
-    </div>
+    <trend-table
+      v-loading="loading"
+      ref="trendTable"
+      @refreshApi="refreshApi"
+    ></trend-table>
   </div>
 </template>
 
 <script>
 import echarts from "echarts";
+import trendTable from "./trendTable";
 import { getFlowTrendApi } from "@/api/trackingapi/accessLog";
 export default {
+  components: {
+    trendTable,
+  },
   data() {
     return {
+      loading: false,
       timeType: "day",
       dayFlag: false,
       chart: null,
@@ -60,57 +64,25 @@ export default {
       },
       myChart: [],
       oldCommonParams: {},
-      loading: false,
     };
   },
   computed: {
     httpHost() {
       return this.$store.getters.httpHost;
     },
-    indexCanClick() {
-      return this.$store.getters.indexCanClick;
-    },
   },
   watch: {},
   methods: {
-    setLoading(val) {
-      this.loading = val;
-    },
     changeDateEvent() {
       this.getFlowTrendEvent(this.oldCommonParams, "check");
     },
-    async getFlowTrendEvent(commonParams, event) {
+    getFlowTrendEvent(commonParams, event) {
       this.loading = true;
       this.oldCommonParams = commonParams;
       let copyParams = JSON.parse(JSON.stringify(commonParams));
-      if (!event) {
-        if (copyParams.startTime == copyParams.endTime) {
-          copyParams.timeType = "hour";
-          this.timeType = "hour";
-        } else {
-          //月 2476800000
-          let timeDiff =
-            Date.parse(copyParams.endTime) - Date.parse(copyParams.startTime);
-          // 选择日期进行按时按日自动刷选
-          if (timeDiff == 0) {
-            copyParams.timeType = "hour";
-            this.timeType = "hour";
-          } else if (timeDiff > 0 && timeDiff < 2592000000) {
-            copyParams.timeType = "day";
-            this.timeType = "day";
-          } else if (timeDiff >= 2592000000 && timeDiff < 7776000000) {
-            copyParams.timeType = "week";
-            this.timeType = "week";
-          } else {
-            copyParams.timeType = "month";
-            this.timeType = "month";
-          }
-        }
-      } else {
-        copyParams.timeType = this.timeType;
-      }
-      await getFlowTrendApi(copyParams).then((res) => {
+      getFlowTrendApi(copyParams).then((res) => {
         if (res.code == 200) {
+          this.$refs.trendTable.trendApiEvent(res.data, copyParams);
           this.xLineList = [];
           this.bodySentBytesList = [];
           this.pvList = [];
@@ -119,7 +91,6 @@ export default {
           this.trendList.map((item) => {
             if (item.bodySentBytes) {
               let kbs = this.$options.filters.convertMB(item.bodySentBytes);
-
               this.bodySentBytesList.push(kbs);
             } else {
               this.bodySentBytesList.push(0);
@@ -142,7 +113,7 @@ export default {
           this.initFlowEchart(); //line chart
           this.initVisitEchart(); //双线图
           this.loading = false;
-        }else{
+        } else {
           this.loading = false;
         }
       });
@@ -287,7 +258,6 @@ export default {
         this.chart.resize();
       });
     },
-
     // 折现图
     initFlowEchart() {
       this.flowEchart = echarts.init(document.querySelector(".flowEchart"));
@@ -495,7 +465,6 @@ export default {
 
       this.myChart.setOption(option); //通过setOption()方法生成图表
     },
-
     beforeDestroy() {
       if (this.flowEchart) {
         this.flowEchart.dispose();
@@ -505,6 +474,10 @@ export default {
         this.chart.dispose();
         this.chart = null;
       }
+    },
+    refreshApi() {
+      //console.log("刷新refreshApi()===========");
+      this.getFlowTrendEvent(this.oldCommonParams);
     },
   },
 };
@@ -529,7 +502,7 @@ export default {
 }
 @import "~@/styles/components/custom-select.scss";
 .logCon {
-  width: calc(65% - 10px);
+  width: calc(100% - 2px);
   // min-height: 300px;
 }
 .block-head {

@@ -1,10 +1,24 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div class="block-head">
       <div class="block-title">请求方法</div>
       <div class="block-head-icon">
         <!-- <img src="@/assets/images/icon.png" alt="" width="10px" /> -->
       </div>
+    </div>
+    <div
+      style="
+        display: flex;
+        font-size: 14px;
+        color: #909399;
+        text-align: center;
+        width: 100%;
+        margin-top: 50px;
+        justify-content: center;
+      "
+      v-if="funList.length == 0"
+    >
+      暂无数据
     </div>
     <div id="funApiEchart"></div>
   </div>
@@ -18,19 +32,30 @@ export default {
     return {
       funApis: null,
       funList: [],
+      loading: false,
     };
   },
   mounted() {},
   methods: {
-    getRequestMethod(commonParams) {
-      getRequestMethodApi(commonParams).then((res) => {
-        if (res.code == 200) {
+    setLoading(val) {
+      this.loading = val;
+    },
+    async getRequestMethod(commonParams) {
+      this.loading = true;
+      this.funList = [];
+      await getRequestMethodApi(commonParams).then((res) => {
+        if (res.code == 200 && res.data.length > 0) {
           this.funList = res.data;
           this.funList.map((item) => {
             item.value = item.pvRate;
             item.name = item.requestMethod;
           });
           // console.log(this.funList,"funList----");
+          this.funApiEcharts();
+          this.loading = false;
+        } else {
+          this.loading = false;
+          this.funApis = null;
           this.funApiEcharts();
         }
       });
@@ -57,12 +82,14 @@ export default {
             let htmlStr;
             htmlStr = `
               <div style="padding:10px;">
-                <div style='font-size:14px;'>请求方式： ${params.data.requestMethod}</div>
+                <div style='font-size:14px;'>请求方式： ${
+                  params.data.requestMethod
+                }</div>
                 <div style='font-size:14px;margin-top:5px;'>占比： ${
                   params.percent + "%"
                 }</div>
                 <div style='font-size:14px;margin-top:5px;'> 总量： ${
-                 params.data.pv
+                  params.data.pv
                 }</div>
                
               </div>

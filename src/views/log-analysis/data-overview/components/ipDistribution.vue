@@ -1,20 +1,27 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
-    <div class="block-head" style="position: relative;">
-      <div class="block-title" style="display: flex; align-items: center;z-index: 999;" >
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
+    <div class="block-head" style="position: relative">
+      <div
+        class="block-title"
+        style="display: flex; align-items: center; z-index: 999"
+      >
         IP分布
         <el-radio-group
           size="mini"
           v-model="checkValue"
           style="font-size: 13px; height: 30px; padding-left: 20px"
           @change="changeEchartEvent"
+          :disabled="!indexCanClick"
         >
           <el-radio-button label="map">地图</el-radio-button>
           <el-radio-button label="table">列表</el-radio-button>
         </el-radio-group>
       </div>
-      <div class="block-head-icon" @click="$router.push('/logAnalysis/ip')"
-        style="width: 100%;position: absolute;right: 0;">
+      <div
+        class="block-head-icon"
+        @click="$router.push('/logAnalysis/ip')"
+        style="width: 100%; position: absolute; right: 0"
+      >
         <img src="@/assets/images/icon.png" alt="" width="10px" />
       </div>
     </div>
@@ -118,10 +125,19 @@ export default {
       getAreaList: null,
       checkValue: "map",
       commonParamsOld: "",
+      loading: false,
     };
   },
   mounted() {},
+  computed: {
+    indexCanClick() {
+      return this.$store.getters.indexCanClick;
+    },
+  },
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 1) {
         return "text-align:center";
@@ -134,9 +150,14 @@ export default {
         this.showScatterInGeo();
       }
     },
-    getIpByProvince(commonParams) {
+    async getIpByProvince(commonParams) {
+      this.loading = true;
       this.commonParamsOld = commonParams;
-      getIpByAreaApi(commonParams).then((res) => {
+      //this.commonParamsOld.country='中国';
+      let commonParams_plus = Object.assign({}, commonParams, {
+        country: "中国",
+      });
+      await getIpByAreaApi(commonParams_plus).then((res) => {
         if (res.code == 200) {
           this.provinceList.map((item) => {
             item.value = 0;
@@ -175,6 +196,9 @@ export default {
             });
           }
           this.showScatterInGeo();
+          this.loading = false;
+        } else {
+          this.loading = false;
         }
       });
     },

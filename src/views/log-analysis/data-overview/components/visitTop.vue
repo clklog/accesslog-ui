@@ -1,5 +1,5 @@
 <template>
-  <div class="block-main public-hoverItem logCon">
+  <div class="block-main public-hoverItem logCon" v-loading="loading">
     <div
       class="block-head"
       @click="$router.push('/logAnalysis/performance/timeConsuming')"
@@ -54,10 +54,14 @@ export default {
   data() {
     return {
       tableData: [],
+      loading: false,
     };
   },
   mounted() {},
   methods: {
+    setLoading(val) {
+      this.loading = val;
+    },
     tableHeaderColor({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 1) {
         return "text-align:left";
@@ -65,15 +69,19 @@ export default {
         return "text-align:center";
       }
     },
-    getUriTop10(commonParams) {
-      let params = copyObj(commonParams)
-      params.sortName = 'pv';
-      params.sortOrder = 'desc';
+    async getUriTop10(commonParams) {
+      this.loading = true;
+      let params = copyObj(commonParams);
+      params.sortName = "pv";
+      params.sortOrder = "desc";
       params.pageSize = 10;
       params.pageNum = 1;
-      getPerformanceDetailApi(params).then((res) => {
+      await getPerformanceDetailApi(params).then((res) => {
         if (res.code == 200) {
+          this.loading = false;
           this.tableData = res.data.rows;
+        } else {
+          this.loading = false;
         }
       });
     },

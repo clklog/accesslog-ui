@@ -7,7 +7,8 @@ const state = {
     withoutAnimation: false,
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  size: Cookies.get('size') || 'medium',
+  indexCanClick: true,
 }
 
 const mutations = {
@@ -33,6 +34,9 @@ const mutations = {
   SET_SIZE: (state, size) => {
     state.size = size
     Cookies.set('size', size)
+  },
+  SET_INDEX_CAN_CLICK: (state, indexCanClick) => {
+    state.indexCanClick = indexCanClick
   }
 }
 
@@ -48,6 +52,9 @@ const actions = {
   },
   setSize({ commit }, size) {
     commit('SET_SIZE', size)
+  },
+  setIndexCanClick({ commit }, indexCanClick) {
+    commit('SET_INDEX_CAN_CLICK', indexCanClick)
   }
 }
 
