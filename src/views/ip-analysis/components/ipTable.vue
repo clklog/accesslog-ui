@@ -280,11 +280,11 @@
               {{ row.avgVisitTime }}
             </template>
           </el-table-column>
-          <el-table-column prop="httpUserAgent" label="userAgent">
+          <!-- <el-table-column prop="httpUserAgent" label="userAgent">
             <template slot-scope="{ row }">
               {{ row.httpUserAgent }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <div class="block">
           <el-pagination
@@ -429,6 +429,12 @@ export default {
       this.commonParams.sortOrder = this.current.sortOrder;
       this.commonParams.province = this.province;
       this.commonParams.ip = this.ipInput;
+      if(this.apiSortName == "province"){
+        this.commonParams.country = ['中国'];
+      }
+      else{
+        this.commonParams.country = [];
+      }
       getIpListApi(this.commonParams).then((res) => {
         if (res.code == 200) {
           this.ipTableList = res.data.rows;
