@@ -1,6 +1,10 @@
 <template>
   <div class="login-container">
-    <img style="position: absolute;right: 20px;top: 20px;width: 130px;" src="@/assets/images/clklogLogo.png" alt="">
+    <img
+      style="position: absolute; right: 20px; top: 20px; width: 130px"
+      src="@/assets/images/clklogLogo.png"
+      alt=""
+    />
     <div style="width: 60vw">
       <img
         src="@/assets/images/loginBg.png"
@@ -96,12 +100,25 @@
         </el-tooltip>
 
         <div style="display: flex; justify-content: space-between">
-          <el-button
+          <!-- <el-button
             :loading="loading"
             type="primary"
             style="width: 100%; height: 46px; margin-bottom: 30px"
             @click.native.prevent="handleLogin"
             >登录</el-button
+          > -->
+          <el-button
+            :loading="loading"
+            type="primary"
+            style="width: calc(50% - 10px); height: 46px; margin-bottom: 30px"
+            @click.native.prevent="handleLogin"
+            >登录</el-button
+          >
+          <el-button
+            type="primary"
+            style="width: calc(50% - 10px); height: 46px; margin-bottom: 30px"
+            @click="checkLoginEvent"
+            >获取体验账号</el-button
           >
         </div>
       </el-form>
@@ -121,7 +138,7 @@
         <div>微信扫描下方二维码</div>
         <div style="margin: 20px 0">关注公众号获取体验账号</div>
         <img
-          src="@/assets/images/qrcode.png"
+          src="@/assets/images/qrcode.jpg"
           style="width: 200px; height: 200px; object-fit: cover"
         />
         <el-button
@@ -152,17 +169,26 @@ export default {
         callback();
       }
     };
+    // const validatePassword = (rule, value, callback) => {
+    //   if (value.length < 6) {
+    //     callback(new Error("密码不能少于6位"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error("密码不能少于6位"));
+      if (!value) {
+        callback(new Error("请输入密码"));
+      } else if (value != this.validatePassword) {
+        callback(new Error("账号密码错误"));
       } else {
         callback();
       }
     };
     return {
       loginForm: {
-        username: "admin",
-        password: "123456",
+        username: "",
+        password: "",
       },
       dialogVisible: false,
       loginRules: {
