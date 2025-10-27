@@ -55,7 +55,12 @@ export default {
       this.initChart();
     },
     initChart() {
-      this.chart = echarts.init(document.getElementById(this.id));
+      const chartDom = document.getElementById(this.id);
+      if (!chartDom) {
+        console.warn(`图表DOM元素(id: ${this.id})不存在，跳过ECharts初始化`);
+        return;
+      }
+      this.chart = echarts.init(chartDom);
       this.chart.setOption({
         title: {
           left: "center",

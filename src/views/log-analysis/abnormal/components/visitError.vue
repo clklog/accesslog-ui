@@ -95,7 +95,12 @@ export default {
     },
     // echarts图表
     initEcharts() {
-      this.ipEchart = echarts.init(document.getElementById("ipEchart"));
+      const ipEchartDom = document.getElementById("ipEchart");
+      if (!ipEchartDom) {
+        console.warn("ipEchart DOM元素不存在，跳过ECharts初始化");
+        return;
+      }
+      this.ipEchart = echarts.init(ipEchartDom);
       const option = {
         tooltip: {
           trigger: "axis",

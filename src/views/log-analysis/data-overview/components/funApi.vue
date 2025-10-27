@@ -61,7 +61,12 @@ export default {
       });
     },
     funApiEcharts() {
-      this.funApis = echarts.init(document.getElementById("funApiEchart"));
+      const funApiEchartDom = document.getElementById("funApiEchart");
+      if (!funApiEchartDom) {
+        console.warn("funApiEchart DOM元素不存在，跳过ECharts初始化");
+        return;
+      }
+      this.funApis = echarts.init(funApiEchartDom);
       const COLORS = [
         "#2c7be5",
         "#80bdef",
