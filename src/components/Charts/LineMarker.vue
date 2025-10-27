@@ -143,7 +143,12 @@ export default {
       this.initChart();
     },
     initChart() {
-      this.chart = echarts.init(document.getElementById(this.id));
+      const chartDom = document.getElementById(this.id);
+      if (!chartDom) {
+        console.warn(`Chart DOM element with id ${this.id} not found`);
+        return;
+      }
+      this.chart = echarts.init(chartDom);
 
       this.chart.setOption({
         backgroundColor: "#fff",

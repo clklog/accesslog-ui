@@ -120,7 +120,12 @@ export default {
     },
     // 双线图
     initVisitEchart() {
-      this.chart = echarts.init(document.querySelector(".visitEchart"));
+      const visitEchartDom = document.querySelector(".visitEchart");
+      if (!visitEchartDom) {
+        console.warn('Visit chart DOM element not found');
+        return;
+      }
+      this.chart = echarts.init(visitEchartDom);
       this.chart.setOption({
         tooltip: {
           trigger: "axis",
@@ -260,7 +265,12 @@ export default {
     },
     // 折现图
     initFlowEchart() {
-      this.flowEchart = echarts.init(document.querySelector(".flowEchart"));
+      const flowEchartDom = document.querySelector(".flowEchart");
+      if (!flowEchartDom) {
+        console.warn('Flow chart DOM element not found');
+        return;
+      }
+      this.flowEchart = echarts.init(flowEchartDom);
       this.flowEchart.setOption({
         // backgroundColor: "#fff",
         // tooltip: {

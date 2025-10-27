@@ -469,7 +469,10 @@ export default {
       let name = worldData.namemap;
       this.$nextTick(() => {
         let domEcharts = document.getElementById("chart");
-        if (!domEcharts) return;
+        if (!domEcharts) {
+          console.warn("chart DOM元素不存在，跳过ECharts初始化");
+          return;
+        }
         let _this = this;
         worldChart = echarts.init(domEcharts);
         worldChart.setOption({

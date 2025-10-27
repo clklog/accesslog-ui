@@ -442,7 +442,12 @@ export default {
     },
 
     initChart() {
-      this.chart = echarts.init(document.getElementById("trendLine"));
+      const trendLineDom = document.getElementById("trendLine");
+      if (!trendLineDom) {
+        console.warn('Trend line chart DOM element not found');
+        return;
+      }
+      this.chart = echarts.init(trendLineDom);
       this.chart.setOption({
         backgroundColor: "#fff",
         tooltip: {

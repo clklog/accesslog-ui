@@ -11,7 +11,7 @@ const getters = {
   roles: state => state.user.roles,
   permission_routes: state => state.permission.routes,
   errorLogs: state => state.errorLog.logs,
-  password:state => state.user.password,
+  authKey:state => state.user.authKey,
   // tracking
   applicationCode : state => state.tracking.applicationCode ,
   httpHost: state => state.tracking.httpHost,

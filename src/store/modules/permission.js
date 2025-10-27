@@ -49,7 +49,7 @@ const actions = {
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
       let TrackingedRoutes
-      if (roles.includes('admin')) {
+      if (roles.includes('accesslog')) {
         TrackingedRoutes = asyncRoutes || []
       } else {
         TrackingedRoutes = filterAsyncRoutes(asyncRoutes, roles)
