@@ -8,7 +8,7 @@ const state = {
   avatar: '',
   introduction: '',
   roles: [],
-  password:'clklog',
+  authKey:'accesslog',
 }
 
 const mutations = {

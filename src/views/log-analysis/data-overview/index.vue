@@ -135,39 +135,37 @@ export default {
       this.hostLength = this.httpHost;
       //console.log("================");
       this.$nextTick(() => {
-        this.$refs.dataTrend.setLoading(true);
-        this.$refs.ipDistribution.setLoading(true);
-        this.$refs.timeTop.setLoading(true);
-        this.$refs.visitTop.setLoading(true);
-        this.$refs.ipTop.setLoading(true);
-        this.$refs.apiUi.setLoading(true);
-        this.$refs.Status.setLoading(true);
-        this.$refs.visitSource.setLoading(true);
-        this.$refs.funApi.setLoading(true);
-        if(this.$refs.logIndex){
-          this.$refs.logIndex.setLoading(true);
-        }
+        if (this.$refs.dataTrend) this.$refs.dataTrend.setLoading(true);
+        if (this.$refs.ipDistribution) this.$refs.ipDistribution.setLoading(true);
+        if (this.$refs.timeTop) this.$refs.timeTop.setLoading(true);
+        if (this.$refs.visitTop) this.$refs.visitTop.setLoading(true);
+        if (this.$refs.ipTop) this.$refs.ipTop.setLoading(true);
+        if (this.$refs.apiUi) this.$refs.apiUi.setLoading(true);
+        if (this.$refs.Status) this.$refs.Status.setLoading(true);
+        if (this.$refs.visitSource) this.$refs.visitSource.setLoading(true);
+        if (this.$refs.funApi) this.$refs.funApi.setLoading(true);
+        if (this.$refs.logIndex) this.$refs.logIndex.setLoading(true);
       });
       //console.log("0");
       await this.getServerOverViewEvent();
       //console.log("1");
-      await this.$refs.dataTrend.getFlowTrendEvent(this.commonParams);
+      if (this.$refs.dataTrend) await this.$refs.dataTrend.getFlowTrendEvent(this.commonParams);
       //console.log("2");
-      await this.$refs.ipDistribution.getIpByProvince(this.commonParams);
+      if (this.$refs.ipDistribution) await this.$refs.ipDistribution.getIpByProvince(this.commonParams);
       //console.log("3");
-      await this.$refs.timeTop.getRequestTimeTop10(this.commonParams);
+      if (this.$refs.timeTop) await this.$refs.timeTop.getRequestTimeTop10(this.commonParams);
       //console.log("4");
-      await this.$refs.visitTop.getUriTop10(this.commonParams);
+      if (this.$refs.visitTop) await this.$refs.visitTop.getUriTop10(this.commonParams);
       //console.log("5");
-      await this.$refs.ipTop.getIpTop10(this.commonParams);
+      if (this.$refs.ipTop) await this.$refs.ipTop.getIpTop10(this.commonParams);
       //console.log("6");
-      await this.$refs.apiUi.getUa(this.commonParams);
+      if (this.$refs.apiUi) await this.$refs.apiUi.getUa(this.commonParams);
       //console.log("7");
-      await this.$refs.Status.getStatus(this.commonParams);
+      if (this.$refs.Status) await this.$refs.Status.getStatus(this.commonParams);
       //console.log("8");
-      await this.$refs.visitSource.getReferrerTop10(this.commonParams);
+      if (this.$refs.visitSource) await this.$refs.visitSource.getReferrerTop10(this.commonParams);
       //console.log("9");
-      await this.$refs.funApi.getRequestMethod(this.commonParams);
+      if (this.$refs.funApi) await this.$refs.funApi.getRequestMethod(this.commonParams);
       this.$store.dispatch("app/setIndexCanClick", true);
       //console.log("this.$store.getters.indexCanClick", this.$store.getters.indexCanClick);
     },
@@ -177,11 +175,13 @@ export default {
           this.overList = res.data;
           this.logEchartsEvent();
           this.$nextTick(() => {
-            this.$refs.headOverview.overviewEvent(
-              res.data.totalAccesslogFlowDetail,
-              this.commonParams
-            );
-          });
+        if (this.$refs.headOverview && res.data.totalAccesslogFlowDetail) {
+          this.$refs.headOverview.overviewEvent(
+            res.data.totalAccesslogFlowDetail,
+            this.commonParams
+          );
+        }
+      });
           this.loading = false;
         } else {
           this.loading = false;
@@ -190,7 +190,7 @@ export default {
     },
     logEchartsEvent() {
       this.$nextTick(() => {
-        if (this.$refs.logIndex) {
+        if (this.$refs.logIndex && this.overList.accesslogFlowDetailList) {
           this.$refs.logIndex.logEvent(this.overList.accesslogFlowDetailList);
         }
       });

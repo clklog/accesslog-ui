@@ -128,7 +128,12 @@ export default {
       });
     },
     uiApiEcharts() {
-      this.uiChart = echarts.init(document.getElementById("uiCharts"));
+      const uiChartsDom = document.getElementById("uiCharts");
+      if (!uiChartsDom) {
+        console.warn("uiCharts DOM元素不存在，跳过ECharts初始化");
+        return;
+      }
+      this.uiChart = echarts.init(uiChartsDom);
       const option = {
         tooltip: {
           trigger: "axis",

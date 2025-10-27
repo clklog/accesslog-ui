@@ -19,7 +19,10 @@ router.beforeEach(async (to, from, next) => {
  
   // determine whether the user has logged in
   const hasToken = getToken()
- 
+
+  // 打开页面的时候，设置顶部FilterBar可以点击（加这个功能是防止首页频繁点击）
+  store.dispatch("app/setIndexCanClick", true);
+
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
