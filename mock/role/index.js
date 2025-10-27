@@ -6,9 +6,9 @@ const routes = deepClone([...constantRoutes, ...asyncRoutes])
 
 const roles = [
   {
-    key: 'demo',
-    name: 'demo',
-    description: 'Super Administrator. Have Tracking to view all pages.',
+    key: 'accesslog',
+    name: 'accesslog',
+    description: 'Accesslog Administrator. Have Tracking to view all pages.',
     routes: routes
   },
 ]

@@ -81,7 +81,7 @@ const asyncRoutes = [
     meta: {
       title: 'Permission',
       icon: 'lock',
-      roles: ['demo']
+      roles: ['accesslog']
     },
     children: [
       {
@@ -90,7 +90,7 @@ const asyncRoutes = [
         name: 'PagePermission',
         meta: {
           title: 'Page Permission',
-          roles: ['demo']
+          roles: ['accesslog']
         }
       },
       {
@@ -107,7 +107,7 @@ const asyncRoutes = [
         name: 'RolePermission',
         meta: {
           title: 'Role Permission',
-          roles: ['demo']
+          roles: ['accesslog']
         }
       }
     ]
